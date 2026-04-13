@@ -3,23 +3,24 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="description" content="Pyxora — 파이조라. 기술과 호기심을 담아내는 디지털 작업실. 레트로 아케이드, 마이크로 앱, 실험실." />
+<meta name="description" content="Pyxora Studio — 파이조라 스튜디오. 기술을 공예로 여기는 디지털 작업실. A digital forge for curious makers. Seoul, South Korea." />
 <meta name="theme-color" content="#06060f" />
 <meta name="author" content="Pyxora" />
 <link rel="canonical" href="https://pyxora.app/" />
-<title>Pyxora · 파이조라 — Digital Forge for Curious Makers</title>
+<title>Pyxora Studio · 파이조라 스튜디오 — A Digital Forge for Curious Makers</title>
 
 <!-- Open Graph / Social -->
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://pyxora.app/" />
-<meta property="og:title" content="Pyxora · 파이조라" />
-<meta property="og:description" content="기술과 호기심을 담아내는 디지털 작업실. 레트로 아케이드, 마이크로 앱, 실험실." />
+<meta property="og:title" content="Pyxora Studio · 파이조라 스튜디오" />
+<meta property="og:description" content="A digital forge for curious makers. 기술을 공예로 여기는 디지털 작업실. Seoul, South Korea." />
 <meta property="og:image" content="https://pyxora.app/og.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:locale" content="ko_KR" />
+<meta property="og:site_name" content="Pyxora Studio" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Pyxora · 파이조라" />
+<meta name="twitter:title" content="Pyxora Studio · 파이조라 스튜디오" />
 <meta name="twitter:description" content="A digital forge for curious makers." />
 <meta name="twitter:image" content="https://pyxora.app/og.png" />
 
@@ -538,6 +539,240 @@ body.nav-open{overflow:hidden}
 }
 .dont li::before{color:var(--pink)}
 
+/* ============ ABOUT (Identity + Mission + Vision) ============ */
+.about-grid{
+  display:grid;
+  grid-template-columns:1.3fr 1fr;
+  gap:24px;
+  margin-top:40px;
+}
+.about-identity{
+  background:linear-gradient(180deg,var(--surface),var(--bg-elev));
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:56px;
+  position:relative;
+  overflow:hidden;
+}
+.about-identity::before{
+  content:"";
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at top right,rgba(124,58,237,.15),transparent 60%);
+  pointer-events:none;
+}
+.about-identity .label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--pyx);letter-spacing:2px;
+  margin-bottom:28px;position:relative;
+}
+.about-identity h3{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(32px,3.5vw,48px);
+  font-weight:600;letter-spacing:-.02em;line-height:1.1;
+  margin-bottom:24px;position:relative;
+}
+.about-identity p{
+  color:var(--text-2);font-size:16px;line-height:1.75;
+  margin-bottom:16px;position:relative;
+}
+.about-identity p:last-of-type{margin-bottom:0}
+.about-stack{display:flex;flex-direction:column;gap:24px}
+.about-card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:40px;
+  flex:1;
+  transition:all .5s var(--ease);
+}
+.about-card:hover{border-color:var(--line-hi);transform:translateY(-4px)}
+.about-card .label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:2px;
+  margin-bottom:20px;
+  display:flex;align-items:center;gap:10px;
+}
+.about-card.mission .label{color:var(--pyx)}
+.about-card.vision .label{color:var(--cyan)}
+.about-card .label::before{
+  content:"";width:24px;height:1px;
+}
+.about-card.mission .label::before{background:var(--pyx)}
+.about-card.vision .label::before{background:var(--cyan)}
+.about-card h4{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:26px;font-weight:600;letter-spacing:-.01em;
+  line-height:1.2;margin-bottom:12px;
+}
+.about-card .kr{
+  font-size:14px;color:var(--muted);
+  font-weight:400;line-height:1.6;
+}
+
+/* ============ VALUES ============ */
+.values-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:20px;
+}
+.value{
+  background:linear-gradient(180deg,var(--surface),var(--bg-elev));
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:40px 32px;
+  position:relative;
+  overflow:hidden;
+  transition:all .5s var(--ease);
+}
+.value::before{
+  content:"";
+  position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--violet),var(--pyx));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .6s var(--ease);
+}
+.value:hover{border-color:var(--line-hi);transform:translateY(-6px)}
+.value:hover::before{transform:scaleX(1)}
+.value-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--muted);letter-spacing:1.5px;
+  margin-bottom:24px;
+}
+.value h4{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:26px;font-weight:600;letter-spacing:-.01em;
+  margin-bottom:6px;
+}
+.value .kr{
+  font-family:'Pretendard',sans-serif;
+  font-size:13px;color:var(--pyx);
+  font-weight:500;margin-bottom:20px;letter-spacing:-.01em;
+}
+.value p{color:var(--text-2);font-size:14px;line-height:1.6}
+
+/* ============ STORY + TIMELINE ============ */
+.story-wrap{
+  display:grid;
+  grid-template-columns:1.2fr 1fr;
+  gap:40px;
+  margin-top:40px;
+  align-items:start;
+}
+.story-narrative{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:56px;
+  position:relative;
+  overflow:hidden;
+}
+.story-narrative::before{
+  content:"";
+  position:absolute;top:-40%;right:-20%;
+  width:60%;height:100%;
+  background:radial-gradient(circle,rgba(251,191,36,.08),transparent 65%);
+  pointer-events:none;
+}
+.story-narrative .quote{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:80px;line-height:.5;color:var(--pyx);
+  opacity:.4;margin-bottom:8px;position:relative;
+}
+.story-narrative p{
+  color:var(--text-2);font-size:16px;line-height:1.8;
+  margin-bottom:20px;position:relative;
+}
+.story-narrative p:last-of-type{margin-bottom:0}
+.story-narrative p strong{color:var(--text);font-weight:500}
+.story-narrative .signature{
+  margin-top:32px;padding-top:32px;
+  border-top:1px solid var(--line);
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--muted);letter-spacing:1px;
+  position:relative;
+}
+
+.timeline{
+  position:relative;
+  padding-left:32px;
+}
+.timeline::before{
+  content:"";
+  position:absolute;left:9px;top:12px;bottom:12px;
+  width:1px;
+  background:linear-gradient(180deg,var(--pyx) 0%,var(--violet) 50%,var(--cyan) 100%);
+}
+.timeline-item{
+  position:relative;
+  padding:16px 0 32px;
+}
+.timeline-item:last-child{padding-bottom:0}
+.timeline-item::before{
+  content:"";
+  position:absolute;left:-28px;top:20px;
+  width:13px;height:13px;
+  border-radius:50%;
+  background:var(--bg);
+  border:2px solid var(--pyx);
+  box-shadow:0 0 12px rgba(251,191,36,.5);
+}
+.timeline-item.future::before{
+  border-color:var(--cyan);
+  box-shadow:0 0 12px rgba(6,182,212,.5);
+  background:var(--bg);
+}
+.timeline-year{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--pyx);letter-spacing:2px;
+  margin-bottom:6px;
+}
+.timeline-item.future .timeline-year{color:var(--cyan)}
+.timeline-item h5{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:22px;font-weight:600;letter-spacing:-.01em;
+  margin-bottom:8px;
+}
+.timeline-item p{color:var(--muted);font-size:14px;line-height:1.5}
+
+/* ============ CONTACT ============ */
+.contact-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  margin-top:40px;
+}
+.contact-card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:40px 32px;
+  transition:all .5s var(--ease);
+  position:relative;
+  overflow:hidden;
+}
+.contact-card:hover{border-color:var(--pyx);transform:translateY(-4px)}
+.contact-card .label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--pyx);letter-spacing:2px;
+  margin-bottom:24px;
+}
+.contact-card h4{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:22px;font-weight:600;letter-spacing:-.01em;
+  margin-bottom:8px;word-break:break-word;
+}
+.contact-card .value-text{
+  font-family:'JetBrains Mono',monospace;
+  font-size:15px;color:var(--text);
+  margin-bottom:12px;word-break:break-all;
+}
+.contact-card p{color:var(--muted);font-size:13.5px;line-height:1.55}
+.contact-card.primary{
+  background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(251,191,36,.08));
+  border-color:rgba(251,191,36,.3);
+}
+.contact-card.primary:hover{border-color:var(--pyx)}
+
 /* ============ ECOSYSTEM ============ */
 .ecosystem-hub{
   background:var(--surface);border:1px solid var(--line);border-radius:32px;
@@ -637,6 +872,10 @@ footer{
   .subdomain-list{grid-template-columns:1fr}
   .hero-orb{opacity:.4;right:-30%}
   section{padding:120px 0}
+  .about-grid{grid-template-columns:1fr}
+  .values-grid{grid-template-columns:repeat(2,1fr)}
+  .story-wrap{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr;gap:16px}
 }
 
 /* ============ MOBILE (≤720px) — fully tuned ============ */
@@ -755,6 +994,29 @@ footer{
   .footer-col a{font-size:13px;padding:6px 0}
   .footer-bottom{flex-direction:column;gap:12px;font-size:10px;text-align:center;padding-top:32px}
 
+  /* About / Values / Story / Contact */
+  .about-grid{gap:14px;margin-top:28px}
+  .about-identity{padding:32px 24px;border-radius:22px}
+  .about-identity h3{font-size:30px;margin-bottom:18px}
+  .about-identity p{font-size:14.5px;line-height:1.7;margin-bottom:14px}
+  .about-card{padding:28px 24px;border-radius:22px}
+  .about-card h4{font-size:22px}
+  .values-grid{grid-template-columns:1fr;gap:14px}
+  .value{padding:28px 24px;border-radius:22px}
+  .value h4{font-size:22px}
+  .value-num{margin-bottom:18px}
+  .story-wrap{gap:24px;margin-top:28px}
+  .story-narrative{padding:32px 24px;border-radius:22px}
+  .story-narrative .quote{font-size:56px}
+  .story-narrative p{font-size:14.5px;line-height:1.75;margin-bottom:16px}
+  .timeline{padding-left:26px}
+  .timeline-item{padding:12px 0 24px}
+  .timeline-item h5{font-size:19px}
+  .contact-grid{gap:12px;margin-top:28px}
+  .contact-card{padding:28px 24px;border-radius:22px}
+  .contact-card h4{font-size:20px}
+  .contact-card .value-text{font-size:14px}
+
   /* Mobile drawer tune */
   .mobile-drawer{padding:88px 28px 28px;width:min(82vw,320px)}
   .mobile-drawer-label{font-size:9px;margin-bottom:14px}
@@ -796,14 +1058,14 @@ footer{
 <!-- =============== NAV =============== -->
 <nav id="nav">
   <div class="container">
-    <a href="#top" class="nav-logo" aria-label="Pyxora home"><span class="nav-logo-dot"></span>PYXORA</a>
+    <a href="#top" class="nav-logo" aria-label="Pyxora Studio home"><span class="nav-logo-dot"></span>PYXORA<span style="color:var(--muted);font-weight:400;margin-left:6px">STUDIO</span></a>
     <div class="nav-links">
+      <a href="#about">ABOUT</a>
       <a href="#services">SERVICES</a>
-      <a href="#featured">PROJECTS</a>
-      <a href="#ecosystem">ECOSYSTEM</a>
-      <a href="#brand">BRAND</a>
+      <a href="#story">STORY</a>
+      <a href="#contact">CONTACT</a>
     </div>
-    <a href="#cta" class="nav-cta">Enter the Forge →</a>
+    <a href="#contact" class="nav-cta">Get in touch →</a>
     <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
       <span></span><span></span><span></span>
     </button>
@@ -814,12 +1076,13 @@ footer{
 <div class="mobile-drawer-backdrop" id="drawerBackdrop"></div>
 <aside class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
   <div class="mobile-drawer-label">· NAVIGATION</div>
+  <a href="#about">About</a>
   <a href="#services">Services</a>
   <a href="#featured">Projects</a>
-  <a href="#ecosystem">Ecosystem</a>
+  <a href="#story">Story</a>
   <a href="#brand">Brand</a>
-  <a href="#cta">Enter the Forge →</a>
-  <div class="mobile-drawer-footer">PYXORA · 파이조라<br/>MMXXVI</div>
+  <a href="#contact">Contact</a>
+  <div class="mobile-drawer-footer">PYXORA STUDIO<br/>파이조라 스튜디오<br/>MMXXVI · Seoul</div>
 </aside>
 
 <span id="top" aria-hidden="true"></span>
@@ -827,28 +1090,29 @@ footer{
 <!-- =============== HERO =============== -->
 <section class="hero">
   <div class="container">
-    <div class="hero-eyebrow"><span class="dot"></span>ESTABLISHED · MMXXVI · DIGITAL FORGE</div>
+    <div class="hero-eyebrow"><span class="dot"></span>PYXORA STUDIO · EST. MMXXV · SEOUL</div>
     <h1 id="heroTitle">Pyxora</h1>
-    <p class="hero-sub">파이조라 — 기술과 호기심을 담아내는 디지털 작업실.</p>
+    <p class="hero-sub">A digital forge for curious makers.</p>
     <p class="hero-desc">
-      레트로 아케이드부터 실험적인 앱까지. 작은 작품 하나하나가 테크트리의 노드가 되어
-      유기적으로 자라나는 메이커의 생태계.
+      파이조라 스튜디오는 기술을 공예로 여기는 디지털 작업실입니다.
+      화려함보다 본질을, 속도보다 지속을 선택하며
+      코드와 픽셀 하나하나를 정성껏 벼려냅니다.
     </p>
     <div class="hero-actions">
-      <a href="#services" class="btn btn-primary" data-hover>
-        Explore the Arcade
+      <a href="#about" class="btn btn-primary" data-hover>
+        Discover the Studio
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
       </a>
-      <a href="#featured" class="btn btn-ghost" data-hover>
-        View Projects
+      <a href="#contact" class="btn btn-ghost" data-hover>
+        Get in touch
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
       </a>
     </div>
     <div class="hero-meta">
-      <div><b>파이조라</b>/pʌɪ-ˈzɔː-rə/</div>
-      <div><b>Pyx</b>그리스어 · 작은 함</div>
-      <div><b>-ora</b>라틴어 · 영역·장소</div>
-      <div><b>v1.0</b>BRAND GUIDE 2026</div>
+      <div><b>파이조라 스튜디오</b>/pʌɪ-ˈzɔː-rə/</div>
+      <div><b>Est.</b>2025 · Seoul, South Korea</div>
+      <div><b>Craft</b>Digital goods, tools, games</div>
+      <div><b>Available</b>for select collaborations</div>
     </div>
   </div>
 
@@ -913,10 +1177,78 @@ footer{
   </div>
 </section>
 
+<!-- =============== ABOUT =============== -->
+<section id="about">
+  <div class="container">
+    <div class="section-eyebrow reveal">01 / ABOUT</div>
+    <h2 class="section-title reveal">A studio for<br/><em>digital craft.</em></h2>
+    <p class="section-desc reveal">Pyxora Studio는 기술을 공예로 여기는 디지털 작업실입니다. 화려함보다 본질을, 속도보다 지속을 선택합니다.</p>
+
+    <div class="about-grid">
+      <div class="about-identity reveal">
+        <div class="label">· WHO WE ARE</div>
+        <h3>We are a small, principled digital workshop based in Seoul.</h3>
+        <p>Pyxora Studio는 2025년 서울의 작은 작업 노트에서 시작되었습니다. 우리는 거대한 제품을 빠르게 찍어내는 공장이 아니라, 시간과 정성이 담긴 디지털 공예품을 빚어내는 작업실입니다.</p>
+        <p>레트로 아케이드, 마이크로 앱, 쉐이더 실험, 오픈소스 도구 — 각 작품은 하나의 노드(node)가 되어 테크트리처럼 유기적으로 자라납니다. 우리는 많이 만들지 않습니다. 오래 남을 것을 만듭니다.</p>
+        <p><strong>스튜디오의 모든 결정 뒤에는 단 하나의 질문이 있습니다</strong> — "10년 뒤에도 이것이 정직하게 느껴질까?"</p>
+      </div>
+
+      <div class="about-stack">
+        <div class="about-card mission reveal reveal-delay-1" data-hover>
+          <div class="label">· MISSION</div>
+          <h4>We forge curiosity into digital artifacts.</h4>
+          <div class="kr">호기심을 벼려 디지털 공예품으로 빚어낸다.</div>
+        </div>
+        <div class="about-card vision reveal reveal-delay-2" data-hover>
+          <div class="label">· VISION</div>
+          <h4>A world where software is crafted, not manufactured.</h4>
+          <div class="kr">소프트웨어가 양산품이 아닌 공예품이 되는 세상.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== VALUES =============== -->
+<section id="values">
+  <div class="container">
+    <div class="section-eyebrow reveal">02 / VALUES</div>
+    <h2 class="section-title reveal">How we <em>work.</em></h2>
+    <p class="section-desc reveal">네 가지 원칙이 스튜디오의 모든 선택을 이끕니다. 크지 않지만, 타협하지 않습니다.</p>
+
+    <div class="values-grid">
+      <div class="value reveal" data-hover>
+        <div class="value-num">· 01</div>
+        <h4>Craft</h4>
+        <div class="kr">장인정신</div>
+        <p>한 픽셀, 한 줄의 코드에도 의도를 담습니다. 자부할 수 있을 때 비로소 공개합니다.</p>
+      </div>
+      <div class="value reveal reveal-delay-1" data-hover>
+        <div class="value-num">· 02</div>
+        <h4>Curiosity</h4>
+        <div class="kr">탐구</div>
+        <p>"왜?"와 "만약?"을 먼저 묻습니다. 새로운 기술, 미학, 아이디어를 주저없이 실험합니다.</p>
+      </div>
+      <div class="value reveal reveal-delay-2" data-hover>
+        <div class="value-num">· 03</div>
+        <h4>Aesthetic</h4>
+        <div class="kr">미학</div>
+        <p>형태와 기능은 분리되지 않습니다. 아름다움은 장식이 아닌, 정성의 모습입니다.</p>
+      </div>
+      <div class="value reveal reveal-delay-3" data-hover>
+        <div class="value-num">· 04</div>
+        <h4>Timelessness</h4>
+        <div class="kr">지속</div>
+        <p>유행보다 오래 살아남을 것을 만듭니다. 10년 뒤에도 정직하게 느껴지길 바라며.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- =============== SERVICES =============== -->
 <section id="services">
   <div class="container">
-    <div class="section-eyebrow reveal">01 / SERVICES</div>
+    <div class="section-eyebrow reveal">03 / SERVICES</div>
     <h2 class="section-title reveal">What we <em>build.</em></h2>
     <p class="section-desc reveal">작은 작업실에서 시작한 실험들이 사용자와 만납니다. 장르는 고정되지 않습니다 — 레트로 게임, 생산성 도구, 오픈소스, 데이터 시각화까지.</p>
 
@@ -975,7 +1307,7 @@ footer{
 <!-- =============== FEATURED PROJECTS =============== -->
 <section id="featured" class="featured">
   <div class="container">
-    <div class="section-eyebrow reveal">02 / FEATURED</div>
+    <div class="section-eyebrow reveal">04 / FEATURED</div>
     <h2 class="section-title reveal">Selected <em>works.</em></h2>
     <p class="section-desc reveal">아직은 작은 컬렉션이지만, 매 작품마다 Pyxora의 철학이 담깁니다.</p>
 
@@ -1015,10 +1347,58 @@ footer{
   </div>
 </section>
 
+<!-- =============== STORY + TIMELINE =============== -->
+<section id="story">
+  <div class="container">
+    <div class="section-eyebrow reveal">05 / STORY</div>
+    <h2 class="section-title reveal">How it <em>began.</em></h2>
+    <p class="section-desc reveal">한 메이커의 작업 노트에서 작은 디지털 작업실로. Pyxora Studio의 출발점.</p>
+
+    <div class="story-wrap">
+      <div class="story-narrative reveal">
+        <div class="quote">"</div>
+        <p>2025년, 한 메이커의 작업 노트에서 Pyxora는 시작되었습니다. 만들고 싶어 만들었던 것들 — 작은 게임, 실험적 도구, 미완성 스케치 — 그 조각들을 한 곳에 담아낼 <strong>함(Pyx)</strong>이 필요했습니다.</p>
+        <p>그리스어 πύξ(pyx, "작은 나무 함")에 장소를 의미하는 라틴어 어미 <strong>-ora</strong>를 붙여 <strong>Pyxora</strong>라는 이름이 태어났습니다. 작품을 담는 함이자, 작품이 자라나는 영역을 뜻합니다.</p>
+        <p>우리는 화려함보다 정성을, 속도보다 지속을 선택하기로 했습니다. 유행을 쫓기보다 본질을 벼려내기로 했습니다. 그렇게 2026년, <strong>Pyxora Studio</strong>가 세상에 나왔습니다.</p>
+        <p>작은 작업실이지만, 우리는 그 안에서 오래 머물 수 있는 것들을 만듭니다.</p>
+        <div class="signature">— A CURIOUS MAKER · SEOUL, 2026</div>
+      </div>
+
+      <div class="timeline reveal reveal-delay-1">
+        <div class="timeline-item">
+          <div class="timeline-year">· 2025</div>
+          <h5>The Sketchbook</h5>
+          <p>작업 노트에서 시작. 만들고 싶은 것들이 쌓이기 시작함.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">· 2025 LATE</div>
+          <h5>The Name</h5>
+          <p>"Pyxora"라는 이름과 브랜드 정체성 확립.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">· 2026 SPRING</div>
+          <h5>The Launch</h5>
+          <p>Pyxora Studio 공식 출범. pyxora.app 도메인 확보.</p>
+        </div>
+        <div class="timeline-item future">
+          <div class="timeline-year">· NEXT</div>
+          <h5>First Experiments</h5>
+          <p>레트로 아케이드, 쉐이더 랩, 마이크로 앱 차례로 공개 예정.</p>
+        </div>
+        <div class="timeline-item future">
+          <div class="timeline-year">· FUTURE</div>
+          <h5>The Ecosystem</h5>
+          <p>각 작품이 하나의 서브도메인으로 독립, 테크트리 확장.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- =============== TECH TREE =============== -->
 <section class="techtree">
   <div class="container">
-    <div class="section-eyebrow reveal">03 / PHILOSOPHY</div>
+    <div class="section-eyebrow reveal">06 / PHILOSOPHY</div>
     <h2 class="section-title reveal">Everything<br>is a <em>node.</em></h2>
     <p class="section-desc reveal">Pyxora의 모든 작품은 테크트리의 노드입니다. 하나의 프로젝트가 다음 프로젝트의 발판이 되고, 그렇게 지식과 스킬이 가지치며 자랍니다.</p>
 
@@ -1071,7 +1451,7 @@ footer{
 <!-- =============== BRAND: COLORS =============== -->
 <section id="brand">
   <div class="container">
-    <div class="section-eyebrow reveal">04 / COLOR SYSTEM</div>
+    <div class="section-eyebrow reveal">07 / COLOR SYSTEM</div>
     <h2 class="section-title reveal">Deep space<br><em>palette.</em></h2>
     <p class="section-desc reveal">심우주 네이비 위에 신비한 보라와 고대 황금. 레트로 아케이드의 네온 감성과 연금술의 품격을 동시에.</p>
 
@@ -1115,7 +1495,7 @@ footer{
 <!-- =============== TYPOGRAPHY =============== -->
 <section>
   <div class="container">
-    <div class="section-eyebrow reveal">05 / TYPOGRAPHY</div>
+    <div class="section-eyebrow reveal">08 / TYPOGRAPHY</div>
     <h2 class="section-title reveal">Modern +<br><em>monospace.</em></h2>
     <p class="section-desc reveal">Space Grotesk로 미래적 디스플레이, JetBrains Mono로 코드 톤, Pretendard로 한글 가독성.</p>
 
@@ -1150,7 +1530,7 @@ footer{
 <!-- =============== VOICE =============== -->
 <section>
   <div class="container">
-    <div class="section-eyebrow reveal">06 / TONE OF VOICE</div>
+    <div class="section-eyebrow reveal">09 / TONE OF VOICE</div>
     <h2 class="section-title reveal">Curious, crafted,<br><em>playful.</em></h2>
     <p class="section-desc reveal">진지한 장인정신과 장난기 있는 호기심이 공존하는 목소리. 과장하지 않되 자신감 있게, 기술적이되 접근하기 쉽게.</p>
 
@@ -1182,7 +1562,7 @@ footer{
 <!-- =============== ECOSYSTEM =============== -->
 <section id="ecosystem">
   <div class="container">
-    <div class="section-eyebrow reveal">07 / ECOSYSTEM</div>
+    <div class="section-eyebrow reveal">10 / ECOSYSTEM</div>
     <h2 class="section-title reveal">Subdomain<br><em>forest.</em></h2>
     <p class="section-desc reveal">모든 작품은 서브도메인으로 독립합니다. 중앙 허브는 pyxora.app, 가지는 무한히 뻗어나갑니다.</p>
 
@@ -1245,19 +1625,45 @@ footer{
   </div>
 </section>
 
+<!-- =============== CONTACT =============== -->
+<section id="contact">
+  <div class="container">
+    <div class="section-eyebrow reveal">11 / CONTACT</div>
+    <h2 class="section-title reveal">Let's <em>talk.</em></h2>
+    <p class="section-desc reveal">작업 문의, 협업 제안, 또는 단순한 안부 — 무엇이든 환영합니다. 작은 편지 한 통이 다음 작품의 출발점이 될 수 있습니다.</p>
+
+    <div class="contact-grid">
+      <a href="mailto:hello@pyxora.app" class="contact-card primary reveal" data-hover>
+        <div class="label">· EMAIL</div>
+        <h4>General inquiries</h4>
+        <div class="value-text">hello@pyxora.app</div>
+        <p>작업 문의, 협업, 아이디어 공유 — 직접 편지를 보내주세요.</p>
+      </a>
+      <div class="contact-card reveal reveal-delay-1" data-hover>
+        <div class="label">· LOCATION</div>
+        <h4>Seoul, South Korea</h4>
+        <div class="value-text">Based in Seoul<br/>Working worldwide</div>
+        <p>서울에 기반을 두고, 시간대에 구애받지 않고 일합니다.</p>
+      </div>
+      <div class="contact-card reveal reveal-delay-2" data-hover>
+        <div class="label">· AVAILABILITY</div>
+        <h4>Open for collaboration</h4>
+        <div class="value-text">Select projects · 2026</div>
+        <p>선별된 프로젝트에 한해 의뢰를 받고 있습니다. 2026년 여유 있음.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- =============== CTA =============== -->
 <section class="cta" id="cta">
   <div class="container">
     <h2 class="reveal">Enter<br>the forge.</h2>
-    <p class="reveal reveal-delay-1">아직 사이트는 준비 중입니다. 가장 먼저 소식을 받고 싶다면 기다려주세요.</p>
+    <p class="reveal reveal-delay-1">모든 훌륭한 작품은 첫 편지 한 통에서 시작됩니다. 우리는 당신의 이야기를 기다리고 있습니다.</p>
     <div class="hero-actions reveal reveal-delay-2" style="justify-content:center">
-      <a href="mailto:hello@pyxora.app?subject=Notify%20me%20about%20Pyxora" class="btn btn-primary" data-hover>
-        Get notified
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-      </a>
-      <a href="https://github.com/jaehyunseo/pyxora-site" target="_blank" rel="noopener" class="btn btn-ghost" data-hover>
-        View on GitHub
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+      <a href="mailto:hello@pyxora.app?subject=Hello%20Pyxora%20Studio" class="btn btn-primary" data-hover>
+        Write to us
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
       </a>
     </div>
   </div>
@@ -1268,31 +1674,31 @@ footer{
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <h4>Pyxora<span style="color:var(--pyx)">.</span></h4>
-        <p>A digital forge for curious makers. Games, tools, and experiments — all crafted with care.</p>
+        <h4>Pyxora<span style="color:var(--pyx)">.</span>Studio</h4>
+        <p>A digital forge for curious makers. 기술을 공예로 여기는 작은 디지털 작업실. Seoul, South Korea.</p>
       </div>
       <div class="footer-col">
-        <h5>· EXPLORE</h5>
+        <h5>· STUDIO</h5>
+        <a href="#about" data-hover>About</a>
+        <a href="#values" data-hover>Values</a>
+        <a href="#story" data-hover>Story</a>
+      </div>
+      <div class="footer-col">
+        <h5>· WORK</h5>
         <a href="#services" data-hover>Services</a>
         <a href="#featured" data-hover>Projects</a>
         <a href="#ecosystem" data-hover>Ecosystem</a>
       </div>
       <div class="footer-col">
-        <h5>· BRAND</h5>
-        <a href="#brand" data-hover>Colors</a>
-        <a href="#brand" data-hover>Typography</a>
-        <a href="#brand" data-hover>Voice</a>
-      </div>
-      <div class="footer-col">
         <h5>· CONNECT</h5>
-        <a href="https://github.com/jaehyunseo/pyxora-site" target="_blank" rel="noopener" data-hover>GitHub</a>
-        <a href="mailto:hello@pyxora.app" data-hover>Email</a>
+        <a href="mailto:hello@pyxora.app" data-hover>hello@pyxora.app</a>
+        <a href="#contact" data-hover>Contact</a>
         <a href="#top" data-hover>Back to top</a>
       </div>
     </div>
     <div class="footer-bottom">
-      <div>© MMXXVI PYXORA · ALL RIGHTS FORGED</div>
-      <div>BRAND GUIDE v1.0 · 파이조라</div>
+      <div>© MMXXVI PYXORA STUDIO · ALL RIGHTS FORGED</div>
+      <div>파이조라 스튜디오 · SEOUL · MMXXVI</div>
     </div>
   </div>
 </footer>
