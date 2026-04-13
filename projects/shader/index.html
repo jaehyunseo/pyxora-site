@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="description" content="Shader Lab — A live WebGL fragment shader playground by Pyxora Studio." />
+<title>Shader Lab · Pyxora Studio</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23060610'/%3E%3Ctext x='50' y='72' font-family='sans-serif' font-size='68' font-weight='700' fill='%23fbbf24' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E" />
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06060f;--surface:#13132a;--violet:#7c3aed;--pyx:#fbbf24;--cyan:#06b6d4;--pink:#ec4899;
+  --text:#f5f5f7;--text-2:#c4c4d0;--muted:#7a7a8c;
+  --line:rgba(255,255,255,.08);--line-hi:rgba(255,255,255,.16);
+}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'Pretendard','Space Grotesk',system-ui,sans-serif;
+  background:var(--bg);color:var(--text);
+  display:flex;flex-direction:column;
+}
+a{color:inherit;text-decoration:none}
+
+/* Nav */
+nav{
+  padding:14px 24px;display:flex;justify-content:space-between;align-items:center;
+  backdrop-filter:blur(20px);background:rgba(6,6,15,.7);
+  border-bottom:1px solid var(--line);flex-shrink:0;
+}
+.brand{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
+.brand .dot{width:6px;height:6px;background:var(--pyx);border-radius:50%;box-shadow:0 0 8px var(--pyx)}
+.brand .muted{color:var(--muted);font-weight:400}
+.back{font-family:'JetBrains Mono',monospace;font-size:11px;padding:8px 14px;border:1px solid var(--line-hi);border-radius:100px;transition:all .2s}
+.back:hover{background:var(--pyx);color:var(--bg);border-color:var(--pyx)}
+
+/* Header */
+.page-header{
+  padding:24px 28px;border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
+}
+.page-header .title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:22px;font-weight:700;letter-spacing:-.02em;
+}
+.page-header .title em{
+  font-style:normal;
+  background:linear-gradient(135deg,var(--violet),var(--pyx));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.presets{display:flex;gap:8px;flex-wrap:wrap}
+.presets button{
+  padding:7px 14px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.5px;
+  background:rgba(19,19,42,.6);border:1px solid var(--line);border-radius:100px;
+  color:var(--text-2);cursor:pointer;transition:all .2s;
+}
+.presets button:hover{border-color:var(--line-hi);color:var(--text)}
+.presets button.active{background:var(--pyx);color:var(--bg);border-color:var(--pyx)}
+
+/* Main layout */
+.main{flex:1;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
+
+/* Editor */
+.editor-wrap{
+  background:#000;border-right:1px solid var(--line);
+  display:flex;flex-direction:column;min-width:0;
+}
+.editor-header{
+  padding:10px 16px;background:rgba(19,19,42,.5);
+  border-bottom:1px solid var(--line);
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1.5px;
+  display:flex;justify-content:space-between;
+}
+.editor-header .status{color:var(--pyx)}
+.editor-header .status.error{color:var(--pink)}
+.editor{
+  flex:1;padding:16px;
+  font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;
+  color:var(--text);background:#000;
+  border:none;outline:none;resize:none;
+  tab-size:2;
+}
+.error-box{
+  padding:10px 16px;background:rgba(236,72,153,.1);
+  border-top:1px solid rgba(236,72,153,.3);
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--pink);
+  max-height:120px;overflow:auto;white-space:pre-wrap;
+}
+.error-box:empty{display:none}
+
+/* Preview */
+.preview-wrap{position:relative;background:#000;min-width:0;display:flex;align-items:center;justify-content:center}
+canvas#gl{width:100%;height:100%;display:block}
+.preview-info{
+  position:absolute;bottom:16px;left:16px;right:16px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.6);
+  letter-spacing:1px;display:flex;justify-content:space-between;
+  pointer-events:none;
+}
+
+@media (max-width:880px){
+  .main{grid-template-columns:1fr;grid-template-rows:1fr 1fr}
+  .editor-wrap{border-right:0;border-bottom:1px solid var(--line)}
+  .page-header{padding:16px 20px;flex-direction:column;align-items:flex-start}
+  .presets{overflow-x:auto;width:100%;padding-bottom:4px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="brand"><span class="dot"></span>PYXORA<span class="muted">&nbsp;STUDIO</span></a>
+  <a href="/projects/" class="back">← Projects</a>
+</nav>
+
+<div class="page-header">
+  <div class="title">Shader <em>Lab.</em></div>
+  <div class="presets" id="presets"></div>
+</div>
+
+<div class="main">
+  <div class="editor-wrap">
+    <div class="editor-header">
+      <span>· FRAGMENT.GLSL</span>
+      <span class="status" id="status">READY</span>
+    </div>
+    <textarea class="editor" id="editor" spellcheck="false"></textarea>
+    <div class="error-box" id="errorBox"></div>
+  </div>
+
+  <div class="preview-wrap">
+    <canvas id="gl"></canvas>
+    <div class="preview-info">
+      <span>· LIVE PREVIEW</span>
+      <span id="fps">60 FPS</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('gl');
+  const gl = canvas.getContext('webgl');
+  const editor = document.getElementById('editor');
+  const status = document.getElementById('status');
+  const errorBox = document.getElementById('errorBox');
+  const fpsEl = document.getElementById('fps');
+
+  if (!gl) {
+    errorBox.textContent = 'WebGL not supported';
+    return;
+  }
+
+  // Presets
+  const PRESETS = {
+    'neon-waves': `precision highp float;
+uniform vec2 u_resolution;
+uniform float u_time;
+
+void main() {
+  vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution) / u_resolution.y;
+
+  float d = length(uv);
+  float a = atan(uv.y, uv.x);
+
+  float wave = sin(d * 12.0 - u_time * 2.0) * 0.5 + 0.5;
+  float spiral = sin(a * 6.0 + u_time + d * 8.0) * 0.5 + 0.5;
+
+  vec3 col = vec3(0.0);
+  col += vec3(0.49, 0.23, 0.93) * wave;      // violet
+  col += vec3(0.02, 0.71, 0.83) * spiral;    // cyan
+  col += vec3(0.98, 0.75, 0.14) * (1.0 - d); // gold
+
+  col *= smoothstep(1.2, 0.2, d);
+
+  gl_FragColor = vec4(col, 1.0);
+}`,
+
+    'plasma': `precision highp float;
+uniform vec2 u_resolution;
+uniform float u_time;
+
+void main() {
+  vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+  float t = u_time * 0.5;
+
+  float v = sin(uv.x * 8.0 + t);
+  v += sin((uv.y * 6.0 + t) / 2.0);
+  v += sin((uv.x * 6.0 + uv.y * 6.0 + t) / 2.0);
+  v += sin(length(uv - 0.5) * 10.0 + t);
+
+  vec3 col = vec3(
+    0.5 + 0.5 * sin(v + 0.0),
+    0.5 + 0.5 * sin(v + 2.0),
+    0.5 + 0.5 * sin(v + 4.0)
+  );
+
+  gl_FragColor = vec4(col, 1.0);
+}`,
+
+    'grid': `precision highp float;
+uniform vec2 u_resolution;
+uniform float u_time;
+
+void main() {
+  vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution) / u_resolution.y;
+  uv *= 3.0;
+
+  vec2 id = floor(uv);
+  vec2 gv = fract(uv) - 0.5;
+
+  float d = length(gv);
+  float wave = sin(length(id) - u_time * 2.0) * 0.5 + 0.5;
+  float cell = smoothstep(0.45, 0.4, d) * wave;
+
+  vec3 col = mix(
+    vec3(0.05, 0.02, 0.1),
+    vec3(0.98, 0.75, 0.14),
+    cell
+  );
+  col += vec3(0.49, 0.23, 0.93) * smoothstep(0.5, 0.48, max(abs(gv.x), abs(gv.y))) * 0.3;
+
+  gl_FragColor = vec4(col, 1.0);
+}`,
+
+    'fractal': `precision highp float;
+uniform vec2 u_resolution;
+uniform float u_time;
+
+void main() {
+  vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution) / u_resolution.y * 2.5;
+  vec2 c = uv + vec2(sin(u_time * 0.3) * 0.3, cos(u_time * 0.2) * 0.2);
+
+  vec2 z = vec2(0.0);
+  float iter = 0.0;
+  const float MAX_ITER = 60.0;
+
+  for (float i = 0.0; i < 60.0; i++) {
+    z = vec2(z.x*z.x - z.y*z.y, 2.0*z.x*z.y) + c;
+    if (length(z) > 2.0) break;
+    iter++;
+  }
+
+  float t = iter / MAX_ITER;
+  vec3 col = vec3(0.0);
+  col += vec3(0.49, 0.23, 0.93) * sin(t * 6.0 + u_time);
+  col += vec3(0.98, 0.75, 0.14) * sin(t * 8.0 + u_time + 2.0);
+  col += vec3(0.02, 0.71, 0.83) * sin(t * 4.0 + u_time + 4.0);
+  col = abs(col) * (1.0 - t);
+
+  gl_FragColor = vec4(col, 1.0);
+}`,
+
+    'stars': `precision highp float;
+uniform vec2 u_resolution;
+uniform float u_time;
+
+float hash(vec2 p) {
+  return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+}
+
+void main() {
+  vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+  vec2 p = uv * 40.0;
+  vec2 id = floor(p);
+  vec2 gv = fract(p) - 0.5;
+
+  float h = hash(id);
+  float brightness = step(0.96, h);
+  float twinkle = 0.5 + 0.5 * sin(u_time * 3.0 + h * 20.0);
+
+  float star = brightness * twinkle * smoothstep(0.3, 0.0, length(gv));
+
+  vec3 col = vec3(0.02, 0.02, 0.06);
+  col += vec3(1.0, 0.9, 0.7) * star;
+
+  // Nebula
+  float n = sin(uv.x * 4.0 + u_time * 0.2) * cos(uv.y * 3.0 + u_time * 0.15);
+  col += vec3(0.49, 0.23, 0.93) * max(0.0, n) * 0.15;
+  col += vec3(0.02, 0.71, 0.83) * max(0.0, -n) * 0.12;
+
+  gl_FragColor = vec4(col, 1.0);
+}`,
+  };
+
+  const VERTEX_SHADER = `attribute vec2 a_position;
+void main() {
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+
+  function createShader(type, source) {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      const err = gl.getShaderInfoLog(shader);
+      gl.deleteShader(shader);
+      throw new Error(err);
+    }
+    return shader;
+  }
+
+  function createProgram(fragmentSource) {
+    const vs = createShader(gl.VERTEX_SHADER, VERTEX_SHADER);
+    const fs = createShader(gl.FRAGMENT_SHADER, fragmentSource);
+    const program = gl.createProgram();
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      throw new Error(gl.getProgramInfoLog(program));
+    }
+    return program;
+  }
+
+  // Geometry: fullscreen quad
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    -1,-1, 1,-1, -1,1,
+    -1,1, 1,-1, 1,1,
+  ]), gl.STATIC_DRAW);
+
+  let program = null;
+  let uResolution = null;
+  let uTime = null;
+  let aPosition = null;
+
+  function compile(source) {
+    try {
+      const newProgram = createProgram(source);
+      if (program) gl.deleteProgram(program);
+      program = newProgram;
+      gl.useProgram(program);
+      aPosition = gl.getAttribLocation(program, 'a_position');
+      uResolution = gl.getUniformLocation(program, 'u_resolution');
+      uTime = gl.getUniformLocation(program, 'u_time');
+      gl.enableVertexAttribArray(aPosition);
+      gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 0, 0);
+      status.textContent = 'COMPILED';
+      status.classList.remove('error');
+      errorBox.textContent = '';
+    } catch (e) {
+      status.textContent = 'ERROR';
+      status.classList.add('error');
+      errorBox.textContent = e.message;
+    }
+  }
+
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+
+  let lastFpsTime = performance.now();
+  let frames = 0;
+  const startTime = performance.now();
+
+  function render() {
+    if (program) {
+      gl.uniform2f(uResolution, canvas.width, canvas.height);
+      gl.uniform1f(uTime, (performance.now() - startTime) / 1000);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    }
+    frames++;
+    const now = performance.now();
+    if (now - lastFpsTime > 1000) {
+      fpsEl.textContent = `${frames} FPS`;
+      frames = 0;
+      lastFpsTime = now;
+    }
+    requestAnimationFrame(render);
+  }
+
+  // Editor live-compile with debounce
+  let compileTimer;
+  editor.addEventListener('input', () => {
+    clearTimeout(compileTimer);
+    status.textContent = 'COMPILING...';
+    compileTimer = setTimeout(() => compile(editor.value), 300);
+  });
+
+  // Tab indent
+  editor.addEventListener('keydown', e => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = editor.selectionStart;
+      const end = editor.selectionEnd;
+      editor.value = editor.value.substring(0, start) + '  ' + editor.value.substring(end);
+      editor.selectionStart = editor.selectionEnd = start + 2;
+    }
+  });
+
+  // Presets
+  const presetsEl = document.getElementById('presets');
+  Object.keys(PRESETS).forEach((key, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = key.toUpperCase();
+    btn.addEventListener('click', () => {
+      presetsEl.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      editor.value = PRESETS[key];
+      compile(PRESETS[key]);
+    });
+    presetsEl.appendChild(btn);
+    if (i === 0) btn.classList.add('active');
+  });
+
+  // Init
+  resize();
+  editor.value = PRESETS['neon-waves'];
+  compile(PRESETS['neon-waves']);
+  render();
+
+  window.addEventListener('resize', resize);
+})();
+</script>
+
+</body>
+</html>

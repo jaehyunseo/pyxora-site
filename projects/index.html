@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="description" content="Pyxora Studio Projects — Retro games, creative tools, and WebGL experiments." />
+<title>Projects · Pyxora Studio</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23060610'/%3E%3Ctext x='50' y='72' font-family='sans-serif' font-size='68' font-weight='700' fill='%23fbbf24' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+:root{
+  --bg:#06060f;--bg-elev:#0c0c1c;--surface:#13132a;--surface-hi:#1c1c3a;
+  --violet:#7c3aed;--violet-2:#a855f7;--pyx:#fbbf24;--cyan:#06b6d4;--pink:#ec4899;
+  --text:#f5f5f7;--text-2:#c4c4d0;--muted:#7a7a8c;
+  --line:rgba(255,255,255,.08);--line-hi:rgba(255,255,255,.16);
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+body{
+  font-family:'Pretendard','Space Grotesk',-apple-system,system-ui,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--pyx);color:var(--bg)}
+
+/* Background effects */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(124,58,237,.25), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(6,182,212,.15), transparent 60%);
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse at center,#000 30%,transparent 80%);
+}
+
+/* Nav */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  padding:18px 40px;
+  backdrop-filter:blur(24px) saturate(180%);
+  background:rgba(6,6,15,.7);
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-brand{
+  font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:15px;letter-spacing:-.3px;
+  display:flex;align-items:center;gap:10px;
+}
+.nav-brand .dot{width:7px;height:7px;border-radius:50%;background:var(--pyx);box-shadow:0 0 10px var(--pyx)}
+.nav-brand .studio{color:var(--muted);font-weight:400;margin-left:4px}
+.nav-back{
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  padding:10px 18px;border:1px solid var(--line-hi);border-radius:100px;
+  transition:all .3s var(--ease);
+}
+.nav-back:hover{background:var(--pyx);color:var(--bg);border-color:var(--pyx)}
+
+/* Container */
+.container{max-width:1280px;margin:0 auto;padding:0 40px;position:relative;z-index:2}
+
+/* Hero */
+.hero{padding:180px 0 100px}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;
+  padding:8px 16px;border:1px solid rgba(251,191,36,.3);
+  background:rgba(251,191,36,.05);border-radius:100px;color:var(--pyx);
+  margin-bottom:32px;
+}
+.eyebrow .dot{width:6px;height:6px;background:var(--pyx);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(56px,9vw,128px);font-weight:700;
+  line-height:.9;letter-spacing:-.04em;margin-bottom:24px;
+  background:linear-gradient(180deg,#fff 0%,#fff 40%,var(--violet-2) 75%,var(--pyx) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+h1 em{font-style:normal}
+.hero p{font-size:19px;color:var(--text-2);max-width:640px;line-height:1.7}
+
+/* Grid */
+.projects-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(360px,1fr));
+  gap:24px;padding-bottom:120px;
+}
+.card{
+  background:linear-gradient(180deg,var(--surface),var(--bg-elev));
+  border:1px solid var(--line);
+  border-radius:28px;
+  overflow:hidden;
+  position:relative;
+  transition:all .5s var(--ease);
+  display:flex;flex-direction:column;
+}
+.card:hover{
+  transform:translateY(-6px);
+  border-color:var(--line-hi);
+  box-shadow:0 30px 60px -20px rgba(124,58,237,.3);
+}
+.card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--violet),var(--pyx),var(--cyan));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .6s var(--ease);
+}
+.card:hover::before{transform:scaleX(1)}
+
+.card-visual{
+  height:240px;position:relative;overflow:hidden;
+  background:#000;
+  border-bottom:1px solid var(--line);
+}
+.card-body{padding:32px;flex:1;display:flex;flex-direction:column}
+.card-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;
+  padding:6px 12px;border:1px solid var(--line-hi);border-radius:100px;
+  color:var(--pyx);align-self:flex-start;margin-bottom:20px;
+}
+.card h3{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:30px;font-weight:600;letter-spacing:-.02em;
+  margin-bottom:12px;line-height:1.1;
+}
+.card p{color:var(--text-2);font-size:15px;line-height:1.6;flex:1}
+.card-meta{
+  margin-top:24px;padding-top:24px;
+  border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);
+}
+.card-tech{display:flex;gap:6px}
+.card-tech span{
+  padding:3px 8px;border:1px solid var(--line);border-radius:4px;
+  letter-spacing:.5px;
+}
+.card-cta{
+  color:var(--pyx);transition:transform .3s var(--ease);
+  display:inline-flex;align-items:center;gap:6px;
+}
+.card:hover .card-cta{transform:translateX(4px)}
+
+/* Visuals for each project */
+.visual-tetris{
+  background:#000;display:grid;
+  grid-template-columns:repeat(10,1fr);
+  grid-template-rows:repeat(8,1fr);
+  gap:2px;padding:24px;
+}
+.visual-tetris div{background:transparent;border-radius:2px}
+.visual-tetris .v{background:var(--violet)}
+.visual-tetris .c{background:var(--cyan)}
+.visual-tetris .p{background:var(--pyx)}
+.visual-tetris .k{background:var(--pink)}
+
+.visual-palette{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:0;height:100%;
+}
+.visual-palette div{height:100%}
+.visual-palette div:nth-child(1){background:#7c3aed}
+.visual-palette div:nth-child(2){background:#a855f7}
+.visual-palette div:nth-child(3){background:#ec4899}
+.visual-palette div:nth-child(4){background:#fbbf24}
+.visual-palette div:nth-child(5){background:#06b6d4}
+
+.visual-shader{
+  background:
+    radial-gradient(circle at 30% 40%,#7c3aed 0%,transparent 40%),
+    radial-gradient(circle at 70% 60%,#06b6d4 0%,transparent 40%),
+    radial-gradient(circle at 50% 50%,#fbbf24 0%,transparent 30%),
+    #000;
+  filter:blur(20px);
+  transform:scale(1.15);
+  animation:shaderMove 8s ease-in-out infinite;
+}
+@keyframes shaderMove{
+  0%,100%{filter:blur(20px) hue-rotate(0deg)}
+  50%{filter:blur(30px) hue-rotate(30deg)}
+}
+
+.visual-more{
+  background:linear-gradient(135deg,var(--surface),var(--bg-elev));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:72px;font-weight:700;
+  color:var(--line-hi);letter-spacing:-.02em;
+}
+.visual-more span{opacity:.4}
+
+.card.coming h3,.card.coming p{opacity:.5}
+.card.coming .card-cta{color:var(--muted)}
+.card.coming:hover{transform:none;border-color:var(--line)}
+.card.coming:hover::before{transform:scaleX(0)}
+
+/* Footer */
+footer{
+  border-top:1px solid var(--line);
+  padding:48px 0;text-align:center;position:relative;z-index:2;
+}
+footer p{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px}
+footer a{color:var(--pyx)}
+
+@media (max-width:720px){
+  nav{padding:14px 20px}
+  .container{padding:0 20px}
+  .hero{padding:120px 0 60px}
+  .projects-grid{grid-template-columns:1fr;gap:16px;padding-bottom:80px}
+  .card-body{padding:24px}
+  .card h3{font-size:26px}
+  .card-visual{height:180px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-brand"><span class="dot"></span>PYXORA<span class="studio">STUDIO</span></a>
+  <a href="/" class="nav-back">← Back to Studio</a>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="eyebrow"><span class="dot"></span>PROJECTS · MMXXVI</div>
+    <h1>Selected<br><em>works.</em></h1>
+    <p>작은 실험들이 모여 하나의 작업실이 됩니다. 아래는 지금까지 Pyxora Studio에서 벼려낸 것들 — 게임, 도구, 그리고 기술 탐구의 기록.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="projects-grid">
+
+      <!-- Tetris -->
+      <a href="/projects/tetris/" class="card">
+        <div class="card-visual">
+          <div class="visual-tetris">
+            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div class="v"></div><div class="v"></div><div></div><div></div><div></div><div></div><div></div>
+            <div></div><div></div><div class="v"></div><div class="v"></div><div></div><div></div><div class="p"></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div></div><div></div><div class="p"></div><div class="p"></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div class="c"></div><div></div><div class="p"></div><div></div><div></div><div class="k"></div><div></div>
+            <div></div><div class="c"></div><div class="c"></div><div class="c"></div><div></div><div></div><div></div><div class="k"></div><div class="k"></div><div></div>
+            <div></div><div></div><div></div><div></div><div></div><div class="v"></div><div class="v"></div><div class="k"></div><div></div><div></div>
+            <div class="p"></div><div class="p"></div><div class="c"></div><div class="c"></div><div class="v"></div><div class="v"></div><div class="k"></div><div class="k"></div><div class="p"></div><div class="c"></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag">· GAME · FLAGSHIP</div>
+          <h3>Neon Tetris</h3>
+          <p>네온 감성과 부드러운 60fps 애니메이션이 만난 클래식 테트리스. 키보드·터치 조작, 다음 블록 미리보기, 레벨 시스템, 로컬 최고점수.</p>
+          <div class="card-meta">
+            <div class="card-tech"><span>CANVAS</span><span>VANILLA JS</span></div>
+            <div class="card-cta">Play now →</div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Palette -->
+      <a href="/projects/palette/" class="card">
+        <div class="card-visual">
+          <div class="visual-palette">
+            <div></div><div></div><div></div><div></div><div></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag">· TOOL · UTILITY</div>
+          <h3>Palette Forge</h3>
+          <p>이미지를 업로드하면 자동으로 주요 색상을 추출하는 디자이너 도구. 색상별 HEX 복사, 접근성 대비 체크, 팔레트 내보내기.</p>
+          <div class="card-meta">
+            <div class="card-tech"><span>CANVAS</span><span>K-MEANS</span></div>
+            <div class="card-cta">Try it →</div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Shader -->
+      <a href="/projects/shader/" class="card">
+        <div class="card-visual">
+          <div class="visual-shader"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag">· LAB · EXPERIMENT</div>
+          <h3>Shader Lab</h3>
+          <p>실시간 GLSL 프래그먼트 쉐이더 에디터. 코드를 쓰면 즉시 WebGL로 렌더링. 프리셋 쉐이더 포함, 모바일에서도 작동.</p>
+          <div class="card-meta">
+            <div class="card-tech"><span>WEBGL</span><span>GLSL</span></div>
+            <div class="card-cta">Explore →</div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Coming Soon -->
+      <div class="card coming">
+        <div class="card-visual">
+          <div class="visual-more"><span>···</span></div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag">· COMING SOON</div>
+          <h3>More Experiments</h3>
+          <p>Snake, Breakout, Conway's Game of Life, Markdown Editor, 그리고 아직 이름 없는 실험들이 작업실에서 만들어지고 있습니다.</p>
+          <div class="card-meta">
+            <div class="card-tech"><span>WIP</span></div>
+            <div class="card-cta">Stay tuned</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Forged with 🧡 at <a href="/">Pyxora Studio</a> · MMXXVI · Seoul</p>
+</footer>
+
+</body>
+</html>
