@@ -3,8 +3,30 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="description" content="Pyxora — 파이조라. 기술과 지식을 담아내는 디지털 작업실. 레트로 아케이드, 마이크로 앱, 실험실." />
+<meta name="description" content="Pyxora — 파이조라. 기술과 호기심을 담아내는 디지털 작업실. 레트로 아케이드, 마이크로 앱, 실험실." />
+<meta name="theme-color" content="#06060f" />
+<meta name="author" content="Pyxora" />
+<link rel="canonical" href="https://pyxora.app/" />
 <title>Pyxora · 파이조라 — Digital Forge for Curious Makers</title>
+
+<!-- Open Graph / Social -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://pyxora.app/" />
+<meta property="og:title" content="Pyxora · 파이조라" />
+<meta property="og:description" content="기술과 호기심을 담아내는 디지털 작업실. 레트로 아케이드, 마이크로 앱, 실험실." />
+<meta property="og:image" content="https://pyxora.app/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content="ko_KR" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Pyxora · 파이조라" />
+<meta name="twitter:description" content="A digital forge for curious makers." />
+<meta name="twitter:image" content="https://pyxora.app/og.png" />
+
+<!-- Favicon (SVG data URL, no extra request) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%23a855f7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='%23060610'/%3E%3Crect x='4' y='4' width='92' height='92' rx='20' fill='url(%23g)' opacity='0.15'/%3E%3Ctext x='50' y='72' font-family='Space Grotesk, sans-serif' font-size='68' font-weight='700' fill='%23fbbf24' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E" />
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23060610'/%3E%3Ctext x='50' y='72' font-family='sans-serif' font-size='68' font-weight='700' fill='%23fbbf24' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -126,6 +148,77 @@ nav .container{display:flex;align-items:center;justify-content:space-between}
   transition:all .3s var(--ease);
 }
 .nav-cta:hover{background:var(--pyx);color:var(--bg);border-color:var(--pyx)}
+
+/* Hamburger toggle (hidden on desktop) */
+.nav-toggle{
+  display:none;
+  width:44px;height:44px;
+  border-radius:12px;
+  border:1px solid var(--line-hi);
+  background:transparent;
+  position:relative;
+  transition:all .3s var(--ease);
+}
+.nav-toggle:hover{border-color:var(--text);background:rgba(255,255,255,.04)}
+.nav-toggle span{
+  position:absolute;left:50%;top:50%;
+  width:18px;height:1.5px;
+  background:var(--text);
+  border-radius:2px;
+  transform:translate(-50%,-50%);
+  transition:all .4s var(--ease);
+}
+.nav-toggle span:nth-child(1){transform:translate(-50%,calc(-50% - 5px))}
+.nav-toggle span:nth-child(3){transform:translate(-50%,calc(-50% + 5px))}
+.nav-toggle.open span:nth-child(1){transform:translate(-50%,-50%) rotate(45deg);background:var(--pyx)}
+.nav-toggle.open span:nth-child(2){opacity:0;transform:translate(-50%,-50%) scale(0)}
+.nav-toggle.open span:nth-child(3){transform:translate(-50%,-50%) rotate(-45deg);background:var(--pyx)}
+
+/* Mobile drawer */
+.mobile-drawer{
+  position:fixed;top:0;right:0;bottom:0;
+  width:min(88vw,360px);
+  background:rgba(6,6,15,.96);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border-left:1px solid var(--line);
+  z-index:49;
+  padding:120px 40px 40px;
+  transform:translateX(100%);
+  transition:transform .5s var(--ease);
+  visibility:hidden;
+  overflow-y:auto;
+}
+.mobile-drawer.open{transform:translateX(0);visibility:visible}
+.mobile-drawer a{
+  display:block;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:32px;font-weight:600;letter-spacing:-.02em;
+  padding:18px 0;
+  color:var(--text);
+  border-bottom:1px solid var(--line);
+  transition:color .3s var(--ease),transform .3s var(--ease);
+}
+.mobile-drawer a:hover{color:var(--pyx);transform:translateX(6px)}
+.mobile-drawer-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--pyx);letter-spacing:2px;
+  margin-bottom:20px;
+}
+.mobile-drawer-footer{
+  margin-top:48px;padding-top:32px;
+  border-top:1px solid var(--line);
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--muted);letter-spacing:1px;
+}
+.mobile-drawer-backdrop{
+  position:fixed;inset:0;z-index:48;
+  background:rgba(0,0,0,.6);
+  opacity:0;pointer-events:none;
+  transition:opacity .4s var(--ease);
+}
+.mobile-drawer-backdrop.open{opacity:1;pointer-events:auto}
+body.nav-open{overflow:hidden}
 
 /* ============ HERO ============ */
 .hero{
@@ -547,6 +640,8 @@ footer{
   .container{padding:0 24px}
   section{padding:100px 0}
   .nav-links{display:none}
+  .nav-toggle{display:block}
+  .nav-cta{display:none}
   .services-grid{grid-template-columns:1fr}
   .color-grid{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr}
@@ -569,7 +664,7 @@ footer{
 <!-- =============== NAV =============== -->
 <nav id="nav">
   <div class="container">
-    <a href="#" class="nav-logo"><span class="nav-logo-dot"></span>PYXORA</a>
+    <a href="#top" class="nav-logo" aria-label="Pyxora home"><span class="nav-logo-dot"></span>PYXORA</a>
     <div class="nav-links">
       <a href="#services">SERVICES</a>
       <a href="#featured">PROJECTS</a>
@@ -577,8 +672,25 @@ footer{
       <a href="#brand">BRAND</a>
     </div>
     <a href="#cta" class="nav-cta">Enter the Forge →</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<!-- Mobile drawer -->
+<div class="mobile-drawer-backdrop" id="drawerBackdrop"></div>
+<aside class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
+  <div class="mobile-drawer-label">· NAVIGATION</div>
+  <a href="#services">Services</a>
+  <a href="#featured">Projects</a>
+  <a href="#ecosystem">Ecosystem</a>
+  <a href="#brand">Brand</a>
+  <a href="#cta">Enter the Forge →</a>
+  <div class="mobile-drawer-footer">PYXORA · 파이조라<br/>MMXXVI</div>
+</aside>
+
+<span id="top" aria-hidden="true"></span>
 
 <!-- =============== HERO =============== -->
 <section class="hero">
@@ -1006,10 +1118,14 @@ footer{
   <div class="container">
     <h2 class="reveal">Enter<br>the forge.</h2>
     <p class="reveal reveal-delay-1">아직 사이트는 준비 중입니다. 가장 먼저 소식을 받고 싶다면 기다려주세요.</p>
-    <div class="hero-actions" style="justify-content:center" class="reveal reveal-delay-2">
-      <a href="#" class="btn btn-primary" data-hover>
+    <div class="hero-actions reveal reveal-delay-2" style="justify-content:center">
+      <a href="mailto:hello@pyxora.app?subject=Notify%20me%20about%20Pyxora" class="btn btn-primary" data-hover>
         Get notified
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+      <a href="https://github.com/jaehyunseo/pyxora-site" target="_blank" rel="noopener" class="btn btn-ghost" data-hover>
+        View on GitHub
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
       </a>
     </div>
   </div>
@@ -1032,14 +1148,14 @@ footer{
       <div class="footer-col">
         <h5>· BRAND</h5>
         <a href="#brand" data-hover>Colors</a>
-        <a href="#" data-hover>Typography</a>
-        <a href="#" data-hover>Voice</a>
+        <a href="#brand" data-hover>Typography</a>
+        <a href="#brand" data-hover>Voice</a>
       </div>
       <div class="footer-col">
         <h5>· CONNECT</h5>
-        <a href="#" data-hover>GitHub</a>
-        <a href="#" data-hover>Twitter</a>
-        <a href="#" data-hover>Email</a>
+        <a href="https://github.com/jaehyunseo/pyxora-site" target="_blank" rel="noopener" data-hover>GitHub</a>
+        <a href="mailto:hello@pyxora.app" data-hover>Email</a>
+        <a href="#top" data-hover>Back to top</a>
       </div>
     </div>
     <div class="footer-bottom">
@@ -1076,6 +1192,24 @@ const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>{
   nav.classList.toggle('scrolled',window.scrollY>40);
 },{passive:true});
+
+/* ============ MOBILE DRAWER ============ */
+const navToggle=document.getElementById('navToggle');
+const drawer=document.getElementById('mobileDrawer');
+const backdrop=document.getElementById('drawerBackdrop');
+const setDrawer=(open)=>{
+  navToggle.classList.toggle('open',open);
+  drawer.classList.toggle('open',open);
+  backdrop.classList.toggle('open',open);
+  document.body.classList.toggle('nav-open',open);
+  navToggle.setAttribute('aria-expanded',open);
+  drawer.setAttribute('aria-hidden',!open);
+  navToggle.setAttribute('aria-label',open?'Close menu':'Open menu');
+};
+navToggle?.addEventListener('click',()=>setDrawer(!drawer.classList.contains('open')));
+backdrop?.addEventListener('click',()=>setDrawer(false));
+drawer?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setDrawer(false)));
+window.addEventListener('keydown',e=>{if(e.key==='Escape')setDrawer(false)});
 
 /* ============ SCROLL REVEAL ============ */
 const io=new IntersectionObserver(entries=>{

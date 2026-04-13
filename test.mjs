@@ -116,22 +116,29 @@ const viewports = [
       await page.evaluate(() => window.scrollTo(0, 0));
     }
 
-    // --- Scroll reveal: scroll gradually and check sections got .in ---
+    // --- Scroll reveal: scroll in viewport-sized steps and check sections got .in ---
     const totalHeight = await page.evaluate(() => document.body.scrollHeight);
-    const steps = 12;
+    const stepSize = Math.floor(vp.height * 0.4); // 40% viewport per step
+    const steps = Math.ceil(totalHeight / stepSize) + 2;
     for (let s = 1; s <= steps; s++) {
-      await page.evaluate(y => window.scrollTo({ top: y, behavior: 'instant' }), (totalHeight / steps) * s);
-      await page.waitForTimeout(180);
+      await page.evaluate(y => window.scrollTo({ top: y, behavior: 'instant' }), stepSize * s);
+      await page.waitForTimeout(150);
     }
-    await page.waitForTimeout(400);
+    await page.waitForTimeout(500);
     const revealStats = await page.evaluate(() => {
       const all = document.querySelectorAll('.reveal');
       const lit = document.querySelectorAll('.reveal.in');
-      return { all: all.length, lit: lit.length };
+      const unlit = [...all].filter(el => !el.classList.contains('in')).map(el => {
+        const tag = el.tagName.toLowerCase();
+        const cls = [...el.classList].filter(c => c !== 'reveal').join('.');
+        const txt = (el.textContent || '').slice(0, 30).trim();
+        return `${tag}.${cls} "${txt}"`;
+      });
+      return { all: all.length, lit: lit.length, unlit };
     });
-    console.log('reveal:', revealStats);
-    if (revealStats.all > 0 && revealStats.lit / revealStats.all < 0.85) {
-      logIssue('REVEAL', `only ${revealStats.lit}/${revealStats.all} reveals triggered after gradual scroll`);
+    console.log('reveal:', { all: revealStats.all, lit: revealStats.lit });
+    if (revealStats.all > 0 && revealStats.lit / revealStats.all < 0.9) {
+      logIssue('REVEAL', `only ${revealStats.lit}/${revealStats.all} reveals triggered; unlit: ${revealStats.unlit.slice(0,5).join(' | ')}`);
     }
 
     // --- Full page screenshot ---
