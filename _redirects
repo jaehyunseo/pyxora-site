@@ -1,0 +1,6 @@
+# www → apex redirect (handles www.pyxora.app after custom domain setup)
+https://www.pyxora.app/*  https://pyxora.app/:splat  301
+
+# Subdomain placeholders for future use
+# /arcade/*   https://arcade.pyxora.app/:splat  302
+# /lab/*      https://lab.pyxora.app/:splat     302

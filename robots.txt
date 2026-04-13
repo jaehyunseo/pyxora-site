@@ -1,0 +1,30 @@
+# Pyxora Studio · pyxora.app
+# A digital forge for curious makers
+
+User-agent: *
+Allow: /
+
+# Disallow nothing — this is a public studio portfolio
+# Block only test results and build artifacts
+Disallow: /test-results/
+Disallow: /node_modules/
+Disallow: /*.mjs$
+
+# AI crawlers — we welcome attribution but not training without consent
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+# Sitemap
+Sitemap: https://pyxora.app/sitemap.xml
