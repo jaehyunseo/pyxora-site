@@ -154,8 +154,16 @@ nav .container{display:flex;align-items:center;justify-content:space-between}
   -webkit-text-fill-color:transparent;
   position:relative;
 }
-.hero h1 .char{display:inline-block;transition:transform .6s var(--ease);}
-.hero h1 .char:hover{transform:translateY(-12px) rotate(-4deg)}
+.hero h1 .char{
+  display:inline-block;
+  background:linear-gradient(180deg,#fff 0%,#ffffff 40%,#a855f7 70%,#fbbf24 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  transition:transform .5s var(--ease);
+  will-change:transform;
+}
+.hero h1 .char:hover{transform:translateY(-10px) rotate(-3deg) scale(1.05)}
 .hero-sub{
   font-family:'Pretendard',sans-serif;
   font-size:clamp(20px,2.4vw,32px);font-weight:500;
