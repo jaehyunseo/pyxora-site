@@ -29,17 +29,19 @@ h1{font-size:34px;font-weight:800;color:#7c2d12;margin-bottom:4px}
 .target.square{border-radius:12px}
 .target.triangle{clip-path:polygon(50% 0%,0% 100%,100% 100%);border:none;background:#fef3c7 !important}
 .target.star{clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);border:none;background:#fef3c7 !important}
-.target.heart{clip-path:polygon(50% 100%,4% 58%,4% 24%,14% 8%,28% 4%,40% 10%,50% 22%,60% 10%,72% 4%,86% 8%,96% 24%,96% 58%);background:#fef3c7;border:none}
+.target.heart{-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 90 C15 65 5 35 25 18 C40 5 50 18 50 30 C50 18 60 5 75 18 C95 35 85 65 50 90 Z' fill='black'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 90 C15 65 5 35 25 18 C40 5 50 18 50 30 C50 18 60 5 75 18 C95 35 85 65 50 90 Z' fill='black'/%3E%3C/svg%3E") center/contain no-repeat;background:#fef3c7;border:none;clip-path:none}
 .target.filled{background:#fbbf24;border-color:#f59e0b;transform:scale(1.1);animation:fill .5s}
 @keyframes fill{0%{transform:scale(1.3) rotate(10deg)}100%{transform:scale(1.1) rotate(0deg)}}
 
 .shapes-pool{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;min-height:100px}
-.shape{width:80px;height:80px;cursor:grab;transition:all .3s;touch-action:none}
+.shape{width:80px;height:80px;cursor:grab;transition:transform .2s,box-shadow .2s;touch-action:none;user-select:none;-webkit-user-select:none}
+.shape.dragging{transition:none !important}
+.target.hover{outline:4px solid #fbbf24;outline-offset:4px;transform:scale(1.05)}
 .shape.circle{background:#ef4444;border-radius:50%;box-shadow:0 6px 16px rgba(239,68,68,.4)}
 .shape.square{background:#3b82f6;border-radius:12px;box-shadow:0 6px 16px rgba(59,130,246,.4)}
 .shape.triangle{background:#10b981;clip-path:polygon(50% 0%,0% 100%,100% 100%);filter:drop-shadow(0 6px 16px rgba(16,185,129,.4))}
 .shape.star{background:#fbbf24;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);filter:drop-shadow(0 6px 16px rgba(251,191,36,.4))}
-.shape.heart{background:#ec4899;clip-path:polygon(50% 100%,4% 58%,4% 24%,14% 8%,28% 4%,40% 10%,50% 22%,60% 10%,72% 4%,86% 8%,96% 24%,96% 58%);filter:drop-shadow(0 6px 16px rgba(236,72,153,.4))}
+.shape.heart{background:#ec4899;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 90 C15 65 5 35 25 18 C40 5 50 18 50 30 C50 18 60 5 75 18 C95 35 85 65 50 90 Z' fill='black'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 90 C15 65 5 35 25 18 C40 5 50 18 50 30 C50 18 60 5 75 18 C95 35 85 65 50 90 Z' fill='black'/%3E%3C/svg%3E") center/contain no-repeat;clip-path:none;filter:drop-shadow(0 6px 16px rgba(236,72,153,.4))}
 .shape.dragging{cursor:grabbing;transform:scale(1.15) rotate(-5deg)}
 .shape.fading{opacity:0;transform:scale(0);pointer-events:none}
 
@@ -102,66 +104,79 @@ function newLevel(){
     `<div class="target ${s}" data-shape="${s}"></div>`
   ).join('');
 
-  // Shuffled shapes
+  // Shuffled shapes (NOTE: draggable=false to disable HTML5 drag ghost
+  // which cannot render clip-path/mask → shapes would appear as squares)
   const shuffled2 = [...shuffled].sort(() => Math.random() - 0.5);
   document.getElementById('shapes').innerHTML = shuffled2.map(s =>
-    `<div class="shape ${s}" draggable="true" data-shape="${s}"></div>`
+    `<div class="shape ${s}" draggable="false" data-shape="${s}"></div>`
   ).join('');
 
   bindShapes();
   document.getElementById('prompt').textContent = `${shuffled.map(s => shapeNames[s]).join(', ')}을 제자리에!`;
 }
 
+// Unified pointer-events drag (works for mouse + touch + stylus)
+// Keeps the real element visible so CSS mask/clip-path stays intact.
 function bindShapes(){
-  let dragged = null;
   document.querySelectorAll('.shape').forEach(s => {
-    // Desktop drag
-    s.ondragstart = e => { dragged = s; s.classList.add('dragging'); };
-    s.ondragend = () => s.classList.remove('dragging');
+    let startX = 0, startY = 0, origX = 0, origY = 0, dragging = false;
 
-    // Touch drag
-    let touchClone = null;
-    s.ontouchstart = e => {
+    s.addEventListener('pointerdown', e => {
       e.preventDefault();
-      dragged = s;
-      s.classList.add('dragging');
-    };
-    s.ontouchmove = e => {
-      e.preventDefault();
-      const t = e.touches[0];
-      const el = document.elementFromPoint(t.clientX, t.clientY);
-      document.querySelectorAll('.target').forEach(x => x.style.background = '');
-      if (el && el.classList.contains('target') && el.dataset.shape === s.dataset.shape){
-        el.style.background = '#fef08a';
-      }
+      dragging = true;
+      const rect = s.getBoundingClientRect();
+      origX = rect.left;
+      origY = rect.top;
+      startX = e.clientX;
+      startY = e.clientY;
+      // Switch to fixed positioning at current spot (no visual jump)
       s.style.position = 'fixed';
-      s.style.left = (t.clientX - 32) + 'px';
-      s.style.top = (t.clientY - 32) + 'px';
-      s.style.zIndex = 999;
-    };
-    s.ontouchend = e => {
+      s.style.left = origX + 'px';
+      s.style.top = origY + 'px';
+      s.style.margin = '0';
+      s.style.zIndex = '999';
+      s.classList.add('dragging');
+      s.setPointerCapture(e.pointerId);
+    });
+
+    s.addEventListener('pointermove', e => {
+      if (!dragging) return;
       e.preventDefault();
-      const t = e.changedTouches[0];
-      const el = document.elementFromPoint(t.clientX, t.clientY);
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      s.style.left = (origX + dx) + 'px';
+      s.style.top = (origY + dy) + 'px';
+      // Highlight matching target under pointer
+      s.style.pointerEvents = 'none';
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      s.style.pointerEvents = '';
+      document.querySelectorAll('.target').forEach(x => x.classList.remove('hover'));
+      if (el && el.classList.contains('target') && el.dataset.shape === s.dataset.shape){
+        el.classList.add('hover');
+      }
+    });
+
+    const endDrag = e => {
+      if (!dragging) return;
+      dragging = false;
+      s.style.pointerEvents = 'none';
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      s.style.pointerEvents = '';
+      s.classList.remove('dragging');
+      document.querySelectorAll('.target').forEach(x => x.classList.remove('hover'));
+      // Reset to flow position
       s.style.position = '';
       s.style.left = '';
       s.style.top = '';
+      s.style.margin = '';
       s.style.zIndex = '';
-      s.classList.remove('dragging');
       if (el && el.classList.contains('target') && el.dataset.shape === s.dataset.shape){
         matched(el, s);
       }
     };
-  });
 
-  document.querySelectorAll('.target').forEach(t => {
-    t.ondragover = e => e.preventDefault();
-    t.ondrop = e => {
-      e.preventDefault();
-      if (dragged && dragged.dataset.shape === t.dataset.shape){
-        matched(t, dragged);
-      }
-    };
+    s.addEventListener('pointerup', endDrag);
+    s.addEventListener('pointercancel', endDrag);
   });
 }
 
