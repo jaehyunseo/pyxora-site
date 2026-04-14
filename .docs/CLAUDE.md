@@ -1,7 +1,11 @@
 # CLAUDE.md — Pyxora Site 프로젝트 가이드
 
 > Claude Code / AI 에이전트가 이 프로젝트를 빠르게 파악하기 위한 문서.
-> 상세 브랜드/스펙은 **`SITE.md`** 참고.
+> 상세 브랜드/스펙은 **`.docs/SITE.md`** 참고.
+>
+> ⚠️ **보안**: 이 파일과 `.docs/` 폴더 내용은 **로컬 전용**입니다.
+> Cloudflare Pages가 dotfolder를 배포에서 자동 제외하므로 pyxora.app/.docs/ 로
+> 접근되지 않습니다. 이 파일에 민감한 정보(API 키, 비밀번호 등)를 절대 쓰지 마세요.
 
 ## 프로젝트 개요
 
@@ -38,9 +42,10 @@ pyxora-site/
 ├── sitemap.xml               # 33 URL
 ├── robots.txt
 ├── og.png
-├── SITE.md                   # 상세 스펙 문서
-├── CLAUDE.md                 # 이 파일
-└── test.mjs / audit.mjs      # Playwright 테스트
+├── .docs/                    # 내부 문서 (웹 비공개)
+│   ├── SITE.md               # 상세 스펙 문서
+│   └── CLAUDE.md             # 이 파일
+└── test.mjs / audit.mjs      # Playwright 테스트 (웹 비공개)
 ```
 
 ### 4. 작업 원칙
