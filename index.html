@@ -42,10 +42,9 @@ body{
   color:#f5f5f7;
   line-height:1.6;
   overflow-x:hidden;
-  cursor:none;
 }
 a{color:inherit;text-decoration:none}
-button{font-family:inherit;border:0;background:none;cursor:none;color:inherit}
+button{font-family:inherit;border:0;background:none;cursor:pointer;color:inherit}
 img,svg{display:block;max-width:100%}
 ::selection{background:#fbbf24;color:#06060f}
 
@@ -80,34 +79,11 @@ img,svg{display:block;max-width:100%}
 .bg-grid{
   position:fixed;inset:0;z-index:0;pointer-events:none;
   background-image:
-    linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+    linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);
   background-size:60px 60px;
-  mask-image:radial-gradient(ellipse at center,#000 30%,transparent 80%);
+  opacity:.5;
 }
-.noise{
-  position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.04;mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* ============ CUSTOM CURSOR ============ */
-.cursor{
-  position:fixed;top:0;left:0;width:32px;height:32px;
-  border:1.5px solid rgba(251,191,36,.7);
-  border-radius:50%;
-  pointer-events:none;z-index:9999;
-  will-change:transform,width,height;
-  transition:width .15s var(--ease),height .15s var(--ease),background .15s var(--ease),border-color .15s var(--ease);
-  mix-blend-mode:difference;
-}
-.cursor-dot{
-  position:fixed;top:0;left:0;width:5px;height:5px;
-  background:var(--pyx);border-radius:50%;
-  pointer-events:none;z-index:9999;
-  will-change:transform;
-}
-.cursor.hover{width:64px;height:64px;background:rgba(251,191,36,.12);border-color:var(--pyx)}
-@media (hover:none){.cursor,.cursor-dot{display:none}body,a,button{cursor:auto}}
 
 /* ============ LAYOUT ============ */
 .container{max-width:1280px;margin:0 auto;padding:0 40px;position:relative;z-index:2}
@@ -117,13 +93,11 @@ section{padding:160px 0;position:relative;z-index:2}
 nav{
   position:fixed;top:0;left:0;right:0;z-index:50;
   padding:20px 0;
-  backdrop-filter:blur(24px) saturate(180%);
-  -webkit-backdrop-filter:blur(24px) saturate(180%);
-  background:rgba(6,6,15,.65);
+  background:rgba(6,6,15,.92);
   border-bottom:1px solid var(--line);
-  transition:padding .4s var(--ease),background .4s var(--ease);
+  transition:padding .4s var(--ease);
 }
-nav.scrolled{padding:14px 0;background:rgba(6,6,15,.85)}
+nav.scrolled{padding:14px 0;background:rgba(6,6,15,.96)}
 nav .container{display:flex;align-items:center;justify-content:space-between}
 .nav-logo{
   font-family:'JetBrains Mono',monospace;
@@ -180,9 +154,7 @@ nav .container{display:flex;align-items:center;justify-content:space-between}
 .mobile-drawer{
   position:fixed;top:0;right:0;bottom:0;
   width:min(88vw,360px);
-  background:rgba(6,6,15,.96);
-  backdrop-filter:blur(24px) saturate(180%);
-  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  background:rgba(6,6,15,.98);
   border-left:1px solid var(--line);
   z-index:49;
   padding:120px 40px 40px;
@@ -298,15 +270,12 @@ body.nav-open{overflow:hidden}
   width:min(50vw,640px);aspect-ratio:1;
   pointer-events:none;z-index:1;
 }
-.hero-orb svg{width:100%;height:100%;animation:float 8s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-20px) rotate(3deg)}}
+.hero-orb svg{width:100%;height:100%}
 .hero-orb::before{
   content:"";position:absolute;inset:10%;
-  background:radial-gradient(circle,rgba(124,58,237,.4),transparent 70%);
-  filter:blur(80px);
-  animation:pulse-glow 6s ease-in-out infinite;
+  background:radial-gradient(circle,rgba(124,58,237,.35),transparent 70%);
+  opacity:.8;
 }
-@keyframes pulse-glow{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
 
 /* ============ SECTION HEADERS ============ */
 .section-eyebrow{
@@ -468,8 +437,7 @@ body.nav-open{overflow:hidden}
 .node{cursor:none;transition:all .4s var(--ease)}
 .node:hover circle{r:20}
 .node-label{font-family:'JetBrains Mono',monospace;font-size:11px;fill:var(--text-2);text-anchor:middle;pointer-events:none}
-.edge{stroke-dasharray:4 4;animation:dash 20s linear infinite}
-@keyframes dash{to{stroke-dashoffset:-200}}
+.edge{stroke-dasharray:4 4}
 
 /* ============ BRAND IDENTITY ============ */
 .brand-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:80px}
@@ -868,11 +836,12 @@ footer{
 }
 
 /* ============ SCROLL REVEAL ============ */
-.reveal{opacity:0;transform:translateY(40px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
 .reveal.in{opacity:1;transform:none}
-.reveal-delay-1{transition-delay:.1s}
-.reveal-delay-2{transition-delay:.2s}
-.reveal-delay-3{transition-delay:.3s}
+.reveal-delay-1{transition-delay:.08s}
+.reveal-delay-2{transition-delay:.16s}
+.reveal-delay-3{transition-delay:.24s}
+section{content-visibility:auto;contain-intrinsic-size:auto 1000px}
 
 /* ============ RESPONSIVE ============ */
 @media (max-width:1024px){
@@ -1067,9 +1036,6 @@ footer{
 
 <div class="bg-mesh"></div>
 <div class="bg-grid"></div>
-<div class="noise"></div>
-<div class="cursor"></div>
-<div class="cursor-dot"></div>
 
 <!-- =============== NAV =============== -->
 <nav id="nav">
@@ -1728,27 +1694,6 @@ footer{
 </footer>
 
 <script>
-/* ============ CUSTOM CURSOR (instant dot + snappy ring) ============ */
-const cursor = document.querySelector('.cursor');
-const dot = document.querySelector('.cursor-dot');
-let mx=0,my=0,cx=0,cy=0,running=false;
-const move=e=>{
-  mx=e.clientX;my=e.clientY;
-  dot.style.transform=`translate3d(${mx-2.5}px,${my-2.5}px,0)`;
-  if(!running){running=true;requestAnimationFrame(loop)}
-};
-window.addEventListener('mousemove',move,{passive:true});
-function loop(){
-  cx+=(mx-cx)*.45;cy+=(my-cy)*.45;
-  cursor.style.transform=`translate3d(${cx-16}px,${cy-16}px,0)`;
-  if(Math.abs(mx-cx)>.3||Math.abs(my-cy)>.3){requestAnimationFrame(loop)}
-  else{cx=mx;cy=my;cursor.style.transform=`translate3d(${cx-16}px,${cy-16}px,0)`;running=false}
-}
-document.querySelectorAll('[data-hover],a,button').forEach(el=>{
-  el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));
-  el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));
-});
-
 /* ============ NAV SCROLL ============ */
 const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>{
