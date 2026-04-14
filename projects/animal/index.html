@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>동물상 테스트 · Pyxora Studio</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23060610'/%3E%3Ctext x='50' y='72' font-family='sans-serif' font-size='68' font-weight='700' fill='%23fbbf24' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E"/>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06060f;--surface:#13132a;--pyx:#fbbf24;--violet:#7c3aed;--violet-2:#a855f7;--cyan:#06b6d4;--pink:#ec4899;--text:#f5f5f7;--text-2:#c4c4d0;--muted:#7a7a8c;--line:rgba(255,255,255,.08);--line-hi:rgba(255,255,255,.16)}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(236,72,153,.2),transparent 60%),radial-gradient(ellipse 50% 40% at 50% 100%,rgba(251,191,36,.15),transparent 60%)}
+a{color:inherit;text-decoration:none}
+nav{position:sticky;top:0;z-index:50;padding:16px 32px;background:rgba(6,6,15,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;display:flex;align-items:center;gap:10px}
+.nav-brand .dot{width:7px;height:7px;border-radius:50%;background:var(--pyx);box-shadow:0 0 10px var(--pyx)}
+.nav-brand .studio{color:var(--muted);font-weight:400;margin-left:4px}
+.btn{font-family:'JetBrains Mono',monospace;font-size:11px;padding:10px 16px;border:1px solid var(--line-hi);border-radius:100px;cursor:pointer;background:transparent;color:var(--text);transition:all .3s}
+.btn:hover{background:var(--pyx);color:var(--bg);border-color:var(--pyx)}
+.btn.primary{background:var(--pyx);color:var(--bg);border-color:var(--pyx);font-weight:700}
+
+.container{max-width:680px;margin:0 auto;padding:60px 24px;position:relative;z-index:2}
+h1{font-family:'Space Grotesk',sans-serif;font-size:48px;font-weight:800;letter-spacing:-1.5px;text-align:center;margin-bottom:10px;background:linear-gradient(135deg,#fff,var(--pink),var(--pyx));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sub{text-align:center;color:var(--text-2);margin-bottom:40px;font-size:15px}
+
+.upload-zone{background:var(--surface);border:2px dashed var(--line-hi);border-radius:24px;padding:60px 20px;text-align:center;cursor:pointer;transition:all .3s;margin-bottom:24px}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--pink);background:rgba(236,72,153,.08)}
+.upload-zone .icon{font-size:64px;margin-bottom:16px}
+.upload-zone .title{font-size:18px;font-weight:700;margin-bottom:6px}
+.upload-zone .hint{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.upload-zone input{display:none}
+
+.preview{display:none;text-align:center;margin-bottom:24px}
+.preview.show{display:block}
+.preview canvas{max-width:100%;max-height:360px;border-radius:20px;border:1px solid var(--line-hi);box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.preview .actions{margin-top:16px;display:flex;gap:10px;justify-content:center}
+
+.result{display:none;background:linear-gradient(180deg,var(--surface),#0c0c1c);border:1px solid var(--line);border-radius:24px;padding:40px;text-align:center;margin-top:24px;animation:slideUp .5s}
+.result.show{display:block}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.result .emoji{font-size:96px;margin-bottom:16px;display:inline-block;animation:bounce 1.5s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.result h2{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:800;margin-bottom:4px;background:linear-gradient(135deg,var(--pyx),var(--pink));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.result .subtitle{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1.5px;margin-bottom:24px}
+.result p.desc{font-size:14px;color:var(--text-2);line-height:1.7;margin-bottom:24px}
+.traits{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;font-size:12px}
+.trait{padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px;text-align:left}
+.trait .k{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.5px}
+.trait .v{color:var(--text);font-weight:700;margin-top:2px}
+.score{margin-bottom:20px}
+.score-bar{height:10px;background:rgba(255,255,255,.06);border-radius:100px;margin-bottom:8px;overflow:hidden}
+.score-bar .fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--violet),var(--pink),var(--pyx));width:0;transition:width 1.2s cubic-bezier(.22,1,.36,1)}
+.score-lbl{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)}
+
+@media (max-width:600px){.container{padding:32px 16px}h1{font-size:34px}.result{padding:28px 20px}.result .emoji{font-size:72px}.result h2{font-size:28px}.traits{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/projects/" class="nav-brand"><span class="dot"></span>PYXORA<span class="studio">ANIMAL</span></a>
+  <a href="/projects/" class="btn">← PROJECTS</a>
+</nav>
+
+<div class="container">
+  <h1>동물상 테스트 🐾</h1>
+  <p class="sub">사진을 업로드하면 어떤 동물상인지 알려드려요. <br>5가지 동물 중 하나 — 강아지, 고양이, 토끼, 여우, 늑대</p>
+
+  <label class="upload-zone" id="zone">
+    <div class="icon">📷</div>
+    <div class="title">사진 업로드</div>
+    <div class="hint">CLICK or DRAG · JPG / PNG · 2MB 이하</div>
+    <input type="file" id="fileInput" accept="image/*"/>
+  </label>
+
+  <div class="preview" id="preview">
+    <canvas id="canvas"></canvas>
+    <div class="actions">
+      <button class="btn primary" id="analyzeBtn">🔍 분석 시작</button>
+      <button class="btn" id="resetBtn">다시 선택</button>
+    </div>
+  </div>
+
+  <div class="result" id="result">
+    <div class="emoji" id="r_emoji">🐶</div>
+    <h2 id="r_name">강아지상</h2>
+    <div class="subtitle" id="r_sub">PUPPY TYPE · 78% MATCH</div>
+    <p class="desc" id="r_desc"></p>
+    <div class="traits" id="r_traits"></div>
+    <div class="score">
+      <div class="score-bar"><div class="fill" id="r_fill"></div></div>
+      <div class="score-lbl"><span>매칭 점수</span><span id="r_score">0%</span></div>
+    </div>
+    <div class="actions">
+      <button class="btn" id="againBtn">🔄 다시 테스트</button>
+      <button class="btn primary" id="shareBtn">📤 공유하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const animals = {
+  dog: {
+    emoji:'🐶', name:'강아지상', en:'PUPPY TYPE',
+    desc:'다정하고 친근한 인상. 웃을 때 입꼬리가 올라가며, 둥글둥글한 이목구비로 누구에게나 편안함을 주는 스타일입니다. 충성심이 강하고 사람들에게 호감을 얻기 쉬운 인상이에요.',
+    traits:{ '성격':'충직, 친근', '매력 포인트':'해맑은 미소', '이상형':'활동적인 사람', '연예인 닮음':'박보검, 김유정' }
+  },
+  cat: {
+    emoji:'🐱', name:'고양이상', en:'CAT TYPE',
+    desc:'시크하고 도도한 인상. 올라간 눈매와 또렷한 이목구비로 신비롭고 세련된 분위기를 풍깁니다. 차가워 보이지만 마음을 열면 반전 매력이 있는 타입이에요.',
+    traits:{ '성격':'도도, 감성적', '매력 포인트':'올라간 눈매', '이상형':'지적인 사람', '연예인 닮음':'한예슬, 차은우' }
+  },
+  rabbit: {
+    emoji:'🐰', name:'토끼상', en:'RABBIT TYPE',
+    desc:'귀엽고 순수한 인상. 큰 눈과 작은 얼굴로 보호본능을 자극합니다. 밝고 긍정적인 에너지를 가진 사랑스러운 스타일이에요.',
+    traits:{ '성격':'밝음, 순수', '매력 포인트':'큰 눈망울', '이상형':'따뜻한 사람', '연예인 닮음':'아이유, 수지' }
+  },
+  fox: {
+    emoji:'🦊', name:'여우상', en:'FOX TYPE',
+    desc:'매혹적이고 영리한 인상. 가늘고 긴 눈매에 날렵한 턱선으로 섹시한 매력을 발산합니다. 눈치가 빠르고 센스 있는 타입이에요.',
+    traits:{ '성격':'영리, 매혹적', '매력 포인트':'날렵한 턱선', '이상형':'유머 있는 사람', '연예인 닮음':'한가인, 이동욱' }
+  },
+  wolf: {
+    emoji:'🐺', name:'늑대상', en:'WOLF TYPE',
+    desc:'강렬하고 카리스마 있는 인상. 또렷한 이목구비와 진한 눈빛으로 남성적/중성적 매력을 동시에 가진 타입. 한 번 보면 잊히지 않는 인상이에요.',
+    traits:{ '성격':'강인, 카리스마', '매력 포인트':'진한 눈빛', '이상형':'자신감 있는 사람', '연예인 닮음':'김우빈, 김태리' }
+  }
+};
+
+let imgData = null;
+
+$('fileInput').addEventListener('change', e => { if (e.target.files[0]) loadFile(e.target.files[0]); });
+$('zone').addEventListener('dragover', e => { e.preventDefault(); $('zone').classList.add('drag'); });
+$('zone').addEventListener('dragleave', () => $('zone').classList.remove('drag'));
+$('zone').addEventListener('drop', e => { e.preventDefault(); $('zone').classList.remove('drag'); if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+
+function loadFile(file){
+  if (file.size > 2*1024*1024){ alert('2MB 이하 파일만 업로드 가능합니다.'); return; }
+  const img = new Image();
+  img.onload = () => {
+    const canvas = $('canvas'), ctx = canvas.getContext('2d');
+    const maxW = 400, scale = Math.min(1, maxW/img.width);
+    canvas.width = img.width * scale;
+    canvas.height = img.height * scale;
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    $('preview').classList.add('show');
+    $('zone').style.display = 'none';
+    $('result').classList.remove('show');
+  };
+  img.src = URL.createObjectURL(file);
+}
+
+$('resetBtn').onclick = () => { $('preview').classList.remove('show'); $('zone').style.display = 'block'; $('fileInput').value=''; };
+$('againBtn').onclick = () => { $('result').classList.remove('show'); $('preview').classList.remove('show'); $('zone').style.display = 'block'; $('fileInput').value=''; };
+
+function analyze(data){
+  // Pseudo analysis: derive "features" from pixel data
+  const px = data.data;
+  let r=0, g=0, b=0, edgeSum=0, center=0;
+  const w = data.width, h = data.height;
+  for (let i = 0; i < px.length; i += 4){
+    r += px[i]; g += px[i+1]; b += px[i+2];
+  }
+  const n = px.length/4;
+  r/=n; g/=n; b/=n;
+  // Edge-ish measure via variance
+  let variance = 0;
+  for (let i = 0; i < px.length; i += 16){
+    variance += Math.abs(px[i] - r) + Math.abs(px[i+1] - g) + Math.abs(px[i+2] - b);
+  }
+  variance /= (px.length/16);
+  // Stable hash from dimensions + color
+  const hash = (Math.round(r) * 31 + Math.round(g) * 17 + Math.round(b) * 7 + Math.round(variance*3) + w + h) % 100;
+
+  const keys = Object.keys(animals);
+  const idx = hash % keys.length;
+  const pick = keys[idx];
+  const score = 72 + (hash % 23); // 72~94%
+  return { animal: pick, score };
+}
+
+$('analyzeBtn').onclick = () => {
+  if (!imgData) return;
+  $('analyzeBtn').disabled = true;
+  $('analyzeBtn').textContent = '분석 중...';
+  setTimeout(() => {
+    const { animal, score } = analyze(imgData);
+    const a = animals[animal];
+    $('r_emoji').textContent = a.emoji;
+    $('r_name').textContent = a.name;
+    $('r_sub').textContent = `${a.en} · ${score}% MATCH`;
+    $('r_desc').textContent = a.desc;
+    $('r_traits').innerHTML = Object.entries(a.traits).map(([k,v]) =>
+      `<div class="trait"><div class="k">${k}</div><div class="v">${v}</div></div>`
+    ).join('');
+    $('r_score').textContent = score + '%';
+    $('result').classList.add('show');
+    setTimeout(() => { $('r_fill').style.width = score + '%'; }, 100);
+    $('result').scrollIntoView({behavior:'smooth',block:'center'});
+    $('analyzeBtn').disabled = false;
+    $('analyzeBtn').textContent = '🔍 분석 시작';
+  }, 1200);
+};
+
+$('shareBtn').onclick = async () => {
+  const text = `내 동물상 테스트 결과: ${$('r_name').textContent} ${$('r_emoji').textContent}`;
+  if (navigator.share){
+    try { await navigator.share({ title:'동물상 테스트', text, url:location.href }); } catch(e){}
+  } else {
+    await navigator.clipboard.writeText(text + '\n' + location.href);
+    alert('결과가 클립보드에 복사되었습니다!');
+  }
+};
+</script>
+</body>
+</html>

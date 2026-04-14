@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Stock Candles · Pyxora Studio</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23060610'/%3E%3Ctext x='50' y='72' font-family='sans-serif' font-size='68' font-weight='700' fill='%23fbbf24' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E"/>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06060f;--bg-2:#0c0c1c;--surface:#13132a;--pyx:#fbbf24;--violet:#7c3aed;--cyan:#06b6d4;--green:#10b981;--red:#ef4444;--text:#f5f5f7;--text-2:#c4c4d0;--muted:#7a7a8c;--line:rgba(255,255,255,.08);--line-hi:rgba(255,255,255,.16)}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+a{color:inherit;text-decoration:none}
+nav{position:sticky;top:0;z-index:50;padding:14px 28px;background:rgba(6,6,15,.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;display:flex;align-items:center;gap:10px}
+.nav-brand .dot{width:7px;height:7px;border-radius:50%;background:var(--pyx);box-shadow:0 0 10px var(--pyx)}
+.nav-brand .studio{color:var(--muted);font-weight:400;margin-left:4px}
+.btn{font-family:'JetBrains Mono',monospace;font-size:11px;padding:8px 14px;border:1px solid var(--line-hi);border-radius:100px;cursor:pointer;background:transparent;color:var(--text);transition:all .3s}
+.btn:hover{background:var(--pyx);color:var(--bg);border-color:var(--pyx)}
+.btn.active{background:var(--pyx);color:var(--bg);border-color:var(--pyx);font-weight:700}
+
+main{max-width:1280px;margin:0 auto;padding:28px 32px}
+.page-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:16px}
+.page-hd h1{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+.page-hd p{font-size:12px;color:var(--text-2)}
+
+.ticker-pick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.ticker{background:var(--surface);border:1px solid var(--line-hi);border-radius:12px;padding:14px 20px;cursor:pointer;transition:all .3s;min-width:140px}
+.ticker:hover{border-color:var(--pyx);transform:translateY(-2px)}
+.ticker.active{background:rgba(251,191,36,.1);border-color:var(--pyx)}
+.ticker .sym{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:4px}
+.ticker .name{font-size:13px;font-weight:700;margin-bottom:4px}
+.ticker .price{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--pyx)}
+.ticker .change{font-family:'JetBrains Mono',monospace;font-size:10px;margin-top:2px}
+.ticker .change.up{color:var(--green)}
+.ticker .change.down{color:var(--red)}
+
+.panel{background:linear-gradient(180deg,var(--surface),var(--bg-2));border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:16px}
+.panel h3{font-family:'Space Grotesk',sans-serif;font-size:18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.indicators{display:flex;gap:6px;flex-wrap:wrap}
+.ind-btn{font-family:'JetBrains Mono',monospace;font-size:10px;padding:6px 12px;background:transparent;border:1px solid var(--line-hi);border-radius:100px;color:var(--text-2);cursor:pointer;transition:all .2s}
+.ind-btn.active{background:var(--violet);color:#fff;border-color:var(--violet)}
+
+#chart{width:100%;height:400px}
+
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:20px}
+.stat{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;padding:12px}
+.stat .l{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.5px;margin-bottom:4px}
+.stat .v{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--pyx)}
+
+@media (max-width:800px){main{padding:16px}#chart{height:280px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/projects/" class="nav-brand"><span class="dot"></span>PYXORA<span class="studio">STOCK</span></a>
+  <a href="/projects/" class="btn">← PROJECTS</a>
+</nav>
+
+<main>
+  <div class="page-hd">
+    <div>
+      <h1>📈 Stock Candles</h1>
+      <p>종목 캔들 차트 · 이동평균(SMA) · 볼린저 밴드 · 거래량 · 시뮬레이션 데이터</p>
+    </div>
+  </div>
+
+  <div class="ticker-pick" id="tickers"></div>
+
+  <div class="panel">
+    <h3>
+      <span id="activeName">삼성전자 (005930)</span>
+      <div class="indicators">
+        <button class="ind-btn active" data-i="sma20">SMA 20</button>
+        <button class="ind-btn" data-i="sma60">SMA 60</button>
+        <button class="ind-btn" data-i="bb">볼린저 밴드</button>
+      </div>
+    </h3>
+    <svg id="chart" viewBox="0 0 800 400" preserveAspectRatio="none"></svg>
+    <div class="stats-grid" id="stats"></div>
+  </div>
+</main>
+
+<script>
+// Simulated stock data
+const tickers = [
+  { sym:'005930', name:'삼성전자',     base:68500 },
+  { sym:'000660', name:'SK하이닉스',   base:142000 },
+  { sym:'035420', name:'NAVER',        base:198000 },
+  { sym:'035720', name:'카카오',        base:48000 },
+  { sym:'005380', name:'현대차',        base:230000 },
+  { sym:'207940', name:'삼성바이오',    base:820000 },
+];
+
+function seedRand(seed){ let x = seed; return () => { x = (x*9301+49297)%233280; return x/233280; }; }
+
+function genCandles(base, seed){
+  const rand = seedRand(seed);
+  const candles = [];
+  let price = base;
+  for (let i = 0; i < 100; i++){
+    const vol = (rand() - 0.48) * 0.04;
+    const open = price;
+    const high = open * (1 + Math.abs(rand()) * 0.015);
+    const low = open * (1 - Math.abs(rand()) * 0.015);
+    const close = open * (1 + vol);
+    const volume = Math.round(rand() * 10000000 + 2000000);
+    candles.push({ open, high: Math.max(high, close, open), low: Math.min(low, close, open), close, volume });
+    price = close;
+  }
+  return candles;
+}
+
+function sma(candles, period){
+  const result = [];
+  for (let i = 0; i < candles.length; i++){
+    if (i < period - 1){ result.push(null); continue; }
+    let sum = 0;
+    for (let j = 0; j < period; j++) sum += candles[i-j].close;
+    result.push(sum / period);
+  }
+  return result;
+}
+
+function stddev(candles, period){
+  const sma20 = sma(candles, period);
+  const result = [];
+  for (let i = 0; i < candles.length; i++){
+    if (i < period - 1){ result.push(null); continue; }
+    let sum = 0;
+    for (let j = 0; j < period; j++) sum += Math.pow(candles[i-j].close - sma20[i], 2);
+    result.push(Math.sqrt(sum/period));
+  }
+  return result;
+}
+
+let current = null;
+let activeIndicator = 'sma20';
+let candles = [];
+
+function drawChart(){
+  const svg = document.getElementById('chart');
+  const W = 800, H = 400, pad = { t:20, r:60, b:60, l:20 };
+  const iw = W - pad.l - pad.r, ih = H - pad.t - pad.b;
+  const chartH = ih * 0.75, volH = ih * 0.2;
+
+  const min = Math.min(...candles.map(c => c.low));
+  const max = Math.max(...candles.map(c => c.high));
+  const range = max - min;
+  const priceMax = max + range * 0.02;
+  const priceMin = min - range * 0.02;
+  const priceRange = priceMax - priceMin;
+
+  const barW = iw / candles.length * 0.7;
+  const gap = iw / candles.length * 0.3;
+
+  let html = '';
+  // Grid
+  for (let i = 0; i <= 5; i++){
+    const y = pad.t + (chartH/5)*i;
+    const v = priceMax - (priceRange/5)*i;
+    html += `<line x1="${pad.l}" y1="${y}" x2="${W-pad.r}" y2="${y}" stroke="rgba(255,255,255,.05)"/>`;
+    html += `<text x="${W-pad.r+6}" y="${y+4}" font-family="JetBrains Mono" font-size="9" fill="#7a7a8c">${Math.round(v).toLocaleString()}</text>`;
+  }
+
+  // Bollinger bands
+  if (activeIndicator === 'bb'){
+    const sma20 = sma(candles, 20);
+    const std = stddev(candles, 20);
+    let upper = '', lower = '', mid = '';
+    candles.forEach((c, i) => {
+      if (sma20[i] === null) return;
+      const x = pad.l + i*(iw/candles.length) + barW/2 + gap/2;
+      const yU = pad.t + ((priceMax - (sma20[i] + 2*std[i]))/priceRange)*chartH;
+      const yL = pad.t + ((priceMax - (sma20[i] - 2*std[i]))/priceRange)*chartH;
+      const yM = pad.t + ((priceMax - sma20[i])/priceRange)*chartH;
+      upper += (upper?' L':'M') + ` ${x},${yU}`;
+      lower += (lower?' L':'M') + ` ${x},${yL}`;
+      mid += (mid?' L':'M') + ` ${x},${yM}`;
+    });
+    html += `<path d="${upper} ${lower.split('').reverse().join('').replace(/M /,'L ')} Z" fill="rgba(124,58,237,.08)"/>`;
+    html += `<path d="${upper}" fill="none" stroke="#a855f7" stroke-width="1.2"/>`;
+    html += `<path d="${lower}" fill="none" stroke="#a855f7" stroke-width="1.2"/>`;
+    html += `<path d="${mid}" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="3,3"/>`;
+  } else {
+    // SMA lines
+    const period = activeIndicator === 'sma60' ? 60 : 20;
+    const smaLine = sma(candles, period);
+    let path = '';
+    smaLine.forEach((v, i) => {
+      if (v === null) return;
+      const x = pad.l + i*(iw/candles.length) + barW/2 + gap/2;
+      const y = pad.t + ((priceMax - v)/priceRange)*chartH;
+      path += (path?' L':'M') + ` ${x},${y}`;
+    });
+    html += `<path d="${path}" fill="none" stroke="#fbbf24" stroke-width="2"/>`;
+  }
+
+  // Candles
+  candles.forEach((c, i) => {
+    const x = pad.l + i*(iw/candles.length) + gap/2;
+    const yHigh = pad.t + ((priceMax - c.high)/priceRange)*chartH;
+    const yLow = pad.t + ((priceMax - c.low)/priceRange)*chartH;
+    const yOpen = pad.t + ((priceMax - c.open)/priceRange)*chartH;
+    const yClose = pad.t + ((priceMax - c.close)/priceRange)*chartH;
+    const up = c.close >= c.open;
+    const color = up ? '#10b981' : '#ef4444';
+    html += `<line x1="${x+barW/2}" y1="${yHigh}" x2="${x+barW/2}" y2="${yLow}" stroke="${color}" stroke-width="1"/>`;
+    html += `<rect x="${x}" y="${Math.min(yOpen,yClose)}" width="${barW}" height="${Math.max(1,Math.abs(yClose-yOpen))}" fill="${color}"/>`;
+  });
+
+  // Volume bars
+  const maxVol = Math.max(...candles.map(c => c.volume));
+  const volY = pad.t + chartH + 20;
+  html += `<text x="${pad.l}" y="${volY-6}" font-family="JetBrains Mono" font-size="9" fill="#7a7a8c">VOLUME</text>`;
+  candles.forEach((c, i) => {
+    const x = pad.l + i*(iw/candles.length) + gap/2;
+    const vh = (c.volume/maxVol) * volH;
+    const up = c.close >= c.open;
+    html += `<rect x="${x}" y="${volY + volH - vh}" width="${barW}" height="${vh}" fill="${up?'#10b981':'#ef4444'}" opacity="0.5"/>`;
+  });
+
+  svg.innerHTML = html;
+
+  // Stats
+  const last = candles[candles.length-1];
+  const first = candles[0];
+  const chg = ((last.close - first.close)/first.close)*100;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="l">현재가</div><div class="v">₩${Math.round(last.close).toLocaleString()}</div></div>
+    <div class="stat"><div class="l">변동률</div><div class="v" style="color:${chg>=0?'var(--green)':'var(--red)'}">${chg>=0?'+':''}${chg.toFixed(2)}%</div></div>
+    <div class="stat"><div class="l">최고가</div><div class="v">₩${Math.round(Math.max(...candles.map(c=>c.high))).toLocaleString()}</div></div>
+    <div class="stat"><div class="l">최저가</div><div class="v">₩${Math.round(Math.min(...candles.map(c=>c.low))).toLocaleString()}</div></div>
+    <div class="stat"><div class="l">거래량</div><div class="v">${(last.volume/1000000).toFixed(1)}M</div></div>
+  `;
+}
+
+function pickTicker(t){
+  current = t;
+  document.getElementById('activeName').textContent = `${t.name} (${t.sym})`;
+  candles = genCandles(t.base, parseInt(t.sym));
+  drawChart();
+  document.querySelectorAll('.ticker').forEach(el => el.classList.toggle('active', el.dataset.sym === t.sym));
+}
+
+// Render ticker list
+document.getElementById('tickers').innerHTML = tickers.map(t => {
+  const c = genCandles(t.base, parseInt(t.sym));
+  const last = c[c.length-1];
+  const first = c[0];
+  const chg = ((last.close - first.close)/first.close)*100;
+  return `
+    <div class="ticker" data-sym="${t.sym}" onclick="pick('${t.sym}')">
+      <div class="sym">${t.sym}</div>
+      <div class="name">${t.name}</div>
+      <div class="price">₩${Math.round(last.close).toLocaleString()}</div>
+      <div class="change ${chg>=0?'up':'down'}">${chg>=0?'+':''}${chg.toFixed(2)}%</div>
+    </div>
+  `;
+}).join('');
+
+window.pick = sym => pickTicker(tickers.find(t => t.sym === sym));
+
+document.querySelectorAll('.ind-btn').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('.ind-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    activeIndicator = b.dataset.i;
+    drawChart();
+  };
+});
+
+pickTicker(tickers[0]);
+</script>
+</body>
+</html>

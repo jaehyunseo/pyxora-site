@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AI Drawing · Pyxora Studio</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23060610'/%3E%3Ctext x='50' y='72' font-family='sans-serif' font-size='68' font-weight='700' fill='%23fbbf24' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E"/>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06060f;--surface:#13132a;--pyx:#fbbf24;--violet:#7c3aed;--violet-2:#a855f7;--cyan:#06b6d4;--pink:#ec4899;--text:#f5f5f7;--text-2:#c4c4d0;--muted:#7a7a8c;--line:rgba(255,255,255,.08);--line-hi:rgba(255,255,255,.16)}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 30% 0%,rgba(124,58,237,.2),transparent 60%),radial-gradient(ellipse 60% 40% at 70% 100%,rgba(6,182,212,.15),transparent 60%)}
+a{color:inherit;text-decoration:none}
+nav{position:sticky;top:0;z-index:50;padding:16px 32px;background:rgba(6,6,15,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;display:flex;align-items:center;gap:10px}
+.nav-brand .dot{width:7px;height:7px;border-radius:50%;background:var(--pyx);box-shadow:0 0 10px var(--pyx)}
+.nav-brand .studio{color:var(--muted);font-weight:400;margin-left:4px}
+.btn{font-family:'JetBrains Mono',monospace;font-size:11px;padding:10px 16px;border:1px solid var(--line-hi);border-radius:100px;cursor:pointer;background:transparent;color:var(--text);transition:all .3s}
+.btn:hover{background:var(--pyx);color:var(--bg);border-color:var(--pyx)}
+.btn.primary{background:var(--pyx);color:var(--bg);border-color:var(--pyx);font-weight:700;padding:14px 24px;font-size:12px}
+
+.container{max-width:880px;margin:0 auto;padding:60px 24px;position:relative;z-index:2}
+h1{font-family:'Space Grotesk',sans-serif;font-size:48px;font-weight:800;letter-spacing:-1.5px;text-align:center;margin-bottom:10px;background:linear-gradient(135deg,var(--violet),var(--cyan),var(--pyx));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sub{text-align:center;color:var(--text-2);margin-bottom:40px;font-size:15px}
+
+.prompt-box{background:var(--surface);border:1px solid var(--line-hi);border-radius:20px;padding:20px;margin-bottom:20px}
+.prompt-box textarea{width:100%;background:transparent;border:none;color:var(--text);font-size:16px;font-family:'Pretendard',sans-serif;resize:none;outline:none;min-height:72px;line-height:1.5}
+.prompt-box textarea::placeholder{color:var(--muted)}
+.prompt-ctrl{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.style-pick{display:flex;gap:8px;flex-wrap:wrap}
+.style-pick button{font-family:'JetBrains Mono',monospace;font-size:10px;padding:6px 12px;background:transparent;border:1px solid var(--line-hi);border-radius:100px;color:var(--text-2);cursor:pointer;transition:all .2s}
+.style-pick button.active{background:var(--violet);color:#fff;border-color:var(--violet)}
+
+.presets{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:24px}
+.preset{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .3s;font-size:12.5px;color:var(--text-2);text-align:left}
+.preset:hover{background:rgba(124,58,237,.1);border-color:var(--violet);color:var(--text)}
+
+.result-wrap{display:none;margin-top:30px;text-align:center}
+.result-wrap.show{display:block;animation:fade .6s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.result-wrap img{max-width:100%;max-height:640px;border-radius:20px;border:1px solid var(--line-hi);box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.result-meta{margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)}
+.result-actions{margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+.loader{display:none;text-align:center;padding:60px 20px}
+.loader.show{display:block}
+.loader .spinner{width:56px;height:56px;border:3px solid var(--line);border-top-color:var(--violet);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader p{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-2);letter-spacing:1px}
+
+.note{margin-top:30px;padding:16px 20px;background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);border-radius:12px;font-size:12px;color:var(--text-2);line-height:1.7}
+.note strong{color:var(--cyan);display:block;margin-bottom:4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px}
+
+@media (max-width:600px){.container{padding:40px 16px}h1{font-size:34px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/projects/" class="nav-brand"><span class="dot"></span>PYXORA<span class="studio">DRAWING</span></a>
+  <a href="/projects/" class="btn">← PROJECTS</a>
+</nav>
+
+<div class="container">
+  <h1>AI Drawing ✨</h1>
+  <p class="sub">한글로 설명하면 AI가 그림을 그려드려요. 자유롭게 상상해 보세요.</p>
+
+  <div class="prompt-box">
+    <textarea id="prompt" placeholder="예: 노을 지는 산 위에 앉아있는 여우"></textarea>
+    <div class="prompt-ctrl">
+      <div class="style-pick" id="styles">
+        <button class="active" data-s="">기본</button>
+        <button data-s="anime, studio ghibli style">지브리</button>
+        <button data-s="oil painting, classical art">유화</button>
+        <button data-s="watercolor, soft pastel">수채화</button>
+        <button data-s="cyberpunk, neon, futuristic">사이버펑크</button>
+        <button data-s="pixel art, 16-bit retro">픽셀아트</button>
+      </div>
+      <button class="btn primary" id="genBtn">✨ 그림 생성</button>
+    </div>
+  </div>
+
+  <div class="presets">
+    <div class="preset" data-p="숲 속 반짝이는 버섯과 요정들">🍄 숲 속 반짝이는 버섯과 요정들</div>
+    <div class="preset" data-p="바닷가를 거니는 고양이">🐱 바닷가를 거니는 고양이</div>
+    <div class="preset" data-p="미래 도시의 야경">🌃 미래 도시의 야경</div>
+    <div class="preset" data-p="은하수 아래 캠핑하는 소녀">⭐ 은하수 아래 캠핑하는 소녀</div>
+    <div class="preset" data-p="벚꽃 흩날리는 한옥마을">🌸 벚꽃 흩날리는 한옥마을</div>
+    <div class="preset" data-p="우주를 떠도는 해파리">🪼 우주를 떠도는 해파리</div>
+  </div>
+
+  <div class="loader" id="loader">
+    <div class="spinner"></div>
+    <p>AI가 그림을 그리고 있습니다... (10~20초)</p>
+  </div>
+
+  <div class="result-wrap" id="resultWrap">
+    <img id="resultImg" alt="AI generated"/>
+    <div class="result-meta" id="resultMeta"></div>
+    <div class="result-actions">
+      <button class="btn" id="downloadBtn">💾 다운로드</button>
+      <button class="btn" id="regenBtn">🎲 다시 생성</button>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>ℹ POWERED BY POLLINATIONS.AI</strong>
+    이미지는 Pollinations.AI의 무료 API를 통해 생성됩니다. 무료 · 키 불필요 · 첫 생성은 10~20초 소요될 수 있습니다. 생성된 이미지의 저작권은 Pollinations 정책을 따릅니다.
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let currentStyle = '';
+
+document.querySelectorAll('#styles button').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('#styles button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    currentStyle = b.dataset.s;
+  };
+});
+
+document.querySelectorAll('.preset').forEach(p => {
+  p.onclick = () => { $('prompt').value = p.dataset.p; $('prompt').focus(); };
+});
+
+function translatePrompt(kor){
+  // Light translation/augmentation for better results (pollinations works best with English)
+  // Keep Korean + add English keywords
+  return kor + ', highly detailed, beautiful, masterpiece' + (currentStyle ? ', ' + currentStyle : '');
+}
+
+let lastPrompt = '';
+function generate(){
+  const p = $('prompt').value.trim();
+  if (!p){ alert('프롬프트를 입력해 주세요.'); return; }
+  lastPrompt = p;
+  const fullPrompt = translatePrompt(p);
+  const seed = Math.floor(Math.random() * 100000);
+  const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(fullPrompt)}?width=768&height=768&seed=${seed}&nologo=true`;
+
+  $('loader').classList.add('show');
+  $('resultWrap').classList.remove('show');
+
+  const img = new Image();
+  img.onload = () => {
+    $('resultImg').src = url;
+    $('resultMeta').textContent = `PROMPT: "${p}" · SEED: ${seed}`;
+    $('loader').classList.remove('show');
+    $('resultWrap').classList.add('show');
+    $('resultWrap').scrollIntoView({behavior:'smooth',block:'center'});
+  };
+  img.onerror = () => {
+    $('loader').classList.remove('show');
+    alert('이미지 생성 실패. 다시 시도해 주세요.');
+  };
+  img.src = url;
+}
+
+$('genBtn').onclick = generate;
+$('regenBtn').onclick = generate;
+$('prompt').addEventListener('keydown', e => { if (e.key === 'Enter' && e.ctrlKey){ e.preventDefault(); generate(); }});
+
+$('downloadBtn').onclick = async () => {
+  const url = $('resultImg').src;
+  try {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `pyxora-ai-${Date.now()}.png`;
+    a.click();
+  } catch(e){ alert('다운로드 실패: ' + e.message); }
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Inventory WMS · Pyxora Studio</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23060610'/%3E%3Ctext x='50' y='72' font-family='sans-serif' font-size='68' font-weight='700' fill='%23fbbf24' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E"/>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06060f;--bg-2:#0c0c1c;--surface:#13132a;--pyx:#fbbf24;--violet:#7c3aed;--cyan:#06b6d4;--green:#10b981;--red:#ef4444;--pink:#ec4899;--text:#f5f5f7;--text-2:#c4c4d0;--muted:#7a7a8c;--line:rgba(255,255,255,.08);--line-hi:rgba(255,255,255,.16)}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+a{color:inherit;text-decoration:none}
+nav{position:sticky;top:0;z-index:50;padding:14px 28px;background:rgba(6,6,15,.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;display:flex;align-items:center;gap:10px}
+.nav-brand .dot{width:7px;height:7px;border-radius:50%;background:var(--pyx);box-shadow:0 0 10px var(--pyx)}
+.nav-brand .studio{color:var(--muted);font-weight:400;margin-left:4px}
+.badge-demo{font-family:'JetBrains Mono',monospace;font-size:9px;padding:4px 10px;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.4);border-radius:100px;color:#a855f7;letter-spacing:1px}
+.btn{font-family:'JetBrains Mono',monospace;font-size:11px;padding:8px 14px;border:1px solid var(--line-hi);border-radius:100px;cursor:pointer;background:transparent;color:var(--text);transition:all .3s}
+.btn:hover{background:var(--pyx);color:var(--bg);border-color:var(--pyx)}
+.nav-right{display:flex;gap:10px;align-items:center}
+
+main{max-width:1280px;margin:0 auto;padding:28px 32px}
+.page-hd{margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px}
+.page-hd h1{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+.page-hd p{font-size:12px;color:var(--text-2)}
+.search{display:flex;gap:8px}
+.search input{background:var(--surface);border:1px solid var(--line-hi);border-radius:100px;padding:10px 16px;color:var(--text);font-size:12px;outline:none;min-width:220px}
+.search input:focus{border-color:var(--violet)}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px}
+.kpi{background:linear-gradient(180deg,var(--surface),var(--bg-2));border:1px solid var(--line);border-radius:16px;padding:18px 20px;position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--c,var(--violet))}
+.kpi .l{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.kpi .v{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700}
+
+.panel{background:linear-gradient(180deg,var(--surface),var(--bg-2));border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:16px}
+.panel h3{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.panel h3 .tag{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 8px;background:rgba(239,68,68,.15);color:var(--red);border-radius:100px;letter-spacing:.5px}
+
+.sku-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.sku{background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:12px;padding:16px;transition:all .2s;cursor:pointer}
+.sku:hover{border-color:var(--line-hi);transform:translateY(-2px)}
+.sku.low{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.04)}
+.sku.ok{border-color:rgba(16,185,129,.25)}
+.sku-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.sku-name{font-size:13px;font-weight:700;color:var(--text)}
+.sku-code{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.5px;margin-top:2px}
+.sku-qty{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--pyx);text-align:right}
+.sku-qty .unit{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-left:4px}
+.sku-bar{height:6px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden;margin-bottom:8px}
+.sku-bar .f{height:100%;border-radius:100px;transition:width .6s}
+.sku-meta{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.sku-meta .loc{color:var(--cyan)}
+.alert-badge{font-family:'JetBrains Mono',monospace;font-size:8px;padding:3px 7px;border-radius:100px;letter-spacing:.5px;margin-top:6px;display:inline-block}
+.alert-low{background:rgba(239,68,68,.15);color:var(--red)}
+.alert-ok{background:rgba(16,185,129,.15);color:var(--green)}
+.alert-med{background:rgba(251,191,36,.15);color:var(--pyx)}
+
+/* Activity log */
+.log-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:12px}
+.log-item:last-child{border-bottom:none}
+.log-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.log-icon.in{background:rgba(16,185,129,.15);color:var(--green)}
+.log-icon.out{background:rgba(239,68,68,.15);color:var(--red)}
+.log-info{flex:1;min-width:0}
+.log-title{color:var(--text);margin-bottom:2px}
+.log-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)}
+.log-amt{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px}
+.log-amt.in{color:var(--green)}
+.log-amt.out{color:var(--red)}
+
+@media (max-width:800px){main{padding:16px}.search{width:100%}.search input{flex:1}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/projects/" class="nav-brand"><span class="dot"></span>PYXORA<span class="studio">WMS</span></a>
+  <div class="nav-right"><span class="badge-demo">DEMO</span><a href="/projects/" class="btn">← PROJECTS</a></div>
+</nav>
+
+<main>
+  <div class="page-hd">
+    <div>
+      <h1>Inventory Management</h1>
+      <p>창고 재고 관리 시스템 · 24개 SKU · 3개 창고 · 실시간 동기화</p>
+    </div>
+    <div class="search">
+      <input type="search" id="searchInput" placeholder="SKU 또는 상품명 검색..."/>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi" style="--c:var(--pyx)"><div class="l">전체 SKU</div><div class="v">24</div></div>
+    <div class="kpi" style="--c:var(--green)"><div class="l">정상 재고</div><div class="v" id="okCount">—</div></div>
+    <div class="kpi" style="--c:var(--red)"><div class="l">부족 경고</div><div class="v" id="lowCount">—</div></div>
+    <div class="kpi" style="--c:var(--violet)"><div class="l">재고 가치</div><div class="v">₩184M</div></div>
+  </div>
+
+  <div class="panel">
+    <h3>SKU 현황 <span class="tag" id="alertTag">부족 경고 활성</span></h3>
+    <div class="sku-grid" id="skuGrid"></div>
+  </div>
+
+  <div class="panel">
+    <h3>최근 입출고 기록</h3>
+    <div id="logBody"></div>
+  </div>
+</main>
+
+<script>
+const skus = [
+  { code:'PXB-001', name:'프리미엄 백팩 · 블루', qty:142, max:200, safe:50, loc:'A-01', price:142000 },
+  { code:'PXB-002', name:'프리미엄 백팩 · 블랙', qty:89, max:200, safe:50, loc:'A-02', price:142000 },
+  { code:'EP-010', name:'무선 이어폰 Pro', qty:28, max:100, safe:40, loc:'B-05', price:289000 },
+  { code:'SH-301', name:'운동화 · 270mm', qty:67, max:150, safe:30, loc:'C-12', price:178000 },
+  { code:'SH-302', name:'운동화 · 280mm', qty:12, max:150, safe:30, loc:'C-13', price:178000 },
+  { code:'DK-050', name:'스탠딩 데스크 · 화이트', qty:89, max:100, safe:20, loc:'D-01', price:520000 },
+  { code:'CF-001', name:'에티오피아 원두 1kg', qty:15, max:80, safe:25, loc:'F-08', price:26000 },
+  { code:'CF-002', name:'콜롬비아 원두 1kg', qty:42, max:80, safe:25, loc:'F-09', price:24000 },
+  { code:'TC-110', name:'태블릿 케이스 · 10인치', qty:234, max:300, safe:60, loc:'B-11', price:35000 },
+  { code:'TC-113', name:'태블릿 케이스 · 13인치', qty:8, max:300, safe:60, loc:'B-12', price:42000 },
+  { code:'LP-001', name:'조명 램프 · 블랙', qty:67, max:100, safe:30, loc:'D-15', price:125000 },
+  { code:'WL-050', name:'가죽 지갑 · 브라운', qty:178, max:200, safe:40, loc:'A-18', price:89000 },
+];
+
+const log = [
+  { type:'in', sku:'PXB-001', name:'프리미엄 백팩 · 블루', qty:50, time:'5분 전', by:'강민호' },
+  { type:'out', sku:'EP-010', name:'무선 이어폰 Pro', qty:12, time:'18분 전', by:'자동 출고' },
+  { type:'out', sku:'SH-302', name:'운동화 · 280mm', qty:8, time:'24분 전', by:'자동 출고' },
+  { type:'in', sku:'DK-050', name:'스탠딩 데스크 · 화이트', qty:20, time:'1시간 전', by:'임재현' },
+  { type:'out', sku:'CF-001', name:'에티오피아 원두 1kg', qty:15, time:'2시간 전', by:'자동 출고' },
+  { type:'in', sku:'TC-110', name:'태블릿 케이스 · 10인치', qty:80, time:'3시간 전', by:'강민호' },
+  { type:'out', sku:'TC-113', name:'태블릿 케이스 · 13인치', qty:6, time:'4시간 전', by:'자동 출고' },
+];
+
+function statusOf(s){
+  if (s.qty < s.safe) return 'low';
+  if (s.qty < s.safe * 1.5) return 'med';
+  return 'ok';
+}
+const statusLabel = { low:'🚨 재고 부족', med:'⚠️ 주의', ok:'✓ 정상' };
+const statusClass = { low:'alert-low', med:'alert-med', ok:'alert-ok' };
+
+function render(filter=''){
+  const filtered = skus.filter(s => !filter || s.name.toLowerCase().includes(filter.toLowerCase()) || s.code.toLowerCase().includes(filter.toLowerCase()));
+  document.getElementById('skuGrid').innerHTML = filtered.map(s => {
+    const st = statusOf(s);
+    const pct = (s.qty/s.max)*100;
+    const barColor = st === 'low' ? 'var(--red)' : st === 'med' ? 'var(--pyx)' : 'var(--green)';
+    return `
+      <div class="sku ${st}">
+        <div class="sku-hd">
+          <div>
+            <div class="sku-name">${s.name}</div>
+            <div class="sku-code">SKU: ${s.code}</div>
+          </div>
+          <div class="sku-qty">${s.qty}<span class="unit">/${s.max}</span></div>
+        </div>
+        <div class="sku-bar"><div class="f" style="width:${pct}%;background:${barColor}"></div></div>
+        <div class="sku-meta">
+          <span class="loc">📍 ${s.loc}</span>
+          <span>안전재고 ${s.safe}</span>
+        </div>
+        <div class="alert-badge ${statusClass[st]}">${statusLabel[st]}</div>
+      </div>
+    `;
+  }).join('');
+
+  const lows = skus.filter(s => statusOf(s) === 'low').length;
+  const oks = skus.filter(s => statusOf(s) === 'ok').length;
+  document.getElementById('lowCount').textContent = lows;
+  document.getElementById('okCount').textContent = oks;
+  document.getElementById('alertTag').textContent = lows > 0 ? `${lows}개 부족 경고` : '재고 정상';
+}
+
+document.getElementById('logBody').innerHTML = log.map(l => `
+  <div class="log-item">
+    <div class="log-icon ${l.type}">${l.type === 'in' ? '↓' : '↑'}</div>
+    <div class="log-info">
+      <div class="log-title">${l.name}</div>
+      <div class="log-meta">${l.sku} · ${l.time} · ${l.by}</div>
+    </div>
+    <div class="log-amt ${l.type}">${l.type === 'in' ? '+' : '-'}${l.qty}</div>
+  </div>
+`).join('');
+
+document.getElementById('searchInput').oninput = e => render(e.target.value);
+render();
+</script>
+</body>
+</html>

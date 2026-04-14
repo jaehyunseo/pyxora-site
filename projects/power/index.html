@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Korea Power · Pyxora Studio</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23060610'/%3E%3Ctext x='50' y='72' font-family='sans-serif' font-size='68' font-weight='700' fill='%23fbbf24' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E"/>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06060f;--bg-2:#0c0c1c;--surface:#13132a;--pyx:#fbbf24;--violet:#7c3aed;--cyan:#06b6d4;--green:#10b981;--red:#ef4444;--pink:#ec4899;--text:#f5f5f7;--text-2:#c4c4d0;--muted:#7a7a8c;--line:rgba(255,255,255,.08);--line-hi:rgba(255,255,255,.16)}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+a{color:inherit;text-decoration:none}
+nav{position:sticky;top:0;z-index:50;padding:14px 28px;background:rgba(6,6,15,.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;display:flex;align-items:center;gap:10px}
+.nav-brand .dot{width:7px;height:7px;border-radius:50%;background:var(--pyx);box-shadow:0 0 10px var(--pyx)}
+.nav-brand .studio{color:var(--muted);font-weight:400;margin-left:4px}
+.btn{font-family:'JetBrains Mono',monospace;font-size:11px;padding:8px 14px;border:1px solid var(--line-hi);border-radius:100px;cursor:pointer;background:transparent;color:var(--text);transition:all .3s}
+.btn:hover{background:var(--pyx);color:var(--bg);border-color:var(--pyx)}
+
+main{max-width:1200px;margin:0 auto;padding:32px}
+.page-hd h1{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+.page-hd p{font-size:12px;color:var(--text-2);margin-bottom:20px}
+
+.big-gauge{background:linear-gradient(180deg,var(--surface),var(--bg-2));border:1px solid var(--line);border-radius:16px;padding:32px;margin-bottom:20px;text-align:center}
+.gauge-val{font-family:'Space Grotesk',sans-serif;font-size:64px;font-weight:800;line-height:1;background:linear-gradient(135deg,var(--pyx),var(--pink));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.gauge-unit{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);letter-spacing:1.5px;margin-top:6px}
+.gauge-sub{font-size:12px;color:var(--text-2);margin-top:8px}
+
+.gauge-bar{width:100%;max-width:600px;margin:20px auto 0;height:14px;background:rgba(255,255,255,.05);border-radius:100px;overflow:hidden;position:relative}
+.gauge-bar .f{height:100%;background:linear-gradient(90deg,var(--green),var(--pyx),var(--red));transition:width 1s cubic-bezier(.22,1,.36,1)}
+.gauge-bar .markers{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;padding:0 6px;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.6);pointer-events:none}
+
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.panel{background:linear-gradient(180deg,var(--surface),var(--bg-2));border:1px solid var(--line);border-radius:16px;padding:22px}
+.panel h3{font-family:'Space Grotesk',sans-serif;font-size:15px;margin-bottom:14px}
+
+/* Source bars */
+.source{padding:10px 0;border-bottom:1px solid var(--line)}
+.source:last-child{border-bottom:none}
+.source-hd{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px}
+.source-hd .n{display:flex;align-items:center;gap:8px}
+.source-hd .dot{width:10px;height:10px;border-radius:3px}
+.source-hd .v{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--pyx)}
+.source-bar{height:8px;background:rgba(255,255,255,.05);border-radius:100px;overflow:hidden}
+.source-bar .f{height:100%;border-radius:100px;transition:width .8s}
+
+/* Hour chart */
+#hourChart{width:100%;height:180px}
+
+/* Region grid */
+.region-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.region{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;padding:12px}
+.region .name{font-weight:600;font-size:12px;margin-bottom:6px}
+.region .bar{height:6px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden;margin-bottom:6px}
+.region .bar .f{height:100%;background:linear-gradient(90deg,var(--green),var(--pyx));border-radius:100px}
+.region .v{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--pyx);font-weight:700}
+
+.note{margin-top:16px;padding:14px 18px;background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);border-radius:12px;font-size:11px;color:var(--text-2);line-height:1.7}
+.note strong{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px}
+
+@media (max-width:800px){main{padding:16px}.row{grid-template-columns:1fr}.gauge-val{font-size:48px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/projects/" class="nav-brand"><span class="dot"></span>PYXORA<span class="studio">POWER</span></a>
+  <a href="/projects/" class="btn">← PROJECTS</a>
+</nav>
+
+<main>
+  <div class="page-hd">
+    <h1>⚡ Korea Power Monitor</h1>
+    <p>한국 전력 수급 시뮬레이션 · 지역별 · 연료원별 · 시간대별</p>
+  </div>
+
+  <div class="big-gauge">
+    <div class="gauge-val" id="bigVal">—</div>
+    <div class="gauge-unit">MW · 현재 전력 수요</div>
+    <div class="gauge-sub">공급 여유율 <span id="reserve">—</span>% · 예비력 <span id="reserveMW">—</span>MW</div>
+    <div class="gauge-bar"><div class="f" id="bigBar" style="width:0%"></div><div class="markers"><span>0</span><span>50GW</span><span>100GW</span></div></div>
+  </div>
+
+  <div class="row">
+    <div class="panel">
+      <h3>연료원별 발전 비중</h3>
+      <div id="sources"></div>
+    </div>
+
+    <div class="panel">
+      <h3>시간대별 수요 (오늘)</h3>
+      <svg id="hourChart" viewBox="0 0 400 180" preserveAspectRatio="none"></svg>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>지역별 수요</h3>
+    <div class="region-grid" id="regions"></div>
+  </div>
+
+  <div class="note"><strong>ℹ DEMO DATA</strong> 실 데이터 연동 시 공공데이터포털의 전력거래소/KEPCO API 활용 예정. 현재는 시뮬레이션 데이터로 시각화 패턴을 시연합니다.</div>
+</main>
+
+<script>
+const sources = [
+  { name:'원자력',   pct:30.8, color:'#7c3aed', mw:0 },
+  { name:'LNG',     pct:28.4, color:'#06b6d4', mw:0 },
+  { name:'석탄',     pct:22.1, color:'#64748b', mw:0 },
+  { name:'신재생',   pct:10.2, color:'#10b981', mw:0 },
+  { name:'양수',     pct: 3.5, color:'#fbbf24', mw:0 },
+  { name:'기타',     pct: 5.0, color:'#ec4899', mw:0 },
+];
+
+const regions = [
+  { name:'수도권',   pct:42.1, color:'#7c3aed' },
+  { name:'충청',     pct:14.8, color:'#06b6d4' },
+  { name:'영남',     pct:19.5, color:'#fbbf24' },
+  { name:'호남',     pct:11.2, color:'#10b981' },
+  { name:'강원',     pct: 4.8, color:'#ec4899' },
+  { name:'제주',     pct: 2.1, color:'#a855f7' },
+];
+
+function render(){
+  const hour = new Date().getHours();
+  // Demand curve (peak at 14h and 20h, valley at 4h)
+  const dayFactor = 0.65 + 0.35 * (Math.sin((hour - 6) * Math.PI / 12) + 1) * 0.5;
+  const total = Math.round(75000 * dayFactor);
+
+  document.getElementById('bigVal').textContent = total.toLocaleString();
+  document.getElementById('bigBar').style.width = (total/100000)*100 + '%';
+  const reserveMW = Math.round(95000 - total);
+  document.getElementById('reserveMW').textContent = reserveMW.toLocaleString();
+  document.getElementById('reserve').textContent = ((reserveMW/total)*100).toFixed(1);
+
+  // Sources
+  document.getElementById('sources').innerHTML = sources.map(s => {
+    s.mw = Math.round(total * s.pct / 100);
+    return `
+      <div class="source">
+        <div class="source-hd">
+          <div class="n"><span class="dot" style="background:${s.color}"></span>${s.name}</div>
+          <div class="v">${s.mw.toLocaleString()} MW (${s.pct}%)</div>
+        </div>
+        <div class="source-bar"><div class="f" style="width:${s.pct*2}%;background:${s.color}"></div></div>
+      </div>
+    `;
+  }).join('');
+
+  // Regions
+  document.getElementById('regions').innerHTML = regions.map(r => {
+    const mw = Math.round(total * r.pct / 100);
+    return `
+      <div class="region">
+        <div class="name">${r.name}</div>
+        <div class="bar"><div class="f" style="width:${r.pct*2}%;background:${r.color}"></div></div>
+        <div class="v">${mw.toLocaleString()} MW</div>
+      </div>
+    `;
+  }).join('');
+
+  // Hour chart
+  const svg = document.getElementById('hourChart');
+  const W = 400, H = 180, pad = {t:14,b:26,l:30,r:10};
+  const iw = W - pad.l - pad.r, ih = H - pad.t - pad.b;
+  const hours = [];
+  for (let h = 0; h < 24; h++){
+    const f = 0.65 + 0.35 * (Math.sin((h - 6) * Math.PI / 12) + 1) * 0.5;
+    hours.push(Math.round(75000 * f));
+  }
+  const maxH = Math.max(...hours);
+  const minH = Math.min(...hours);
+
+  let html = '';
+  // Grid
+  for (let i = 0; i <= 3; i++){
+    const y = pad.t + (ih/3)*i;
+    html += `<line x1="${pad.l}" y1="${y}" x2="${W-pad.r}" y2="${y}" stroke="rgba(255,255,255,.05)"/>`;
+  }
+  // Area
+  const pts = hours.map((v,i) => {
+    const x = pad.l + (iw/23)*i;
+    const y = pad.t + ih - ((v-minH*0.9)/(maxH*1.05-minH*0.9))*ih;
+    return [x,y];
+  });
+  const linePath = 'M ' + pts.map(p => p.join(',')).join(' L ');
+  const areaPath = linePath + ` L ${pts[23][0]},${pad.t+ih} L ${pts[0][0]},${pad.t+ih} Z`;
+  html += `<defs><linearGradient id="areaG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbbf24" stop-opacity=".4"/><stop offset="1" stop-color="#fbbf24" stop-opacity="0"/></linearGradient></defs>`;
+  html += `<path d="${areaPath}" fill="url(#areaG)"/>`;
+  html += `<path d="${linePath}" fill="none" stroke="#fbbf24" stroke-width="2"/>`;
+  // Current hour marker
+  const curX = pts[hour][0], curY = pts[hour][1];
+  html += `<circle cx="${curX}" cy="${curY}" r="5" fill="#ec4899" stroke="#06060f" stroke-width="2"/>`;
+  // X labels
+  [0,6,12,18,23].forEach(h => {
+    const x = pad.l + (iw/23)*h;
+    html += `<text x="${x}" y="${H-pad.b+14}" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#7a7a8c">${h}시</text>`;
+  });
+  svg.innerHTML = html;
+}
+
+render();
+</script>
+</body>
+</html>

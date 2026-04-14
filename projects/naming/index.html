@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AI Naming · Pyxora Studio</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23060610'/%3E%3Ctext x='50' y='72' font-family='sans-serif' font-size='68' font-weight='700' fill='%23fbbf24' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E"/>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06060f;--surface:#13132a;--pyx:#fbbf24;--violet:#7c3aed;--violet-2:#a855f7;--cyan:#06b6d4;--text:#f5f5f7;--text-2:#c4c4d0;--muted:#7a7a8c;--line:rgba(255,255,255,.08);--line-hi:rgba(255,255,255,.16)}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 30% 0%,rgba(168,85,247,.2),transparent 60%),radial-gradient(ellipse 60% 40% at 70% 100%,rgba(251,191,36,.15),transparent 60%)}
+a{color:inherit;text-decoration:none}
+nav{position:sticky;top:0;z-index:50;padding:16px 32px;background:rgba(6,6,15,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;display:flex;align-items:center;gap:10px}
+.nav-brand .dot{width:7px;height:7px;border-radius:50%;background:var(--pyx);box-shadow:0 0 10px var(--pyx)}
+.nav-brand .studio{color:var(--muted);font-weight:400;margin-left:4px}
+.btn{font-family:'JetBrains Mono',monospace;font-size:11px;padding:10px 16px;border:1px solid var(--line-hi);border-radius:100px;cursor:pointer;background:transparent;color:var(--text);transition:all .3s}
+.btn:hover{background:var(--pyx);color:var(--bg);border-color:var(--pyx)}
+.btn.primary{background:var(--pyx);color:var(--bg);border-color:var(--pyx);font-weight:700}
+
+.container{max-width:880px;margin:0 auto;padding:50px 24px;position:relative;z-index:2}
+h1{font-family:'Space Grotesk',sans-serif;font-size:44px;font-weight:700;letter-spacing:-1.2px;text-align:center;margin-bottom:10px}
+h1 em{font-style:normal;background:linear-gradient(135deg,var(--violet-2),var(--pyx));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sub{text-align:center;color:var(--text-2);margin-bottom:40px;font-size:14px}
+
+.controls{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:24px;margin-bottom:24px}
+.field{margin-bottom:14px}
+.field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:6px;text-transform:uppercase}
+.field input,.field select{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--line-hi);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'Pretendard',sans-serif;font-size:14px;outline:none}
+.field input:focus,.field select:focus{border-color:var(--violet)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.generate-btn{width:100%;background:linear-gradient(135deg,var(--violet),var(--pyx));color:#000;border:none;border-radius:12px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:all .3s;text-transform:uppercase}
+.generate-btn:hover{transform:translateY(-2px);box-shadow:0 15px 40px rgba(168,85,247,.4)}
+
+.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.name-card{background:linear-gradient(180deg,var(--surface),#0c0c1c);border:1px solid var(--line);border-radius:16px;padding:20px;cursor:pointer;transition:all .3s;animation:slideUp .5s}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.name-card:hover{border-color:var(--violet);transform:translateY(-3px);box-shadow:0 20px 40px rgba(124,58,237,.2)}
+.name-card .name{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;letter-spacing:-.5px;color:var(--pyx);margin-bottom:6px}
+.name-card .kor{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-bottom:10px}
+.name-card .meaning{font-size:12px;color:var(--text-2);line-height:1.6;padding-top:10px;border-top:1px solid var(--line);margin-top:10px}
+.name-card .tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 8px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);border-radius:100px;color:var(--violet-2);letter-spacing:.5px;margin-top:8px}
+.copied{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--pyx);color:#000;padding:12px 24px;border-radius:100px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;opacity:0;transition:opacity .3s}
+.copied.show{opacity:1}
+
+@media (max-width:600px){.container{padding:30px 16px}h1{font-size:32px}.field-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/projects/" class="nav-brand"><span class="dot"></span>PYXORA<span class="studio">NAMING</span></a>
+  <a href="/projects/" class="btn">← PROJECTS</a>
+</nav>
+
+<div class="container">
+  <h1>AI <em>Naming</em></h1>
+  <p class="sub">브랜드, 회사, 제품 이름을 그리스·라틴·북유럽 어원으로 생성합니다.</p>
+
+  <div class="controls">
+    <div class="field">
+      <label>핵심 키워드 (한글 또는 영어)</label>
+      <input id="keyword" placeholder="예: 빠른, 혁신, 자연, 별"/>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>카테고리</label>
+        <select id="category">
+          <option value="tech">테크/IT</option>
+          <option value="fashion">패션/뷰티</option>
+          <option value="food">푸드/레스토랑</option>
+          <option value="studio">스튜디오/크리에이티브</option>
+          <option value="finance">금융/컨설팅</option>
+          <option value="game">게임/엔터</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>톤</label>
+        <select id="tone">
+          <option value="modern">모던 & 미니멀</option>
+          <option value="classic">클래식 & 전통</option>
+          <option value="playful">발랄 & 캐주얼</option>
+          <option value="luxury">럭셔리 & 프리미엄</option>
+        </select>
+      </div>
+    </div>
+    <button class="generate-btn" id="genBtn">✨ 이름 8개 생성</button>
+  </div>
+
+  <div class="results" id="results"></div>
+</div>
+
+<div class="copied" id="copied">COPIED TO CLIPBOARD</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+// Root word banks
+const roots = {
+  tech: {
+    prefix: ['Cyber','Neo','Quantum','Hyper','Pixel','Vex','Nex','Lumen','Proxy','Axon','Volt','Zeta','Core','Nova','Byte','Vyx','Kryo','Apex','Hex','Terra'],
+    suffix: ['lab','forge','sync','wave','tron','ify','core','link','stack','ware','node','grid','flow','ly','io','x','os','ai'],
+    greek: ['Prometheus','Atlas','Helios','Zephyr','Kairos','Orion','Phoenix','Lyra','Nexus','Echo']
+  },
+  fashion: {
+    prefix: ['Lumi','Ivy','Sol','Vela','Luna','Ora','Sera','Amber','Jade','Nori','Velvet','Aura','Mira','Silk','Eden','Rosa','Blanc','Noir'],
+    suffix: ['aire','elle','ine','ora','ique','mé','nd','ra','vi','ée','é','sia','va','ya'],
+    greek: ['Aphrodite','Selene','Athena','Hera','Iris','Calliope','Daphne','Gaia','Nyx','Eos']
+  },
+  food: {
+    prefix: ['Olea','Fresco','Pane','Sal','Terra','Verde','Rosso','Bianco','Basilico','Rustica','Gusto','Dolce','Forno','Bocca','Ciel','Mare'],
+    suffix: ['teria','oteca','mente','ria','co','sa','lo','ino','ola','ana','etta','ino','ella'],
+    greek: ['Ambrosia','Hestia','Demeter','Nectar','Bacchus','Ceres','Gaia','Pomona']
+  },
+  studio: {
+    prefix: ['Pyx','Ark','Vex','Lux','Atelier','Forge','Opus','Origami','Prisma','Kaleido','Canvas','Syntax','Loop','Muse','Echo','Voir','Myx','Nexa','Orb','Volt'],
+    suffix: ['ora','ica','arium','ery','works','studio','atelier','forma','um','ion','os','ae','ia'],
+    greek: ['Mnemosyne','Muse','Calliope','Urania','Clio','Terpsichore','Erato','Polymnia','Thalia','Melpomene']
+  },
+  finance: {
+    prefix: ['Axis','Apex','Sterling','Meridian','Vertex','Zenith','Prime','Oak','Ironwood','Summit','Crown','Sovereign','Cambio','Arbor','Fidel','Bastion'],
+    suffix: ['capital','group','partners','advisors','holdings','trust','bridge','bank','wealth','edge'],
+    greek: ['Plutus','Mercury','Kairos','Arche','Telos','Hermes']
+  },
+  game: {
+    prefix: ['Raid','Pixel','Bolt','Storm','Rogue','Myth','Saga','Quest','Relic','Arc','Vortex','Chrono','Orbit','Glitch','Mech','Rune','Neon','Phantom','Blade'],
+    suffix: ['forge','craft','verse','realm','quest','play','labs','works','bit','x','er','ix'],
+    greek: ['Ares','Artemis','Nike','Tyche','Chaos','Hydra','Olympus']
+  }
+};
+
+const toneAdj = {
+  modern: ['혁신적이고 미래지향적인','간결하고 깔끔한','첨단 기술을 상징하는','미니멀하고 세련된'],
+  classic: ['전통과 품격이 느껴지는','시대를 초월한','고전적 우아함을 가진','신뢰감 있는 전통적인'],
+  playful: ['경쾌하고 친근한','유쾌하고 발랄한','톡톡 튀는','사랑스럽고 친숙한'],
+  luxury: ['럭셔리하고 프리미엄한','고급스럽고 우아한','상류층 감성의','세련된 럭셔리 브랜드']
+};
+
+const meaningTemplates = [
+  (name, kw) => `"${kw}"의 본질을 담은 이름. 간결하면서도 강렬한 인상을 줍니다.`,
+  (name, kw) => `${kw}의 의미를 그리스/라틴 어원으로 재해석한 이름.`,
+  (name, kw) => `국제적으로 발음하기 쉽고, 도메인 가용성이 높을 가능성이 큽니다.`,
+  (name, kw) => `${kw}를 연상시키는 울림과 현대적 세련됨의 조화.`,
+  (name, kw) => `짧고 기억하기 쉬워 브랜드 확장에 유리한 이름.`
+];
+
+const katakana = {
+  'A':'아','B':'브','C':'크','D':'드','E':'에','F':'프','G':'그','H':'흐','I':'이','J':'즈','K':'크','L':'르','M':'므','N':'느','O':'오','P':'프','Q':'쿠','R':'르','S':'스','T':'트','U':'우','V':'브','W':'우','X':'스','Y':'이','Z':'즈','a':'아','b':'브','c':'크','d':'드','e':'에','f':'프','g':'그','h':'흐','i':'이','j':'즈','k':'크','l':'르','m':'므','n':'느','o':'오','p':'프','q':'쿠','r':'르','s':'스','t':'트','u':'우','v':'브','w':'우','x':'스','y':'이','z':'즈'
+};
+function toKorean(name){
+  // Simplified Roman→Hangul approximation
+  const syllables = {
+    'Py':'파이','Ar':'아르','Lu':'루','Ne':'네','Co':'코','Vi':'비','So':'소','Ma':'마','Ke':'케','Ra':'라','Xe':'제','Ox':'옥스','Nax':'낙스','Vex':'벡스','Lux':'룩스','Aur':'아우르','ora':'오라','ica':'이카','ix':'익스','ly':'리','io':'이오','eon':'이온','lab':'랩','forge':'포지','core':'코어','sync':'싱크','flow':'플로우','verse':'버스','tion':'션'
+  };
+  let k = name;
+  Object.keys(syllables).sort((a,b)=>b.length-a.length).forEach(en => { k = k.replace(new RegExp(en,'g'), syllables[en]); });
+  // Any remaining latin letters → basic phonetic
+  k = k.replace(/[a-zA-Z]/g, c => katakana[c] || '');
+  return k || name;
+}
+
+function generate(){
+  const kw = $('keyword').value.trim() || '혁신';
+  const cat = $('category').value;
+  const tone = $('tone').value;
+  const bank = roots[cat];
+  const adjs = toneAdj[tone];
+  const out = [];
+  const used = new Set();
+
+  while (out.length < 8){
+    let name;
+    const style = Math.random();
+    if (style < 0.35){
+      const p = bank.prefix[Math.floor(Math.random()*bank.prefix.length)];
+      const s = bank.suffix[Math.floor(Math.random()*bank.suffix.length)];
+      name = p + s;
+    } else if (style < 0.7){
+      name = bank.greek[Math.floor(Math.random()*bank.greek.length)];
+    } else {
+      const p = bank.prefix[Math.floor(Math.random()*bank.prefix.length)];
+      name = p;
+    }
+    if (used.has(name)) continue;
+    used.add(name);
+    const kor = toKorean(name);
+    const adj = adjs[Math.floor(Math.random()*adjs.length)];
+    const meaning = `${adj} 이름. ` + meaningTemplates[Math.floor(Math.random()*meaningTemplates.length)](name, kw);
+    out.push({ name, kor, meaning });
+  }
+
+  $('results').innerHTML = out.map((n,i) => `
+    <div class="name-card" data-name="${n.name}" style="animation-delay:${i*0.05}s">
+      <div class="name">${n.name}</div>
+      <div class="kor">${n.kor}</div>
+      <div class="tag">${cat.toUpperCase()}</div>
+      <div class="meaning">${n.meaning}</div>
+    </div>
+  `).join('');
+
+  document.querySelectorAll('.name-card').forEach(c => {
+    c.onclick = async () => {
+      await navigator.clipboard.writeText(c.dataset.name);
+      const toast = $('copied');
+      toast.textContent = `COPIED: ${c.dataset.name}`;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1600);
+    };
+  });
+}
+
+$('genBtn').onclick = generate;
+// Auto-gen on load
+generate();
+</script>
+</body>
+</html>

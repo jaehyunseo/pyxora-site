@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>2048 · Pyxora Studio</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23060610'/%3E%3Ctext x='50' y='72' font-family='sans-serif' font-size='68' font-weight='700' fill='%23fbbf24' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06060f;--surface:#13132a;--pyx:#fbbf24;--violet:#7c3aed;--text:#f5f5f7;--muted:#7a7a8c;--line:rgba(255,255,255,.08);--line-hi:rgba(255,255,255,.16)}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;user-select:none;-webkit-user-select:none;touch-action:none}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(251,191,36,.15),transparent 60%)}
+a{color:inherit;text-decoration:none}
+nav{position:sticky;top:0;z-index:50;padding:14px 28px;background:rgba(6,6,15,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;display:flex;align-items:center;gap:10px}
+.nav-brand .dot{width:7px;height:7px;border-radius:50%;background:var(--pyx);box-shadow:0 0 10px var(--pyx)}
+.nav-brand .studio{color:var(--muted);font-weight:400;margin-left:4px}
+.btn{font-family:'JetBrains Mono',monospace;font-size:11px;padding:8px 14px;border:1px solid var(--line-hi);border-radius:100px;cursor:pointer;background:transparent;color:var(--text);transition:all .3s}
+.btn:hover{background:var(--pyx);color:var(--bg);border-color:var(--pyx)}
+
+.game{max-width:460px;margin:40px auto;padding:0 20px;position:relative;z-index:2}
+.hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.hd h1{font-size:44px;font-weight:800;letter-spacing:-2px;background:linear-gradient(135deg,var(--pyx),#fff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.scores{display:flex;gap:8px}
+.sc{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:10px;padding:8px 16px;text-align:center;min-width:72px}
+.sc-l{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px}
+.sc-v{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--pyx)}
+
+.board{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:16px;padding:10px;aspect-ratio:1;position:relative}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);gap:10px;height:100%}
+.cell-bg{background:rgba(255,255,255,.03);border-radius:10px}
+.tile{position:absolute;display:flex;align-items:center;justify-content:center;font-weight:800;border-radius:10px;transition:all .15s ease;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.tile-new{animation:pop .2s}
+@keyframes pop{from{transform:scale(.3)}to{transform:scale(1)}}
+.tile-2{background:linear-gradient(135deg,#475569,#64748b);color:#fff}
+.tile-4{background:linear-gradient(135deg,#06b6d4,#0891b2);color:#fff}
+.tile-8{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+.tile-16{background:linear-gradient(135deg,#84cc16,#65a30d);color:#fff}
+.tile-32{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000}
+.tile-64{background:linear-gradient(135deg,#fb923c,#ea580c);color:#fff}
+.tile-128{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;font-size:82%}
+.tile-256{background:linear-gradient(135deg,#a855f7,#9333ea);color:#fff;font-size:82%}
+.tile-512{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;font-size:82%}
+.tile-1024{background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;font-size:64%}
+.tile-2048{background:linear-gradient(135deg,#fbbf24,#ec4899,#7c3aed);color:#fff;font-size:64%;box-shadow:0 0 40px rgba(251,191,36,.5)}
+
+.instr{text-align:center;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;margin-top:20px;letter-spacing:.5px;line-height:1.8}
+.actions{display:flex;gap:8px;justify-content:center;margin-top:16px}
+
+.overlay{position:absolute;inset:10px;background:rgba(6,6,15,.92);backdrop-filter:blur(8px);border-radius:12px;display:none;align-items:center;justify-content:center;flex-direction:column;z-index:10}
+.overlay.show{display:flex}
+.overlay h2{font-size:36px;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,var(--pyx),#ec4899);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.overlay p{color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;margin-bottom:20px}
+.overlay button{background:var(--pyx);color:#000;border:none;padding:12px 24px;border-radius:100px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px}
+
+@media (max-width:500px){.hd h1{font-size:32px}.game{margin:20px auto}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/projects/" class="nav-brand"><span class="dot"></span>PYXORA<span class="studio">2048</span></a>
+  <a href="/projects/" class="btn">← PROJECTS</a>
+</nav>
+
+<div class="game">
+  <div class="hd">
+    <h1>2048</h1>
+    <div class="scores">
+      <div class="sc"><div class="sc-l">SCORE</div><div class="sc-v" id="score">0</div></div>
+      <div class="sc"><div class="sc-l">BEST</div><div class="sc-v" id="best">0</div></div>
+    </div>
+  </div>
+
+  <div class="board" id="board">
+    <div class="grid">
+      <div class="cell-bg"></div><div class="cell-bg"></div><div class="cell-bg"></div><div class="cell-bg"></div>
+      <div class="cell-bg"></div><div class="cell-bg"></div><div class="cell-bg"></div><div class="cell-bg"></div>
+      <div class="cell-bg"></div><div class="cell-bg"></div><div class="cell-bg"></div><div class="cell-bg"></div>
+      <div class="cell-bg"></div><div class="cell-bg"></div><div class="cell-bg"></div><div class="cell-bg"></div>
+    </div>
+    <div class="overlay" id="overlay">
+      <h2 id="ovTitle">GAME OVER</h2>
+      <p id="ovSub">움직일 수 없습니다</p>
+      <button id="restartBtn">RESTART</button>
+    </div>
+  </div>
+
+  <div class="instr">← ↑ → ↓  ARROW KEYS · SWIPE ON MOBILE</div>
+  <div class="actions">
+    <button class="btn" id="newBtn">NEW GAME</button>
+    <button class="btn" id="undoBtn">UNDO</button>
+  </div>
+</div>
+
+<script>
+let grid = [];
+let score = 0;
+let best = +localStorage.getItem('pyxora-2048-best') || 0;
+let prev = null;
+
+document.getElementById('best').textContent = best;
+
+function init(){
+  grid = Array(4).fill().map(() => Array(4).fill(0));
+  score = 0;
+  prev = null;
+  addTile(); addTile();
+  render();
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function addTile(){
+  const empty = [];
+  for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) if (grid[y][x] === 0) empty.push([y,x]);
+  if (!empty.length) return false;
+  const [y,x] = empty[Math.floor(Math.random()*empty.length)];
+  grid[y][x] = Math.random() < 0.9 ? 2 : 4;
+  return true;
+}
+
+function render(){
+  const board = document.getElementById('board');
+  // Clear old tiles
+  board.querySelectorAll('.tile').forEach(t => t.remove());
+  const rect = board.getBoundingClientRect();
+  const cellSize = (rect.width - 20 - 30) / 4;
+  const gap = 10;
+  for (let y = 0; y < 4; y++){
+    for (let x = 0; x < 4; x++){
+      const v = grid[y][x];
+      if (v === 0) continue;
+      const tile = document.createElement('div');
+      tile.className = `tile tile-${v} tile-new`;
+      tile.textContent = v;
+      tile.style.width = cellSize + 'px';
+      tile.style.height = cellSize + 'px';
+      tile.style.left = (10 + x*(cellSize+gap)) + 'px';
+      tile.style.top = (10 + y*(cellSize+gap)) + 'px';
+      tile.style.fontSize = (cellSize*0.4) + 'px';
+      board.appendChild(tile);
+    }
+  }
+  document.getElementById('score').textContent = score;
+  if (score > best){ best = score; document.getElementById('best').textContent = best; localStorage.setItem('pyxora-2048-best', best); }
+}
+
+function clone(g){ return g.map(r => r.slice()); }
+
+function slide(row){
+  const filtered = row.filter(v => v !== 0);
+  for (let i = 0; i < filtered.length - 1; i++){
+    if (filtered[i] === filtered[i+1]){
+      filtered[i] *= 2;
+      score += filtered[i];
+      filtered.splice(i+1, 1);
+    }
+  }
+  while (filtered.length < 4) filtered.push(0);
+  return filtered;
+}
+
+function move(dir){
+  prev = { grid: clone(grid), score };
+  const before = JSON.stringify(grid);
+  if (dir === 'left'){
+    for (let y = 0; y < 4; y++) grid[y] = slide(grid[y]);
+  } else if (dir === 'right'){
+    for (let y = 0; y < 4; y++) grid[y] = slide(grid[y].reverse()).reverse();
+  } else if (dir === 'up'){
+    for (let x = 0; x < 4; x++){
+      const col = [grid[0][x], grid[1][x], grid[2][x], grid[3][x]];
+      const slid = slide(col);
+      for (let y = 0; y < 4; y++) grid[y][x] = slid[y];
+    }
+  } else if (dir === 'down'){
+    for (let x = 0; x < 4; x++){
+      const col = [grid[3][x], grid[2][x], grid[1][x], grid[0][x]];
+      const slid = slide(col);
+      for (let y = 0; y < 4; y++) grid[3-y][x] = slid[y];
+    }
+  }
+  const after = JSON.stringify(grid);
+  if (before !== after){
+    addTile();
+    render();
+    if (!canMove()) gameOver();
+  }
+}
+
+function canMove(){
+  for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++){
+    if (grid[y][x] === 0) return true;
+    if (x < 3 && grid[y][x] === grid[y][x+1]) return true;
+    if (y < 3 && grid[y][x] === grid[y+1][x]) return true;
+  }
+  return false;
+}
+
+function gameOver(){
+  document.getElementById('ovTitle').textContent = 'GAME OVER';
+  document.getElementById('ovSub').textContent = `SCORE: ${score}`;
+  document.getElementById('overlay').classList.add('show');
+}
+
+document.addEventListener('keydown', e => {
+  const dirs = {ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down'};
+  if (dirs[e.key]){ e.preventDefault(); move(dirs[e.key]); }
+});
+
+let touchStart = null;
+document.addEventListener('touchstart', e => { touchStart = [e.touches[0].clientX, e.touches[0].clientY]; });
+document.addEventListener('touchend', e => {
+  if (!touchStart) return;
+  const dx = e.changedTouches[0].clientX - touchStart[0];
+  const dy = e.changedTouches[0].clientY - touchStart[1];
+  if (Math.abs(dx) < 30 && Math.abs(dy) < 30) return;
+  if (Math.abs(dx) > Math.abs(dy)) move(dx > 0 ? 'right' : 'left');
+  else move(dy > 0 ? 'down' : 'up');
+  touchStart = null;
+});
+
+document.getElementById('newBtn').onclick = init;
+document.getElementById('restartBtn').onclick = init;
+document.getElementById('undoBtn').onclick = () => {
+  if (prev){ grid = prev.grid; score = prev.score; prev = null; render(); }
+};
+
+window.addEventListener('resize', render);
+init();
+</script>
+</body>
+</html>

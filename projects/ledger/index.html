@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Ledger Book · Pyxora Studio</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23060610'/%3E%3Ctext x='50' y='72' font-family='sans-serif' font-size='68' font-weight='700' fill='%23fbbf24' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E"/>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06060f;--bg-2:#0c0c1c;--surface:#13132a;--pyx:#fbbf24;--violet:#7c3aed;--cyan:#06b6d4;--green:#10b981;--red:#ef4444;--text:#f5f5f7;--text-2:#c4c4d0;--muted:#7a7a8c;--line:rgba(255,255,255,.08);--line-hi:rgba(255,255,255,.16)}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+a{color:inherit;text-decoration:none}
+nav{position:sticky;top:0;z-index:50;padding:14px 28px;background:rgba(6,6,15,.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;display:flex;align-items:center;gap:10px}
+.nav-brand .dot{width:7px;height:7px;border-radius:50%;background:var(--pyx);box-shadow:0 0 10px var(--pyx)}
+.nav-brand .studio{color:var(--muted);font-weight:400;margin-left:4px}
+.badge-demo{font-family:'JetBrains Mono',monospace;font-size:9px;padding:4px 10px;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.4);border-radius:100px;color:#a855f7;letter-spacing:1px}
+.btn{font-family:'JetBrains Mono',monospace;font-size:11px;padding:8px 14px;border:1px solid var(--line-hi);border-radius:100px;cursor:pointer;background:transparent;color:var(--text);transition:all .3s}
+.btn:hover{background:var(--pyx);color:var(--bg);border-color:var(--pyx)}
+.btn.primary{background:var(--pyx);color:var(--bg);border-color:var(--pyx);font-weight:700}
+.nav-right{display:flex;gap:10px;align-items:center}
+
+main{max-width:1180px;margin:0 auto;padding:28px 32px}
+.page-hd h1{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+.page-hd p{font-size:12px;color:var(--text-2);margin-bottom:20px}
+
+.edu-note{background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.2);border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:12.5px;color:var(--text-2);line-height:1.7}
+.edu-note strong{color:var(--cyan);display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;margin-bottom:4px}
+
+.layout{display:grid;grid-template-columns:1fr 1.4fr;gap:18px}
+
+.panel{background:linear-gradient(180deg,var(--surface),var(--bg-2));border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:16px}
+.panel h3{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;margin-bottom:14px}
+
+/* Entry form */
+.form-field{margin-bottom:12px}
+.form-field label{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:5px;text-transform:uppercase}
+.form-field input,.form-field select{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--line-hi);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'Pretendard',sans-serif;font-size:13px;outline:none}
+.form-field input:focus,.form-field select:focus{border-color:var(--violet)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.add-entry{width:100%;background:var(--pyx);color:#000;border:none;padding:12px;border-radius:10px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:1px;cursor:pointer;text-transform:uppercase;margin-top:8px}
+
+/* Ledger table */
+.ledger-tbl{width:100%;border-collapse:collapse;font-size:11.5px}
+.ledger-tbl th{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);letter-spacing:.5px;text-transform:uppercase}
+.ledger-tbl th.r{text-align:right}
+.ledger-tbl td{padding:9px 6px;border-bottom:1px solid var(--line);color:var(--text-2)}
+.ledger-tbl td.r{text-align:right;font-family:'JetBrains Mono',monospace}
+.ledger-tbl td.debit{color:var(--green)}
+.ledger-tbl td.credit{color:var(--pink)}
+.ledger-tbl .date{font-family:'JetBrains Mono',monospace;color:var(--muted);font-size:10px}
+
+/* Summary (Trial Balance) */
+.tb{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;font-family:'JetBrains Mono',monospace;font-size:12px;margin-top:14px}
+.tb-hd{font-size:9px;color:var(--muted);letter-spacing:1px;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:6px}
+.tb-row{display:contents}
+.tb-row .name{padding:4px 0;color:var(--text-2)}
+.tb-row .num{padding:4px 0;text-align:right;color:var(--text)}
+.tb-total{grid-column:1/4;border-top:1px solid var(--pyx);padding-top:8px;margin-top:8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;font-weight:700;color:var(--pyx);font-size:13px}
+
+@media (max-width:900px){.layout{grid-template-columns:1fr}main{padding:16px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/projects/" class="nav-brand"><span class="dot"></span>PYXORA<span class="studio">LEDGER</span></a>
+  <div class="nav-right"><span class="badge-demo">EDU · DEMO</span><a href="/projects/" class="btn">← PROJECTS</a></div>
+</nav>
+
+<main>
+  <div class="page-hd">
+    <h1>회계 원장 시뮬레이터</h1>
+    <p>복식부기 원리 체험 · 차변(Debit) / 대변(Credit) 자동 기록 · 시산표 실시간 계산</p>
+  </div>
+
+  <div class="edu-note">
+    <strong>ℹ 복식부기 원리</strong>
+    모든 거래는 <b>차변(Debit)</b>과 <b>대변(Credit)</b>에 동시에 기록되며, 양쪽 합계는 항상 같아야 합니다. 이 시뮬레이터는 거래 유형을 선택하면 자동으로 계정을 결정하여 기록합니다.
+  </div>
+
+  <div class="layout">
+    <div>
+      <div class="panel">
+        <h3>새 거래 입력</h3>
+        <div class="form-field">
+          <label>거래 유형</label>
+          <select id="txType">
+            <option value="sale">매출 (현금 받고 서비스 제공)</option>
+            <option value="purchase">매입 (현금으로 재료 구매)</option>
+            <option value="salary">급여 지급</option>
+            <option value="rent">임대료 지급</option>
+            <option value="deposit">예금 입금</option>
+            <option value="loan">차입금 수령</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label>날짜</label><input type="date" id="txDate"/></div>
+          <div class="form-field"><label>금액 (원)</label><input type="number" id="txAmt" value="1000000" min="0"/></div>
+        </div>
+        <div class="form-field">
+          <label>적요 (메모)</label>
+          <input id="txNote" placeholder="예: 3월 마케팅 용역"/>
+        </div>
+        <button class="add-entry" id="addBtn">+ 분개 추가</button>
+      </div>
+
+      <div class="panel">
+        <h3>시산표 (Trial Balance)</h3>
+        <div class="tb" id="tb"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>분개장 (Journal)</h3>
+      <table class="ledger-tbl">
+        <thead>
+          <tr>
+            <th>일자</th>
+            <th>계정과목</th>
+            <th>적요</th>
+            <th class="r">차변</th>
+            <th class="r">대변</th>
+          </tr>
+        </thead>
+        <tbody id="journalBody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+
+// Double-entry templates per transaction type
+const templates = {
+  sale:     { debit:'현금',     credit:'매출',       noteDefault:'상품 판매' },
+  purchase: { debit:'재료비',   credit:'현금',       noteDefault:'재료 매입' },
+  salary:   { debit:'급여',     credit:'현금',       noteDefault:'직원 급여 지급' },
+  rent:     { debit:'임대료',   credit:'현금',       noteDefault:'사무실 임대료' },
+  deposit:  { debit:'보통예금', credit:'현금',       noteDefault:'은행 예금 입금' },
+  loan:     { debit:'현금',     credit:'차입금',     noteDefault:'은행 차입' },
+};
+
+let journal = [
+  { date:'2026-04-01', type:'deposit', amt:50000000, note:'초기 자본 예치' },
+  { date:'2026-04-03', type:'sale', amt:8500000, note:'웹사이트 개발 용역' },
+  { date:'2026-04-05', type:'purchase', amt:1200000, note:'디자인 소프트웨어 라이선스' },
+  { date:'2026-04-10', type:'salary', amt:12000000, note:'4월 급여 지급' },
+  { date:'2026-04-12', type:'rent', amt:2500000, note:'사무실 월세' },
+  { date:'2026-04-15', type:'sale', amt:6200000, note:'브랜딩 컨설팅' },
+];
+
+function fmt(n){ return n.toLocaleString('ko-KR'); }
+
+function render(){
+  // Journal
+  const body = $('journalBody');
+  body.innerHTML = journal.map(e => {
+    const t = templates[e.type];
+    return `
+      <tr>
+        <td class="date">${e.date}</td>
+        <td class="debit">${t.debit}</td>
+        <td>${e.note}</td>
+        <td class="r debit">${fmt(e.amt)}</td>
+        <td class="r"></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="credit">　${t.credit}</td>
+        <td></td>
+        <td class="r"></td>
+        <td class="r credit">${fmt(e.amt)}</td>
+      </tr>
+    `;
+  }).join('');
+
+  // Trial balance
+  const accounts = {};
+  journal.forEach(e => {
+    const t = templates[e.type];
+    if (!accounts[t.debit]) accounts[t.debit] = { dr:0, cr:0 };
+    if (!accounts[t.credit]) accounts[t.credit] = { dr:0, cr:0 };
+    accounts[t.debit].dr += e.amt;
+    accounts[t.credit].cr += e.amt;
+  });
+  // Net per account
+  const rows = Object.entries(accounts).map(([name, a]) => {
+    const net = a.dr - a.cr;
+    return { name, dr: net > 0 ? net : 0, cr: net < 0 ? -net : 0 };
+  });
+  const totalDr = rows.reduce((s,r) => s+r.dr, 0);
+  const totalCr = rows.reduce((s,r) => s+r.cr, 0);
+
+  $('tb').innerHTML = `
+    <div class="tb-hd">계정과목</div>
+    <div class="tb-hd" style="text-align:right">차변 잔액</div>
+    <div class="tb-hd" style="text-align:right">대변 잔액</div>
+    ${rows.map(r => `
+      <div class="tb-row">
+        <div class="name">${r.name}</div>
+        <div class="num" style="color:${r.dr?'var(--green)':'var(--muted)'}">${r.dr?fmt(r.dr):'—'}</div>
+        <div class="num" style="color:${r.cr?'var(--pink)':'var(--muted)'}">${r.cr?fmt(r.cr):'—'}</div>
+      </div>
+    `).join('')}
+    <div class="tb-total">
+      <div>합계</div>
+      <div style="text-align:right">${fmt(totalDr)}</div>
+      <div style="text-align:right">${fmt(totalCr)}</div>
+    </div>
+  `;
+}
+
+$('txDate').value = new Date().toISOString().slice(0,10);
+
+$('addBtn').onclick = () => {
+  const type = $('txType').value;
+  const amt = +$('txAmt').value;
+  const date = $('txDate').value;
+  const note = $('txNote').value.trim() || templates[type].noteDefault;
+  if (!amt || amt <= 0){ alert('금액을 입력해 주세요'); return; }
+  journal.push({ date, type, amt, note });
+  journal.sort((a,b) => a.date.localeCompare(b.date));
+  render();
+  $('txNote').value = '';
+};
+
+render();
+</script>
+</body>
+</html>

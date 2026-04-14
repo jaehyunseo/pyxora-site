@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>World Explorer · Pyxora Studio</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23060610'/%3E%3Ctext x='50' y='72' font-family='sans-serif' font-size='68' font-weight='700' fill='%23fbbf24' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E"/>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06060f;--bg-2:#0c0c1c;--surface:#13132a;--pyx:#fbbf24;--violet:#7c3aed;--cyan:#06b6d4;--green:#10b981;--text:#f5f5f7;--text-2:#c4c4d0;--muted:#7a7a8c;--line:rgba(255,255,255,.08);--line-hi:rgba(255,255,255,.16)}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+a{color:inherit;text-decoration:none}
+nav{position:sticky;top:0;z-index:50;padding:14px 28px;background:rgba(6,6,15,.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;display:flex;align-items:center;gap:10px}
+.nav-brand .dot{width:7px;height:7px;border-radius:50%;background:var(--pyx);box-shadow:0 0 10px var(--pyx)}
+.nav-brand .studio{color:var(--muted);font-weight:400;margin-left:4px}
+.btn{font-family:'JetBrains Mono',monospace;font-size:11px;padding:8px 14px;border:1px solid var(--line-hi);border-radius:100px;cursor:pointer;background:transparent;color:var(--text);transition:all .3s}
+.btn:hover{background:var(--pyx);color:var(--bg);border-color:var(--pyx)}
+
+main{max-width:1280px;margin:0 auto;padding:32px}
+.page-hd{margin-bottom:24px}
+.page-hd h1{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+.page-hd p{font-size:13px;color:var(--text-2)}
+
+.metric-pick{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.metric-pick button{font-family:'JetBrains Mono',monospace;font-size:11px;padding:10px 16px;background:transparent;border:1px solid var(--line-hi);border-radius:100px;color:var(--text-2);cursor:pointer;transition:all .3s}
+.metric-pick button.active{background:var(--pyx);color:var(--bg);border-color:var(--pyx);font-weight:700}
+
+.panel{background:linear-gradient(180deg,var(--surface),var(--bg-2));border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:16px}
+
+/* Ranking bars */
+.rank-item{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--line);transition:all .2s}
+.rank-item:last-child{border-bottom:none}
+.rank-item:hover{background:rgba(255,255,255,.02)}
+.rank-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);width:24px;text-align:right}
+.rank-flag{font-size:24px;width:32px;text-align:center}
+.rank-name{flex:0 0 140px;font-weight:600;font-size:13px}
+.rank-bar{flex:1;height:10px;background:rgba(255,255,255,.05);border-radius:100px;overflow:hidden;position:relative}
+.rank-bar .f{height:100%;background:linear-gradient(90deg,var(--violet),var(--pyx));border-radius:100px;transition:width .8s cubic-bezier(.22,1,.36,1)}
+.rank-val{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--pyx);font-weight:700;width:110px;text-align:right}
+
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.mini-stat{text-align:center;padding:16px}
+.mini-stat .l{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:6px}
+.mini-stat .v{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;color:var(--pyx)}
+
+@media (max-width:800px){main{padding:16px}.row{grid-template-columns:1fr}.rank-name{flex:0 0 100px;font-size:12px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/projects/" class="nav-brand"><span class="dot"></span>PYXORA<span class="studio">WORLD</span></a>
+  <a href="/projects/" class="btn">← PROJECTS</a>
+</nav>
+
+<main>
+  <div class="page-hd">
+    <h1>🌍 World Explorer</h1>
+    <p>세계 주요국 인구·경제·사회 지표 비교 · 2024년 기준 World Bank / UN 데이터</p>
+  </div>
+
+  <div class="metric-pick" id="metrics"></div>
+
+  <div class="row">
+    <div class="panel">
+      <div class="mini-stat">
+        <div class="l">ACTIVE METRIC</div>
+        <div class="v" id="metricName">인구</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="mini-stat">
+        <div class="l">TOTAL (TOP 20)</div>
+        <div class="v" id="metricTotal">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div id="ranking"></div>
+  </div>
+</main>
+
+<script>
+// Top 20 countries with World Bank-inspired data (rounded, 2024 estimates)
+const countries = [
+  { flag:'🇨🇳', name:'중국',         pop: 1410, gdp: 17700, life: 78.0, gdpPc:  12600, area: 9597 },
+  { flag:'🇮🇳', name:'인도',         pop: 1430, gdp:  3900, life: 71.2, gdpPc:   2700, area: 3287 },
+  { flag:'🇺🇸', name:'미국',         pop:  335, gdp: 27000, life: 77.5, gdpPc:  80600, area: 9834 },
+  { flag:'🇮🇩', name:'인도네시아',    pop:  278, gdp:  1400, life: 71.7, gdpPc:   5000, area: 1905 },
+  { flag:'🇵🇰', name:'파키스탄',       pop:  242, gdp:   375, life: 66.3, gdpPc:   1550, area:  881 },
+  { flag:'🇳🇬', name:'나이지리아',     pop:  224, gdp:   440, life: 54.0, gdpPc:   1960, area:  924 },
+  { flag:'🇧🇷', name:'브라질',        pop:  216, gdp:  2100, life: 75.9, gdpPc:   9700, area: 8516 },
+  { flag:'🇧🇩', name:'방글라데시',    pop:  172, gdp:   460, life: 73.0, gdpPc:   2680, area:  148 },
+  { flag:'🇷🇺', name:'러시아',        pop:  144, gdp:  2000, life: 72.5, gdpPc:  13800, area:17098 },
+  { flag:'🇲🇽', name:'멕시코',        pop:  128, gdp:  1800, life: 75.1, gdpPc:  14000, area: 1964 },
+  { flag:'🇯🇵', name:'일본',         pop:  124, gdp:  4200, life: 84.6, gdpPc:  33800, area:  378 },
+  { flag:'🇪🇹', name:'에티오피아',    pop:  126, gdp:   156, life: 67.8, gdpPc:   1240, area: 1104 },
+  { flag:'🇵🇭', name:'필리핀',        pop:  117, gdp:   440, life: 72.4, gdpPc:   3760, area:  300 },
+  { flag:'🇪🇬', name:'이집트',        pop:  112, gdp:   476, life: 70.2, gdpPc:   4250, area: 1001 },
+  { flag:'🇻🇳', name:'베트남',        pop:  100, gdp:   450, life: 73.6, gdpPc:   4500, area:  331 },
+  { flag:'🇩🇪', name:'독일',         pop:   83, gdp:  4500, life: 81.3, gdpPc:  54200, area:  358 },
+  { flag:'🇹🇷', name:'터키',         pop:   85, gdp:  1100, life: 77.4, gdpPc:  12900, area:  784 },
+  { flag:'🇮🇷', name:'이란',         pop:   89, gdp:   401, life: 77.1, gdpPc:   4500, area: 1648 },
+  { flag:'🇬🇧', name:'영국',         pop:   67, gdp:  3300, life: 81.4, gdpPc:  49300, area:  243 },
+  { flag:'🇫🇷', name:'프랑스',        pop:   65, gdp:  3000, life: 82.8, gdpPc:  46200, area:  643 },
+  { flag:'🇰🇷', name:'대한민국',       pop:   52, gdp:  1700, life: 83.5, gdpPc:  33000, area:  100 },
+];
+
+const metrics = {
+  pop:  { label:'인구 (백만)',       unit:'M', name:'인구',       format: v => v.toLocaleString() + 'M' },
+  gdp:  { label:'GDP ($B)',        unit:'B', name:'GDP',       format: v => '$' + v.toLocaleString() + 'B' },
+  life: { label:'평균 수명 (년)',      unit:'yrs', name:'평균 수명',  format: v => v.toFixed(1) + '년' },
+  gdpPc:{ label:'1인당 GDP ($)',     unit:'', name:'1인당 GDP',  format: v => '$' + v.toLocaleString() },
+  area: { label:'면적 (천km²)',       unit:'k', name:'면적',       format: v => v.toLocaleString() + 'k km²' },
+};
+
+let currentMetric = 'pop';
+
+const mp = document.getElementById('metrics');
+Object.entries(metrics).forEach(([k,m]) => {
+  const btn = document.createElement('button');
+  btn.textContent = m.label;
+  btn.className = k === currentMetric ? 'active' : '';
+  btn.onclick = () => { currentMetric = k; mp.querySelectorAll('button').forEach(b => b.classList.remove('active')); btn.classList.add('active'); render(); };
+  mp.appendChild(btn);
+});
+
+function render(){
+  const m = metrics[currentMetric];
+  const sorted = [...countries].sort((a,b) => b[currentMetric] - a[currentMetric]);
+  const maxV = sorted[0][currentMetric];
+  document.getElementById('ranking').innerHTML = sorted.map((c, i) => {
+    const v = c[currentMetric];
+    const pct = (v/maxV)*100;
+    return `
+      <div class="rank-item">
+        <div class="rank-num">#${i+1}</div>
+        <div class="rank-flag">${c.flag}</div>
+        <div class="rank-name">${c.name}</div>
+        <div class="rank-bar"><div class="f" style="width:${pct}%"></div></div>
+        <div class="rank-val">${m.format(v)}</div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('metricName').textContent = m.name;
+  const total = sorted.reduce((s,c) => s + c[currentMetric], 0);
+  document.getElementById('metricTotal').textContent = m.format(Math.round(total));
+}
+
+render();
+</script>
+</body>
+</html>

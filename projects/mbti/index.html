@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>MBTI Character · Pyxora Studio</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23060610'/%3E%3Ctext x='50' y='72' font-family='sans-serif' font-size='68' font-weight='700' fill='%23fbbf24' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E"/>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06060f;--surface:#13132a;--pyx:#fbbf24;--violet:#7c3aed;--violet-2:#a855f7;--cyan:#06b6d4;--pink:#ec4899;--text:#f5f5f7;--text-2:#c4c4d0;--muted:#7a7a8c;--line:rgba(255,255,255,.08);--line-hi:rgba(255,255,255,.16)}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(236,72,153,.2),transparent 60%),radial-gradient(ellipse 60% 40% at 50% 100%,rgba(124,58,237,.15),transparent 60%)}
+a{color:inherit;text-decoration:none}
+nav{position:sticky;top:0;z-index:50;padding:16px 32px;background:rgba(6,6,15,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;display:flex;align-items:center;gap:10px}
+.nav-brand .dot{width:7px;height:7px;border-radius:50%;background:var(--pyx);box-shadow:0 0 10px var(--pyx)}
+.nav-brand .studio{color:var(--muted);font-weight:400;margin-left:4px}
+.btn{font-family:'JetBrains Mono',monospace;font-size:11px;padding:10px 16px;border:1px solid var(--line-hi);border-radius:100px;cursor:pointer;background:transparent;color:var(--text);transition:all .3s}
+.btn:hover{background:var(--pyx);color:var(--bg);border-color:var(--pyx)}
+
+.container{max-width:760px;margin:0 auto;padding:50px 24px;position:relative;z-index:2}
+h1{font-family:'Space Grotesk',sans-serif;font-size:44px;font-weight:800;letter-spacing:-1.2px;text-align:center;margin-bottom:10px;background:linear-gradient(135deg,var(--pink),var(--violet),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sub{text-align:center;color:var(--text-2);margin-bottom:40px;font-size:14px}
+
+.picker{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:24px;margin-bottom:24px}
+.picker h3{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1.5px;margin-bottom:14px;text-align:center}
+.mbti-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mbti-btn{aspect-ratio:1;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--text-2);cursor:pointer;transition:all .3s;letter-spacing:-.5px}
+.mbti-btn:hover{background:rgba(124,58,237,.15);border-color:var(--violet);color:#fff;transform:translateY(-2px)}
+.mbti-btn.active{background:var(--violet);border-color:var(--violet);color:#fff;box-shadow:0 8px 24px rgba(124,58,237,.4)}
+
+.gen-btn{width:100%;background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff;border:none;border-radius:12px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:1.5px;transition:all .3s;text-transform:uppercase;margin-top:16px}
+.gen-btn:hover{transform:translateY(-2px);box-shadow:0 15px 40px rgba(236,72,153,.4)}
+.gen-btn:disabled{opacity:.5;cursor:not-allowed}
+
+.result{display:none;background:linear-gradient(180deg,var(--surface),#0c0c1c);border:1px solid var(--line-hi);border-radius:24px;overflow:hidden;margin-top:24px;animation:slideUp .5s}
+.result.show{display:block}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.char-img{width:100%;aspect-ratio:1;background:#000;position:relative;overflow:hidden}
+.char-img img{width:100%;height:100%;object-fit:cover;display:block}
+.char-info{padding:24px 28px}
+.char-mbti{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--pink);letter-spacing:2px;margin-bottom:6px}
+.char-title{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.5px;margin-bottom:10px}
+.char-desc{font-size:13.5px;color:var(--text-2);line-height:1.7;margin-bottom:16px}
+.char-traits{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px}
+.char-trait{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.char-trait .k{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.5px}
+.char-trait .v{color:var(--text);margin-top:2px;font-weight:600}
+
+.result-actions{padding:16px 28px 24px;display:flex;gap:10px;justify-content:center}
+
+.loader{display:none;text-align:center;padding:40px 20px}
+.loader.show{display:block}
+.loader .spinner{width:48px;height:48px;border:3px solid var(--line);border-top-color:var(--pink);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader p{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-2)}
+
+@media (max-width:600px){.container{padding:30px 16px}h1{font-size:32px}.mbti-grid{grid-template-columns:repeat(4,1fr)}.mbti-btn{font-size:13px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/projects/" class="nav-brand"><span class="dot"></span>PYXORA<span class="studio">MBTI</span></a>
+  <a href="/projects/" class="btn">← PROJECTS</a>
+</nav>
+
+<div class="container">
+  <h1>MBTI Character</h1>
+  <p class="sub">16가지 MBTI 중 하나를 선택하면, 그 성격에 맞는 가상 캐릭터를 AI가 생성합니다.</p>
+
+  <div class="picker">
+    <h3>MBTI 선택</h3>
+    <div class="mbti-grid" id="mbtiGrid"></div>
+    <button class="gen-btn" id="genBtn" disabled>✨ 캐릭터 생성</button>
+  </div>
+
+  <div class="loader" id="loader">
+    <div class="spinner"></div>
+    <p>AI가 캐릭터를 그리는 중... (10~20초)</p>
+  </div>
+
+  <div class="result" id="result">
+    <div class="char-img"><img id="charImg" alt="character"/></div>
+    <div class="char-info">
+      <div class="char-mbti" id="rMbti">INFP</div>
+      <div class="char-title" id="rTitle">몽상가</div>
+      <div class="char-desc" id="rDesc"></div>
+      <div class="char-traits" id="rTraits"></div>
+    </div>
+    <div class="result-actions">
+      <button class="btn" id="regenBtn">🎲 다시 생성</button>
+      <button class="btn" id="shareBtn">📤 공유</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+const mbtis = {
+  INTJ:{ title:'건축가', desc:'전략적이고 독립적인 사상가. 복잡한 문제를 분석하고 장기적 비전을 설계하는 능력이 뛰어납니다.', prompt:'wise young architect character, glasses, blueprint in hand, dark blue suit, thoughtful expression, studio ghibli style', color:'#8b5cf6' },
+  INTP:{ title:'논리술사', desc:'호기심 많은 이론가. 아이디어를 탐구하고 패턴을 발견하는 것을 즐기며, 지적 토론을 사랑합니다.', prompt:'curious young scientist character, lab coat, holding glowing orb, purple hair, wireframe glasses, anime style', color:'#7c3aed' },
+  ENTJ:{ title:'통솔자', desc:'대담한 리더. 목표를 향해 사람들을 이끌고, 효율과 성과를 중시합니다.', prompt:'confident young leader character, sharp red suit, standing on skyscraper rooftop at sunset, determined look, anime style', color:'#dc2626' },
+  ENTP:{ title:'변론가', desc:'영리하고 혁신적인 모험가. 새로운 아이디어에 열정적이고 토론을 즐깁니다.', prompt:'playful inventor character, spiky hair, workshop full of gadgets, grinning, electric sparks, anime style', color:'#f59e0b' },
+  INFJ:{ title:'옹호자', desc:'신비로운 이상주의자. 타인의 감정을 깊이 이해하고 조용한 결단력으로 세상을 바꿉니다.', prompt:'mysterious young protagonist character, long flowing white hair, moonlit forest, serene expression, studio ghibli style', color:'#06b6d4' },
+  INFP:{ title:'중재자', desc:'시적이고 친절한 이상주의자. 가치와 창의성을 중시하며 자신만의 세계를 가꿉니다.', prompt:'dreamy young artist character, soft pastel colors, flower crown, sitting by window with book, watercolor anime style', color:'#ec4899' },
+  ENFJ:{ title:'선도자', desc:'카리스마 있고 영감을 주는 리더. 타인의 잠재력을 끌어내고 변화를 이끕니다.', prompt:'charismatic young teacher character, warm smile, surrounded by glowing light, golden hour, inspiring pose, anime style', color:'#fbbf24' },
+  ENFP:{ title:'활동가', desc:'열정적이고 창의적인 자유로운 영혼. 가능성에 설레고 사람들과의 연결을 중시합니다.', prompt:'energetic young adventurer character, colorful outfit, bright smile, jumping in confetti field, vibrant anime style', color:'#f97316' },
+  ISTJ:{ title:'현실주의자', desc:'실용적이고 신뢰할 수 있는 책임가. 규칙과 전통을 존중하며 꾸준함이 무기입니다.', prompt:'stoic young knight character, polished silver armor, ancient library, reading scroll, serious expression, anime style', color:'#475569' },
+  ISFJ:{ title:'수호자', desc:'따뜻하고 헌신적인 보호자. 조용히 주변 사람들을 돌보는 섬세한 배려심을 가졌습니다.', prompt:'gentle young healer character, soft green robe, surrounded by flowers and butterflies, kind expression, studio ghibli style', color:'#10b981' },
+  ESTJ:{ title:'경영자', desc:'체계적이고 단호한 관리자. 명확한 목표와 질서를 중시하며 일을 완수합니다.', prompt:'commanding young captain character, navy uniform, ship deck, clear ocean horizon, confident pose, anime style', color:'#1e40af' },
+  ESFJ:{ title:'집정관', desc:'배려 넘치는 사교가. 사람들을 돕고 조화를 만드는 데 기쁨을 느낍니다.', prompt:'warm young hostess character, soft pink sweater, cafe interior, holding teacup and smiling, cozy anime style', color:'#f472b6' },
+  ISTP:{ title:'장인', desc:'손재주가 좋은 실험가. 도구와 메커니즘을 이해하고 즉각적인 해결책을 찾습니다.', prompt:'cool young mechanic character, leather jacket, garage with motorcycle parts, wrench in hand, anime style', color:'#64748b' },
+  ISFP:{ title:'모험가', desc:'유연하고 매력적인 예술가. 감각적이며 삶의 아름다움을 즐깁니다.', prompt:'free-spirited young musician character, acoustic guitar, field of flowers at sunset, peaceful smile, anime style', color:'#a855f7' },
+  ESTP:{ title:'사업가', desc:'활동적이고 대담한 실천가. 순간을 즐기며 스릴과 도전을 사랑합니다.', prompt:'daring young adventurer character, racing suit, cliffside view, wind-blown hair, grinning, dynamic anime style', color:'#ef4444' },
+  ESFP:{ title:'연예인', desc:'자유분방한 엔터테이너. 주목받기 좋아하고 삶을 축제처럼 즐깁니다.', prompt:'cheerful young performer character, sparkly stage outfit, spotlight, dancing with joy, vibrant anime style', color:'#fb923c' },
+};
+
+let selected = null;
+
+const grid = $('mbtiGrid');
+Object.keys(mbtis).forEach(m => {
+  const btn = document.createElement('button');
+  btn.className = 'mbti-btn';
+  btn.textContent = m;
+  btn.onclick = () => {
+    document.querySelectorAll('.mbti-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selected = m;
+    $('genBtn').disabled = false;
+  };
+  grid.appendChild(btn);
+});
+
+function generate(){
+  if (!selected) return;
+  const data = mbtis[selected];
+  const seed = Math.floor(Math.random()*100000);
+  const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(data.prompt + ', portrait, high quality, masterpiece')}?width=768&height=768&seed=${seed}&nologo=true`;
+
+  $('loader').classList.add('show');
+  $('result').classList.remove('show');
+
+  const img = new Image();
+  img.onload = () => {
+    $('charImg').src = url;
+    $('rMbti').textContent = selected;
+    $('rTitle').textContent = data.title;
+    $('rDesc').textContent = data.desc;
+    $('rTraits').innerHTML = `
+      <div class="char-trait"><div class="k">대표 색상</div><div class="v" style="color:${data.color}">${data.color}</div></div>
+      <div class="char-trait"><div class="k">시드</div><div class="v">${seed}</div></div>
+    `;
+    $('loader').classList.remove('show');
+    $('result').classList.add('show');
+    $('result').scrollIntoView({behavior:'smooth',block:'start'});
+  };
+  img.onerror = () => { $('loader').classList.remove('show'); alert('이미지 생성 실패'); };
+  img.src = url;
+}
+
+$('genBtn').onclick = generate;
+$('regenBtn').onclick = generate;
+$('shareBtn').onclick = async () => {
+  const text = `내 MBTI 캐릭터: ${selected} - ${mbtis[selected].title}`;
+  if (navigator.share){ try{ await navigator.share({title:'MBTI Character', text, url:location.href}); }catch(e){} }
+  else { await navigator.clipboard.writeText(text+'\n'+location.href); alert('복사되었습니다!'); }
+};
+</script>
+</body>
+</html>
