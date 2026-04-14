@@ -4,11 +4,30 @@
 User-agent: *
 Allow: /
 
-# Disallow nothing — this is a public studio portfolio
-# Block only test results and build artifacts
+# Block development artifacts and internal docs
 Disallow: /test-results/
+Disallow: /test-screenshots/
 Disallow: /node_modules/
+Disallow: /playwright-report/
+Disallow: /coverage/
+
+# Disallow by extension/pattern
+Disallow: /*.md$
 Disallow: /*.mjs$
+Disallow: /*.lock$
+Disallow: /package.json
+Disallow: /package-lock.json
+
+# Agent / IDE / Git config directories
+Disallow: /.claude/
+Disallow: /.agents/
+Disallow: /.github/
+Disallow: /.vscode/
+Disallow: /.idea/
+Disallow: /.cursor/
+Disallow: /.git/
+Disallow: /.env
+Disallow: /.gitignore
 
 # AI crawlers — we welcome attribution but not training without consent
 User-agent: GPTBot
@@ -24,6 +43,27 @@ User-agent: anthropic-ai
 Disallow: /
 
 User-agent: Google-Extended
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: Meta-ExternalFetcher
 Disallow: /
 
 # Sitemap

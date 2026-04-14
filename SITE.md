@@ -194,14 +194,14 @@ https://pyxora.app 반영
 - **Primary**: `pyxora.app` (Cloudflare Registrar)
 - **Redirect**: `www.pyxora.app` → `pyxora.app` (301, _redirects)
 - **TLD**: `.app` = HSTS Preload 기본 적용
-- **Nameservers**: `alexis.ns.cloudflare.com`, `dahlia.ns.cloudflare.com`
+- **Nameservers**: Cloudflare (관리자만 확인)
 
 ### 이메일
 - **Primary**: `hello@pyxora.app`
-- **수신**: Cloudflare Email Routing → `seo574486@gmail.com` 포워딩
+- **수신**: Cloudflare Email Routing → 개인 메일 포워딩 (관리자만 확인)
 - **SPF**: `v=spf1 include:_spf.mx.cloudflare.net ~all`
 - **DMARC**: `_dmarc.pyxora.app` TXT
-- **발송**: Gmail "Send mail as" 설정 가능
+- **발송**: Gmail "Send mail as" 설정됨
 
 ---
 

@@ -1,6 +1,55 @@
 # www → apex redirect (handles www.pyxora.app after custom domain setup)
 https://www.pyxora.app/*  https://pyxora.app/:splat  301
 
+# ============ BLOCK DEV/INTERNAL FILES FROM WEB ACCESS ============
+# Markdown docs (SITE.md, CLAUDE.md, README.md)
+/*.md                     /404.html  404
+/README*                  /404.html  404
+/CLAUDE*                  /404.html  404
+/SITE*                    /404.html  404
+
+# Playwright/Node test scripts
+/*.mjs                    /404.html  404
+/test.*                   /404.html  404
+/audit.*                  /404.html  404
+/gen-og.*                 /404.html  404
+/mobile-shot*             /404.html  404
+
+# Package manifests and lockfiles
+/package.json             /404.html  404
+/package-lock.json        /404.html  404
+/yarn.lock                /404.html  404
+/pnpm-lock.yaml           /404.html  404
+/*.lock                   /404.html  404
+
+# Agent / AI tool configs (future-proof)
+/.claude/*                /404.html  404
+/.agents/*                /404.html  404
+/.github/*                /404.html  404
+/.vscode/*                /404.html  404
+/.idea/*                  /404.html  404
+/.cursor/*                /404.html  404
+
+# Environment and secret files (belt-and-suspenders)
+/.env*                    /404.html  404
+/*.env                    /404.html  404
+/secrets*                 /404.html  404
+/config.local*            /404.html  404
+
+# Source control
+/.git/*                   /404.html  404
+/.gitignore               /404.html  404
+/.gitattributes           /404.html  404
+
+# Test artifacts
+/test-results/*           /404.html  404
+/test-screenshots/*       /404.html  404
+/playwright-report/*      /404.html  404
+/coverage/*               /404.html  404
+
+# Node modules (just in case)
+/node_modules/*           /404.html  404
+
 # Subdomain placeholders for future use
 # /arcade/*   https://arcade.pyxora.app/:splat  302
 # /lab/*      https://lab.pyxora.app/:splat     302
