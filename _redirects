@@ -2,24 +2,15 @@
 https://www.pyxora.app/*  https://pyxora.app/:splat  301
 
 # ============ BLOCK DEV/INTERNAL FILES FROM WEB ACCESS ============
-# Note: Cloudflare Pages _redirects doesn't support extension wildcards
-# reliably (e.g., /*.md). Must list files explicitly.
+# Cloudflare Pages auto-excludes dotfolders from deployment.
+# All dev files (.mjs tests, package.json, docs) are under dotfolders:
+#   .docs/    — SITE.md, CLAUDE.md (internal docs)
+#   .tests/   — test.mjs, audit.mjs, gen-og.mjs, package.json (Playwright)
+#
+# Explicit rules below are backup-only in case dotfile exclusion changes.
 
-# Playwright test scripts at root
-/test.mjs            /404.html  404
-/audit.mjs           /404.html  404
-/gen-og.mjs          /404.html  404
-/mobile-shot.mjs     /404.html  404
-/mobile-shot-extra.mjs  /404.html  404
-
-# Package manifests
-/package.json        /404.html  404
-/package-lock.json   /404.html  404
-
-# Note: dotfiles (.docs/, .gitignore, .env, .git/) are automatically
-# excluded from Cloudflare Pages deployment — no redirect needed.
-# But add explicit rules as backup in case deploy behavior changes:
 /.docs/*             /404.html  404
+/.tests/*            /404.html  404
 /.env                /404.html  404
 /.env.*              /404.html  404
 /.gitignore          /404.html  404

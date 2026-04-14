@@ -45,7 +45,12 @@ pyxora-site/
 ├── .docs/                    # 내부 문서 (웹 비공개)
 │   ├── SITE.md               # 상세 스펙 문서
 │   └── CLAUDE.md             # 이 파일
-└── test.mjs / audit.mjs      # Playwright 테스트 (웹 비공개)
+└── .tests/                   # 개발 스크립트 (웹 비공개)
+    ├── test.mjs              # Playwright 기본 테스트
+    ├── audit.mjs             # 상세 감사
+    ├── gen-og.mjs            # OG 이미지 생성
+    ├── mobile-shot*.mjs      # 모바일 스크린샷
+    └── package.json          # Playwright dev 의존성
 ```
 
 ### 4. 작업 원칙
@@ -91,10 +96,10 @@ python -m http.server 8080
 npx http-server -p 8080
 
 # Playwright 기본 테스트
-node test.mjs
+node .tests/test.mjs
 
 # 상세 감사
-node audit.mjs
+node .tests/audit.mjs
 ```
 
 배포 전 체크:
