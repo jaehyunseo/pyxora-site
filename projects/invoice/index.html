@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="Invoice Generator — 한국식 세금계산서/인보이스 생성기"/>
+<title>Invoice Generator · Pyxora Studio</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23060610'/%3E%3Ctext x='50' y='72' font-family='sans-serif' font-size='68' font-weight='700' fill='%23fbbf24' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06060f;--surface:#13132a;--surface-hi:#1c1c3a;
+  --violet:#7c3aed;--pyx:#fbbf24;--cyan:#06b6d4;--green:#10b981;
+  --text:#f5f5f7;--text-2:#c4c4d0;--muted:#7a7a8c;
+  --line:rgba(255,255,255,.08);--line-hi:rgba(255,255,255,.16);
+}
+body{font-family:'Pretendard',-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+nav{position:sticky;top:0;z-index:50;padding:16px 32px;background:rgba(6,6,15,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;display:flex;align-items:center;gap:10px}
+.nav-brand .dot{width:7px;height:7px;border-radius:50%;background:var(--pyx);box-shadow:0 0 10px var(--pyx)}
+.nav-brand .studio{color:var(--muted);font-weight:400;margin-left:4px}
+.nav-right{display:flex;gap:10px}
+.btn{font-family:'JetBrains Mono',monospace;font-size:11px;padding:10px 16px;border:1px solid var(--line-hi);border-radius:100px;cursor:pointer;background:transparent;color:var(--text);transition:all .3s;letter-spacing:.5px}
+.btn:hover{background:var(--pyx);color:var(--bg);border-color:var(--pyx)}
+.btn.primary{background:var(--pyx);color:var(--bg);border-color:var(--pyx);font-weight:700}
+.btn.primary:hover{box-shadow:0 0 24px rgba(251,191,36,.5);transform:translateY(-1px)}
+
+.layout{display:grid;grid-template-columns:minmax(420px,1fr) 1.3fr;gap:0;min-height:calc(100vh - 68px)}
+
+/* Form side */
+.form-side{padding:40px;border-right:1px solid var(--line);background:rgba(12,12,28,.4);overflow-y:auto}
+.form-side h1{font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-1px;margin-bottom:6px}
+.form-side .subtitle{font-size:13px;color:var(--text-2);margin-bottom:32px}
+
+.section{margin-bottom:28px}
+.section-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--pyx);margin-bottom:12px;text-transform:uppercase;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.field{margin-bottom:12px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;text-transform:uppercase}
+.field input,.field textarea,.field select{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--line-hi);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'Pretendard',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.field input:focus,.field textarea:focus{border-color:var(--violet)}
+.field textarea{resize:vertical;min-height:60px;font-family:inherit}
+
+/* Items table */
+.items-table{width:100%;border-collapse:collapse;margin-top:8px}
+.items-table th{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.5px;color:var(--muted);text-transform:uppercase;padding:6px 4px;text-align:left;border-bottom:1px solid var(--line)}
+.items-table td{padding:4px 4px}
+.items-table input{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:6px;padding:8px 10px;color:var(--text);font-size:12px;outline:none;font-family:'Pretendard',sans-serif}
+.items-table input:focus{border-color:var(--violet)}
+.items-table input.num{text-align:right;font-family:'JetBrains Mono',monospace}
+.items-table .col-name{width:36%}
+.items-table .col-qty{width:15%}
+.items-table .col-price{width:24%}
+.items-table .col-amt{width:20%;font-family:'JetBrains Mono',monospace;font-size:12px;text-align:right;padding-right:8px;color:var(--pyx)}
+.items-table .col-del{width:5%;text-align:center}
+.items-table .btn-del{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px}
+.items-table .btn-del:hover{color:#ef4444}
+.btn-add-item{margin-top:10px;width:100%;padding:10px;background:rgba(124,58,237,.1);border:1px dashed var(--line-hi);border-radius:8px;color:var(--violet);font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;transition:all .2s}
+.btn-add-item:hover{background:rgba(124,58,237,.2);border-color:var(--violet);color:#fff}
+
+/* Totals */
+.totals{margin-top:16px;padding:16px;background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.2);border-radius:10px}
+.totals .row{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:12px;padding:4px 0;color:var(--text-2)}
+.totals .row.grand{font-size:18px;color:var(--pyx);font-weight:700;padding-top:10px;margin-top:6px;border-top:1px solid rgba(251,191,36,.2)}
+
+/* Preview side */
+.preview-side{padding:40px;background:rgba(6,6,15,.6);overflow-y:auto}
+.preview-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px;text-transform:uppercase}
+
+/* Actual invoice preview (light theme inside dark app) */
+.invoice{background:#fff;color:#222;padding:48px 52px;border-radius:12px;font-family:'Pretendard','Noto Sans KR',sans-serif;box-shadow:0 30px 80px rgba(0,0,0,.5);max-width:720px;margin:0 auto;line-height:1.5}
+.invoice-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;padding-bottom:24px;border-bottom:3px solid #1e1b4b}
+.invoice-hd .brand{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:800;color:#1e1b4b;letter-spacing:-1px}
+.invoice-hd .brand .sub{font-size:11px;color:#888;font-weight:400;letter-spacing:1px;margin-top:4px}
+.invoice-hd .title{text-align:right}
+.invoice-hd .title h1{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;color:#222;letter-spacing:-1px}
+.invoice-hd .title .meta{font-size:11px;color:#666;font-family:'JetBrains Mono',monospace;margin-top:6px}
+
+.invoice-parties{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px}
+.invoice-party h4{font-size:10px;color:#999;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+.invoice-party .name{font-size:16px;font-weight:700;color:#222;margin-bottom:4px}
+.invoice-party .info{font-size:11px;color:#555;line-height:1.7}
+
+.invoice-items{width:100%;border-collapse:collapse;margin-bottom:24px}
+.invoice-items thead{background:#f5f3ff}
+.invoice-items th{font-size:11px;color:#444;padding:12px 10px;text-align:left;font-weight:700;letter-spacing:.3px;border-bottom:2px solid #1e1b4b}
+.invoice-items th.right{text-align:right}
+.invoice-items td{padding:12px 10px;font-size:12px;color:#333;border-bottom:1px solid #eee}
+.invoice-items td.right{text-align:right;font-family:'JetBrains Mono',monospace}
+
+.invoice-totals{margin-left:auto;width:45%;margin-bottom:32px}
+.invoice-totals .row{display:flex;justify-content:space-between;font-size:12px;color:#555;padding:6px 0;font-family:'JetBrains Mono',monospace}
+.invoice-totals .row.grand{font-size:20px;font-weight:700;color:#1e1b4b;padding-top:12px;margin-top:8px;border-top:2px solid #1e1b4b}
+
+.invoice-foot{padding-top:24px;border-top:1px solid #eee;font-size:10px;color:#999;display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace}
+.invoice-foot .note{max-width:60%;line-height:1.6}
+
+@media (max-width:980px){
+  .layout{grid-template-columns:1fr}
+  .form-side{border-right:none;border-bottom:1px solid var(--line);padding:24px}
+  .preview-side{padding:24px}
+  .invoice{padding:32px 28px}
+  .invoice-hd{flex-direction:column;gap:16px}
+  .invoice-hd .title{text-align:left}
+  .invoice-hd .title h1{font-size:28px}
+  nav{padding:14px 20px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/projects/" class="nav-brand"><span class="dot"></span>PYXORA<span class="studio">INVOICE</span></a>
+  <div class="nav-right">
+    <button class="btn" id="resetBtn">RESET</button>
+    <button class="btn primary" id="downloadBtn">📄 DOWNLOAD PDF</button>
+    <a href="/projects/" class="btn">← PROJECTS</a>
+  </div>
+</nav>
+
+<div class="layout">
+  <!-- FORM -->
+  <div class="form-side">
+    <h1>Invoice Generator</h1>
+    <p class="subtitle">한국식 세금계산서/인보이스를 브라우저에서 생성하고 PDF로 다운로드. 서버 없음, 완전 프라이빗.</p>
+
+    <div class="section">
+      <div class="section-title">01 · 문서 정보</div>
+      <div class="field-row">
+        <div class="field"><label>문서 번호</label><input id="f_num" value="INV-2026-001"/></div>
+        <div class="field"><label>작성일</label><input id="f_date" type="date"/></div>
+      </div>
+      <div class="field"><label>제목</label><input id="f_title" value="웹사이트 개발 용역"/></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">02 · 공급자 (From)</div>
+      <div class="field"><label>상호/이름</label><input id="f_from_name" value="Pyxora Studio"/></div>
+      <div class="field-row">
+        <div class="field"><label>사업자등록번호</label><input id="f_from_biz" value="123-45-67890"/></div>
+        <div class="field"><label>대표자</label><input id="f_from_ceo" value="서재현"/></div>
+      </div>
+      <div class="field"><label>주소</label><input id="f_from_addr" value="서울특별시 강남구"/></div>
+      <div class="field-row">
+        <div class="field"><label>이메일</label><input id="f_from_email" value="hello@pyxora.app"/></div>
+        <div class="field"><label>전화</label><input id="f_from_tel" value="02-1234-5678"/></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">03 · 공급받는자 (To)</div>
+      <div class="field"><label>상호/이름</label><input id="f_to_name" value="Acme Corporation"/></div>
+      <div class="field-row">
+        <div class="field"><label>사업자등록번호</label><input id="f_to_biz" value="987-65-43210"/></div>
+        <div class="field"><label>대표자</label><input id="f_to_ceo" value="홍길동"/></div>
+      </div>
+      <div class="field"><label>주소</label><input id="f_to_addr" value="서울특별시 종로구"/></div>
+      <div class="field"><label>이메일</label><input id="f_to_email" value="finance@acme.co.kr"/></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">04 · 품목</div>
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th class="col-name">품목명</th>
+            <th class="col-qty">수량</th>
+            <th class="col-price">단가</th>
+            <th class="col-amt">금액</th>
+            <th class="col-del"></th>
+          </tr>
+        </thead>
+        <tbody id="itemsBody"></tbody>
+      </table>
+      <button class="btn-add-item" id="addItemBtn">+ 품목 추가</button>
+
+      <div class="totals">
+        <div class="row"><span>공급가액</span><span id="t_sub">₩ 0</span></div>
+        <div class="row"><span>부가세 (10%)</span><span id="t_vat">₩ 0</span></div>
+        <div class="row grand"><span>합계</span><span id="t_tot">₩ 0</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">05 · 추가 사항</div>
+      <div class="field"><label>비고 / 메모</label><textarea id="f_note">입금 계좌: 국민은행 123-456-789012 (예금주: Pyxora Studio)
+세금계산서는 별도 발행됩니다.</textarea></div>
+    </div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-side">
+    <div class="preview-title">▸ LIVE PREVIEW</div>
+    <div class="invoice" id="invoice">
+      <div class="invoice-hd">
+        <div class="brand">
+          <div id="p_from_name">Pyxora Studio</div>
+          <div class="sub">DIGITAL FORGE · SEOUL</div>
+        </div>
+        <div class="title">
+          <h1>INVOICE</h1>
+          <div class="meta">
+            <div>№ <span id="p_num">INV-2026-001</span></div>
+            <div>DATE <span id="p_date">2026-04-14</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="invoice-parties">
+        <div class="invoice-party">
+          <h4>FROM — 공급자</h4>
+          <div class="name" id="p_from_name2">Pyxora Studio</div>
+          <div class="info">
+            사업자등록: <span id="p_from_biz">123-45-67890</span><br>
+            대표자: <span id="p_from_ceo">서재현</span><br>
+            <span id="p_from_addr">서울특별시 강남구</span><br>
+            <span id="p_from_email">hello@pyxora.app</span> · <span id="p_from_tel">02-1234-5678</span>
+          </div>
+        </div>
+        <div class="invoice-party">
+          <h4>TO — 공급받는자</h4>
+          <div class="name" id="p_to_name">Acme Corporation</div>
+          <div class="info">
+            사업자등록: <span id="p_to_biz">987-65-43210</span><br>
+            대표자: <span id="p_to_ceo">홍길동</span><br>
+            <span id="p_to_addr">서울특별시 종로구</span><br>
+            <span id="p_to_email">finance@acme.co.kr</span>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:14px;margin-bottom:10px;color:#333" id="p_title">웹사이트 개발 용역</h3>
+      <table class="invoice-items">
+        <thead>
+          <tr>
+            <th style="width:50%">품목</th>
+            <th class="right" style="width:12%">수량</th>
+            <th class="right" style="width:19%">단가</th>
+            <th class="right" style="width:19%">금액</th>
+          </tr>
+        </thead>
+        <tbody id="p_items"></tbody>
+      </table>
+
+      <div class="invoice-totals">
+        <div class="row"><span>공급가액</span><span id="p_sub">₩ 0</span></div>
+        <div class="row"><span>부가세 (10%)</span><span id="p_vat">₩ 0</span></div>
+        <div class="row grand"><span>합계</span><span id="p_tot">₩ 0</span></div>
+      </div>
+
+      <div class="invoice-foot">
+        <div class="note" id="p_note"></div>
+        <div>Generated by Pyxora Studio<br>pyxora.app/projects/invoice</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+
+// Items state
+let items = [
+  { name:'웹사이트 디자인', qty:1, price:2000000 },
+  { name:'프론트엔드 개발', qty:1, price:3000000 },
+  { name:'반응형 최적화', qty:1, price:500000 }
+];
+
+function fmt(n){ return '₩ ' + Math.round(n).toLocaleString('ko-KR'); }
+
+function renderItems(){
+  const body = $('itemsBody');
+  body.innerHTML = items.map((it, i) => `
+    <tr>
+      <td><input value="${it.name}" oninput="updateItem(${i},'name',this.value)"/></td>
+      <td><input class="num" type="number" min="0" value="${it.qty}" oninput="updateItem(${i},'qty',+this.value)"/></td>
+      <td><input class="num" type="number" min="0" value="${it.price}" oninput="updateItem(${i},'price',+this.value)"/></td>
+      <td class="col-amt">${fmt(it.qty*it.price)}</td>
+      <td><button class="btn-del" onclick="delItem(${i})">×</button></td>
+    </tr>
+  `).join('');
+
+  // Preview
+  $('p_items').innerHTML = items.map(it => `
+    <tr>
+      <td>${escapeHtml(it.name)}</td>
+      <td class="right">${it.qty}</td>
+      <td class="right">${fmt(it.price)}</td>
+      <td class="right">${fmt(it.qty*it.price)}</td>
+    </tr>
+  `).join('');
+
+  const sub = items.reduce((s,it) => s + it.qty*it.price, 0);
+  const vat = Math.round(sub * 0.1);
+  const tot = sub + vat;
+  $('t_sub').textContent = fmt(sub);
+  $('t_vat').textContent = fmt(vat);
+  $('t_tot').textContent = fmt(tot);
+  $('p_sub').textContent = fmt(sub);
+  $('p_vat').textContent = fmt(vat);
+  $('p_tot').textContent = fmt(tot);
+}
+
+window.updateItem = (i, k, v) => { items[i][k] = v; renderItems(); };
+window.delItem = i => { items.splice(i,1); renderItems(); };
+$('addItemBtn').onclick = () => { items.push({name:'새 품목', qty:1, price:0}); renderItems(); };
+
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// Bind fields to preview
+const bindings = {
+  f_num:'p_num', f_date:'p_date', f_title:'p_title',
+  f_from_name:['p_from_name','p_from_name2'], f_from_biz:'p_from_biz', f_from_ceo:'p_from_ceo',
+  f_from_addr:'p_from_addr', f_from_email:'p_from_email', f_from_tel:'p_from_tel',
+  f_to_name:'p_to_name', f_to_biz:'p_to_biz', f_to_ceo:'p_to_ceo',
+  f_to_addr:'p_to_addr', f_to_email:'p_to_email',
+  f_note:'p_note'
+};
+function syncAll(){
+  Object.keys(bindings).forEach(srcId => {
+    const src = $(srcId);
+    if (!src) return;
+    const targets = [].concat(bindings[srcId]);
+    targets.forEach(tId => {
+      const el = $(tId);
+      if (!el) return;
+      el.textContent = src.value;
+    });
+  });
+}
+Object.keys(bindings).forEach(srcId => {
+  const el = $(srcId);
+  if (el) el.addEventListener('input', syncAll);
+});
+
+// Default date
+$('f_date').value = new Date().toISOString().slice(0,10);
+
+// Initial render
+syncAll();
+renderItems();
+
+// Reset
+$('resetBtn').onclick = () => {
+  if (!confirm('모든 입력을 초기화하시겠습니까?')) return;
+  items = [{ name:'', qty:1, price:0 }];
+  document.querySelectorAll('.form-side input, .form-side textarea').forEach(el => {
+    if (el.type !== 'date') el.value = '';
+  });
+  $('f_date').value = new Date().toISOString().slice(0,10);
+  $('f_from_name').value = 'Pyxora Studio';
+  syncAll();
+  renderItems();
+};
+
+// Download PDF
+$('downloadBtn').onclick = async () => {
+  const btn = $('downloadBtn');
+  const orig = btn.textContent;
+  btn.textContent = 'GENERATING...';
+  btn.disabled = true;
+  try {
+    const el = $('invoice');
+    const canvas = await html2canvas(el, { scale:2, backgroundColor:'#ffffff', useCORS:true });
+    const imgData = canvas.toDataURL('image/png');
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+    const pdfW = 210, pdfH = 297;
+    const imgW = pdfW - 20;
+    const imgH = (canvas.height * imgW) / canvas.width;
+    pdf.addImage(imgData, 'PNG', 10, 10, imgW, Math.min(imgH, pdfH-20));
+    const filename = ($('f_num').value || 'invoice') + '.pdf';
+    pdf.save(filename);
+  } catch(e){
+    alert('PDF 생성 실패: ' + e.message);
+    console.error(e);
+  } finally {
+    btn.textContent = orig;
+    btn.disabled = false;
+  }
+};
+</script>
+
+</body>
+</html>

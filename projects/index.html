@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="description" content="Pyxora Studio Projects — Retro games, creative tools, and WebGL experiments." />
+<meta name="description" content="Pyxora Studio Projects — Games, AI experiments, enterprise demos, and data visualizations." />
 <title>Projects · Pyxora Studio</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23060610'/%3E%3Ctext x='50' y='72' font-family='sans-serif' font-size='68' font-weight='700' fill='%23fbbf24' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,214 +14,135 @@
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
 :root{
   --bg:#06060f;--bg-elev:#0c0c1c;--surface:#13132a;--surface-hi:#1c1c3a;
-  --violet:#7c3aed;--violet-2:#a855f7;--pyx:#fbbf24;--cyan:#06b6d4;--pink:#ec4899;
+  --violet:#7c3aed;--violet-2:#a855f7;--pyx:#fbbf24;--cyan:#06b6d4;--pink:#ec4899;--green:#10b981;
   --text:#f5f5f7;--text-2:#c4c4d0;--muted:#7a7a8c;
   --line:rgba(255,255,255,.08);--line-hi:rgba(255,255,255,.16);
   --ease:cubic-bezier(.22,1,.36,1);
 }
-body{
-  font-family:'Pretendard','Space Grotesk',-apple-system,system-ui,sans-serif;
-  background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;
-}
+body{font-family:'Pretendard','Space Grotesk',-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 ::selection{background:var(--pyx);color:var(--bg)}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 50% at 20% 0%,rgba(124,58,237,.25),transparent 60%),radial-gradient(ellipse 60% 50% at 80% 80%,rgba(6,182,212,.15),transparent 60%)}
+body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse at center,#000 30%,transparent 80%)}
 
-/* Background effects */
-body::before{
-  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(124,58,237,.25), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(6,182,212,.15), transparent 60%);
-}
-body::after{
-  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:
-    linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
-  background-size:60px 60px;
-  mask-image:radial-gradient(ellipse at center,#000 30%,transparent 80%);
-}
-
-/* Nav */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:50;
-  padding:18px 40px;
-  backdrop-filter:blur(24px) saturate(180%);
-  background:rgba(6,6,15,.7);
-  border-bottom:1px solid var(--line);
-  display:flex;align-items:center;justify-content:space-between;
-}
-.nav-brand{
-  font-family:'JetBrains Mono',monospace;
-  font-weight:700;font-size:15px;letter-spacing:-.3px;
-  display:flex;align-items:center;gap:10px;
-}
+nav{position:fixed;top:0;left:0;right:0;z-index:50;padding:18px 40px;backdrop-filter:blur(24px) saturate(180%);background:rgba(6,6,15,.7);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;letter-spacing:-.3px;display:flex;align-items:center;gap:10px}
 .nav-brand .dot{width:7px;height:7px;border-radius:50%;background:var(--pyx);box-shadow:0 0 10px var(--pyx)}
 .nav-brand .studio{color:var(--muted);font-weight:400;margin-left:4px}
-.nav-back{
-  font-family:'JetBrains Mono',monospace;font-size:12px;
-  padding:10px 18px;border:1px solid var(--line-hi);border-radius:100px;
-  transition:all .3s var(--ease);
-}
+.nav-back{font-family:'JetBrains Mono',monospace;font-size:12px;padding:10px 18px;border:1px solid var(--line-hi);border-radius:100px;transition:all .3s var(--ease)}
 .nav-back:hover{background:var(--pyx);color:var(--bg);border-color:var(--pyx)}
 
-/* Container */
-.container{max-width:1280px;margin:0 auto;padding:0 40px;position:relative;z-index:2}
+.container{max-width:1320px;margin:0 auto;padding:0 40px;position:relative;z-index:2}
 
-/* Hero */
-.hero{padding:180px 0 100px}
-.eyebrow{
-  display:inline-flex;align-items:center;gap:10px;
-  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;
-  padding:8px 16px;border:1px solid rgba(251,191,36,.3);
-  background:rgba(251,191,36,.05);border-radius:100px;color:var(--pyx);
-  margin-bottom:32px;
-}
+.hero{padding:160px 0 60px}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;padding:8px 16px;border:1px solid rgba(251,191,36,.3);background:rgba(251,191,36,.05);border-radius:100px;color:var(--pyx);margin-bottom:32px}
 .eyebrow .dot{width:6px;height:6px;background:var(--pyx);border-radius:50%;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-h1{
-  font-family:'Space Grotesk',sans-serif;
-  font-size:clamp(56px,9vw,128px);font-weight:700;
-  line-height:.9;letter-spacing:-.04em;margin-bottom:24px;
-  background:linear-gradient(180deg,#fff 0%,#fff 40%,var(--violet-2) 75%,var(--pyx) 100%);
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-}
+h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(56px,9vw,128px);font-weight:700;line-height:.9;letter-spacing:-.04em;margin-bottom:24px;background:linear-gradient(180deg,#fff 0%,#fff 40%,var(--violet-2) 75%,var(--pyx) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 h1 em{font-style:normal}
-.hero p{font-size:19px;color:var(--text-2);max-width:640px;line-height:1.7}
+.hero p{font-size:19px;color:var(--text-2);max-width:720px;line-height:1.7}
+
+/* Stats strip */
+.stats{display:flex;gap:48px;margin-top:48px;flex-wrap:wrap}
+.stat{display:flex;flex-direction:column;gap:4px}
+.stat-num{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;color:var(--pyx)}
+.stat-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+
+/* Tabs */
+.tabs-wrap{position:sticky;top:70px;z-index:40;background:rgba(6,6,15,.85);backdrop-filter:blur(24px);padding:24px 0 20px;border-bottom:1px solid var(--line);margin-bottom:48px}
+.tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.tab{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.2px;padding:10px 18px;border:1px solid var(--line-hi);border-radius:100px;background:transparent;color:var(--text-2);cursor:pointer;transition:all .3s var(--ease);text-transform:uppercase;display:inline-flex;align-items:center;gap:8px}
+.tab:hover{border-color:var(--pyx);color:var(--pyx)}
+.tab.active{background:var(--pyx);color:var(--bg);border-color:var(--pyx);font-weight:700}
+.tab .count{opacity:.6;font-size:10px}
+.tab.active .count{opacity:.8}
 
 /* Grid */
-.projects-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(360px,1fr));
-  gap:24px;padding-bottom:120px;
-}
-.card{
-  background:linear-gradient(180deg,var(--surface),var(--bg-elev));
-  border:1px solid var(--line);
-  border-radius:28px;
-  overflow:hidden;
-  position:relative;
-  transition:all .5s var(--ease);
-  display:flex;flex-direction:column;
-}
-.card:hover{
-  transform:translateY(-6px);
-  border-color:var(--line-hi);
-  box-shadow:0 30px 60px -20px rgba(124,58,237,.3);
-}
-.card::before{
-  content:"";position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--violet),var(--pyx),var(--cyan));
-  transform:scaleX(0);transform-origin:left;
-  transition:transform .6s var(--ease);
-}
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:24px;padding-bottom:120px}
+.card{background:linear-gradient(180deg,var(--surface),var(--bg-elev));border:1px solid var(--line);border-radius:24px;overflow:hidden;position:relative;transition:all .5s var(--ease);display:flex;flex-direction:column;min-height:440px}
+.card:hover{transform:translateY(-6px);border-color:var(--line-hi);box-shadow:0 30px 60px -20px rgba(124,58,237,.3)}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--violet),var(--pyx),var(--cyan));transform:scaleX(0);transform-origin:left;transition:transform .6s var(--ease);z-index:3}
 .card:hover::before{transform:scaleX(1)}
-
-.card-visual{
-  height:240px;position:relative;overflow:hidden;
-  background:#000;
-  border-bottom:1px solid var(--line);
-}
-.card-body{padding:32px;flex:1;display:flex;flex-direction:column}
-.card-tag{
-  display:inline-flex;align-items:center;gap:8px;
-  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;
-  padding:6px 12px;border:1px solid var(--line-hi);border-radius:100px;
-  color:var(--pyx);align-self:flex-start;margin-bottom:20px;
-}
-.card h3{
-  font-family:'Space Grotesk',sans-serif;
-  font-size:30px;font-weight:600;letter-spacing:-.02em;
-  margin-bottom:12px;line-height:1.1;
-}
-.card p{color:var(--text-2);font-size:15px;line-height:1.6;flex:1}
-.card-meta{
-  margin-top:24px;padding-top:24px;
-  border-top:1px solid var(--line);
-  display:flex;justify-content:space-between;align-items:center;
-  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);
-}
+.card-visual{height:200px;position:relative;overflow:hidden;background:#000;border-bottom:1px solid var(--line)}
+.card-body{padding:28px;flex:1;display:flex;flex-direction:column}
+.card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.card-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.2px;padding:4px 10px;border:1px solid var(--line-hi);border-radius:100px;color:var(--pyx);text-transform:uppercase}
+.card-tag.ai{color:var(--violet-2);border-color:rgba(168,85,247,.4)}
+.card-tag.biz{color:var(--cyan);border-color:rgba(6,182,212,.4)}
+.card-tag.data{color:var(--green);border-color:rgba(16,185,129,.4)}
+.card-tag.kids{color:var(--pink);border-color:rgba(236,72,153,.4)}
+.card h3{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:600;letter-spacing:-.02em;margin-bottom:10px;line-height:1.15}
+.card p{color:var(--text-2);font-size:14px;line-height:1.6;flex:1}
+.card-meta{margin-top:20px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)}
 .card-tech{display:flex;gap:6px}
-.card-tech span{
-  padding:3px 8px;border:1px solid var(--line);border-radius:4px;
-  letter-spacing:.5px;
-}
-.card-cta{
-  color:var(--pyx);transition:transform .3s var(--ease);
-  display:inline-flex;align-items:center;gap:6px;
-}
+.card-tech span{padding:3px 8px;border:1px solid var(--line);border-radius:4px;letter-spacing:.5px}
+.card-cta{color:var(--pyx);transition:transform .3s var(--ease);display:inline-flex;align-items:center;gap:6px;font-weight:600}
 .card:hover .card-cta{transform:translateX(4px)}
+.card.soon{opacity:.55}
+.card.soon:hover{transform:none;box-shadow:none;opacity:.75}
+.card.soon:hover::before{transform:scaleX(0)}
+.card.soon .card-cta{color:var(--muted)}
+.badge-soon{position:absolute;top:16px;right:16px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.2px;padding:5px 10px;background:rgba(6,6,15,.85);border:1px solid var(--line-hi);border-radius:100px;color:var(--muted);backdrop-filter:blur(8px)}
+.badge-new{position:absolute;top:16px;right:16px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.2px;padding:5px 10px;background:var(--pyx);color:var(--bg);border-radius:100px;font-weight:700;box-shadow:0 0 20px rgba(251,191,36,.5)}
 
-/* Visuals for each project */
-.visual-tetris{
-  background:#000;display:grid;
-  grid-template-columns:repeat(10,1fr);
-  grid-template-rows:repeat(8,1fr);
-  gap:2px;padding:24px;
-}
+/* Visuals */
+.visual-tetris{background:#000;display:grid;grid-template-columns:repeat(10,1fr);grid-template-rows:repeat(7,1fr);gap:2px;padding:20px;height:100%}
 .visual-tetris div{background:transparent;border-radius:2px}
-.visual-tetris .v{background:var(--violet)}
-.visual-tetris .c{background:var(--cyan)}
-.visual-tetris .p{background:var(--pyx)}
-.visual-tetris .k{background:var(--pink)}
-
-.visual-palette{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:0;height:100%;
-}
+.visual-tetris .v{background:var(--violet)}.visual-tetris .c{background:var(--cyan)}.visual-tetris .p{background:var(--pyx)}.visual-tetris .k{background:var(--pink)}
+.visual-palette{display:grid;grid-template-columns:repeat(5,1fr);gap:0;height:100%}
 .visual-palette div{height:100%}
-.visual-palette div:nth-child(1){background:#7c3aed}
-.visual-palette div:nth-child(2){background:#a855f7}
-.visual-palette div:nth-child(3){background:#ec4899}
-.visual-palette div:nth-child(4){background:#fbbf24}
-.visual-palette div:nth-child(5){background:#06b6d4}
+.visual-palette div:nth-child(1){background:#7c3aed}.visual-palette div:nth-child(2){background:#a855f7}.visual-palette div:nth-child(3){background:#ec4899}.visual-palette div:nth-child(4){background:#fbbf24}.visual-palette div:nth-child(5){background:#06b6d4}
+.visual-shader{background:radial-gradient(circle at 30% 40%,#7c3aed 0%,transparent 40%),radial-gradient(circle at 70% 60%,#06b6d4 0%,transparent 40%),radial-gradient(circle at 50% 50%,#fbbf24 0%,transparent 30%),#000;filter:blur(20px);transform:scale(1.15);animation:shaderMove 8s ease-in-out infinite;height:100%}
+@keyframes shaderMove{0%,100%{filter:blur(20px) hue-rotate(0deg)}50%{filter:blur(30px) hue-rotate(30deg)}}
+.visual-finai{background:linear-gradient(135deg,#1e1b4b,#0c0c1c);display:flex;align-items:center;justify-content:center;height:100%;position:relative;overflow:hidden}
+.visual-finai::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(168,85,247,.4),transparent 50%),radial-gradient(circle at 70% 50%,rgba(251,191,36,.3),transparent 50%)}
+.visual-finai .bubble{position:relative;z-index:2;background:rgba(255,255,255,.08);border:1px solid var(--line-hi);border-radius:20px;padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);max-width:80%;backdrop-filter:blur(12px)}
+.visual-finai .bubble::before{content:"▸ ";color:var(--pyx)}
+.visual-crypto{display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(4,1fr);gap:2px;padding:16px;height:100%;background:#000}
+.visual-crypto div{display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.7);border-radius:3px;font-weight:700}
+.visual-crypto .up1{background:rgba(16,185,129,.35)}.visual-crypto .up2{background:rgba(16,185,129,.65)}.visual-crypto .up3{background:rgba(16,185,129,.9)}
+.visual-crypto .dn1{background:rgba(239,68,68,.35)}.visual-crypto .dn2{background:rgba(239,68,68,.65)}.visual-crypto .dn3{background:rgba(239,68,68,.9)}
+.visual-invoice{background:#fff;padding:24px;height:100%;color:#111;font-family:'JetBrains Mono',monospace;font-size:10px;position:relative}
+.visual-invoice .iv-hd{font-size:14px;font-weight:700;color:#7c3aed;letter-spacing:.5px;margin-bottom:8px}
+.visual-invoice .iv-ln{height:1px;background:#e5e5e5;margin:6px 0}
+.visual-invoice .iv-rw{display:flex;justify-content:space-between;color:#666}
+.visual-invoice .iv-tt{margin-top:10px;font-size:13px;font-weight:700;color:#111;text-align:right}
+.visual-erp{background:linear-gradient(180deg,#0f0f22,#060610);padding:20px;height:100%;display:flex;flex-direction:column;gap:8px;justify-content:center}
+.visual-erp .row{display:flex;gap:8px}
+.visual-erp .kpi{flex:1;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.visual-erp .kpi-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:.5px}
+.visual-erp .kpi-val{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--pyx);margin-top:2px}
+.visual-erp .chart{height:32px;background:linear-gradient(180deg,transparent,rgba(124,58,237,.3));border-radius:4px;position:relative;overflow:hidden;margin-top:4px}
+.visual-erp .chart::before{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--violet)}
+.visual-gradient{background:linear-gradient(135deg,#7c3aed,#ec4899,#fbbf24);height:100%}
+.visual-geometric{background:#000;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr);gap:3px;padding:20px;height:100%}
+.visual-geometric div{background:var(--violet);border-radius:50%;opacity:.4}
+.visual-geometric div:nth-child(odd){background:var(--pyx);border-radius:4px}
+.visual-geometric div:nth-child(3n){background:var(--cyan);border-radius:50%}
+.visual-dashboard{background:#0c0c1c;padding:16px;height:100%;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:6px}
+.visual-dashboard div{background:rgba(124,58,237,.15);border:1px solid var(--line);border-radius:6px}
+.visual-dashboard div:nth-child(1){grid-column:1/3;background:linear-gradient(90deg,rgba(124,58,237,.3),rgba(6,182,212,.3))}
+.visual-kids{background:linear-gradient(135deg,#fbbf24,#ec4899);display:flex;align-items:center;justify-content:center;height:100%;font-size:80px}
+.visual-game{background:#000;display:flex;align-items:center;justify-content:center;height:100%;color:var(--cyan);font-family:'Space Grotesk',sans-serif;font-size:48px;font-weight:700;letter-spacing:-2px;text-shadow:0 0 20px var(--cyan)}
 
-.visual-shader{
-  background:
-    radial-gradient(circle at 30% 40%,#7c3aed 0%,transparent 40%),
-    radial-gradient(circle at 70% 60%,#06b6d4 0%,transparent 40%),
-    radial-gradient(circle at 50% 50%,#fbbf24 0%,transparent 30%),
-    #000;
-  filter:blur(20px);
-  transform:scale(1.15);
-  animation:shaderMove 8s ease-in-out infinite;
-}
-@keyframes shaderMove{
-  0%,100%{filter:blur(20px) hue-rotate(0deg)}
-  50%{filter:blur(30px) hue-rotate(30deg)}
-}
-
-.visual-more{
-  background:linear-gradient(135deg,var(--surface),var(--bg-elev));
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Space Grotesk',sans-serif;
-  font-size:72px;font-weight:700;
-  color:var(--line-hi);letter-spacing:-.02em;
-}
-.visual-more span{opacity:.4}
-
-.card.coming h3,.card.coming p{opacity:.5}
-.card.coming .card-cta{color:var(--muted)}
-.card.coming:hover{transform:none;border-color:var(--line)}
-.card.coming:hover::before{transform:scaleX(0)}
-
-/* Footer */
-footer{
-  border-top:1px solid var(--line);
-  padding:48px 0;text-align:center;position:relative;z-index:2;
-}
+footer{border-top:1px solid var(--line);padding:48px 0;text-align:center;position:relative;z-index:2}
 footer p{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px}
 footer a{color:var(--pyx)}
 
 @media (max-width:720px){
   nav{padding:14px 20px}
   .container{padding:0 20px}
-  .hero{padding:120px 0 60px}
+  .hero{padding:120px 0 40px}
+  .stats{gap:24px}
+  .stat-num{font-size:28px}
+  .tabs-wrap{top:62px;padding:16px 0 14px}
+  .tabs{gap:6px}
+  .tab{font-size:10px;padding:8px 14px}
   .projects-grid{grid-template-columns:1fr;gap:16px;padding-bottom:80px}
-  .card-body{padding:24px}
-  .card h3{font-size:26px}
-  .card-visual{height:180px}
+  .card{min-height:auto}
+  .card-body{padding:22px}
+  .card h3{font-size:22px}
+  .card-visual{height:160px}
 }
 </style>
 </head>
@@ -236,20 +157,116 @@ footer a{color:var(--pyx)}
   <div class="container">
     <div class="eyebrow"><span class="dot"></span>PROJECTS · MMXXVI</div>
     <h1>Selected<br><em>works.</em></h1>
-    <p>작은 실험들이 모여 하나의 작업실이 됩니다. 아래는 지금까지 Pyxora Studio에서 벼려낸 것들 — 게임, 도구, 그리고 기술 탐구의 기록.</p>
+    <p>Pyxora Studio는 재미있는 게임부터 엔터프라이즈 시스템까지, "만들 수 있는 모든 것"을 벼려냅니다. 아래는 우리의 작업실에서 태어난 것들 — 플레이어블 게임, AI 실험, B2B 데모, 데이터 분석.</p>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">23</div><div class="stat-lbl">Projects</div></div>
+      <div class="stat"><div class="stat-num">5</div><div class="stat-lbl">Categories</div></div>
+      <div class="stat"><div class="stat-num">∞</div><div class="stat-lbl">Curiosity</div></div>
+    </div>
   </div>
 </section>
+
+<div class="tabs-wrap">
+  <div class="container">
+    <div class="tabs">
+      <button class="tab active" data-filter="all">ALL <span class="count">(23)</span></button>
+      <button class="tab" data-filter="play">🎮 PLAY</button>
+      <button class="tab" data-filter="ai">🤖 AI</button>
+      <button class="tab" data-filter="biz">🏢 BUSINESS</button>
+      <button class="tab" data-filter="data">📊 DATA</button>
+      <button class="tab" data-filter="tool">🛠 TOOLS</button>
+      <button class="tab" data-filter="kids">👶 KIDS</button>
+    </div>
+  </div>
+</div>
 
 <section>
   <div class="container">
     <div class="projects-grid">
 
+      <!-- ====== LIVE PROJECTS ====== -->
+
+      <!-- Pyxora FinAI [NEW] -->
+      <a href="/projects/finai/" class="card" data-cats="ai biz">
+        <span class="badge-new">NEW</span>
+        <div class="card-visual"><div class="visual-finai"><div class="bubble">월 400만원, 어떻게 저축해야 할까요?</div></div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag ai">AI</span><span class="card-tag biz">FINTECH</span></div>
+          <h3>Pyxora FinAI</h3>
+          <p>한국어 재무 상담 AI 챗봇. 예산·저축·투자·연말정산·은퇴까지. BYO API 키로 완전 프라이빗, 데모 모드 지원.</p>
+          <div class="card-meta"><div class="card-tech"><span>LLM</span><span>CHAT</span></div><div class="card-cta">Chat now →</div></div>
+        </div>
+      </a>
+
+      <!-- Crypto Heatmap [NEW] -->
+      <a href="/projects/crypto/" class="card" data-cats="data">
+        <span class="badge-new">NEW</span>
+        <div class="card-visual">
+          <div class="visual-crypto">
+            <div class="up3">BTC</div><div class="up2">ETH</div><div class="dn1">XRP</div><div class="up1">SOL</div><div class="dn2">ADA</div><div class="up2">DOGE</div>
+            <div class="dn1">AVAX</div><div class="up3">LINK</div><div class="up2">DOT</div><div class="dn3">ATOM</div><div class="up1">BCH</div><div class="up2">SUI</div>
+            <div class="up2">ETC</div><div class="dn2">HBAR</div><div class="up1">TRX</div><div class="up3">APT</div><div class="dn1">ARB</div><div class="up2">NEAR</div>
+            <div class="dn2">FIL</div><div class="up1">MANA</div><div class="up2">SAND</div><div class="dn1">AXS</div><div class="up3">MATIC</div><div class="up2">ICP</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag data">DATA</span><span class="card-tag">LIVE</span></div>
+          <h3>Crypto Heatmap</h3>
+          <p>Upbit KRW 마켓 실시간 시세 히트맵. 100+ 코인, 거래량 기반 사이즈, 색상 그라데이션. 5초마다 자동 갱신.</p>
+          <div class="card-meta"><div class="card-tech"><span>UPBIT API</span><span>D3</span></div><div class="card-cta">View live →</div></div>
+        </div>
+      </a>
+
+      <!-- Invoice Generator [NEW] -->
+      <a href="/projects/invoice/" class="card" data-cats="biz tool">
+        <span class="badge-new">NEW</span>
+        <div class="card-visual">
+          <div class="visual-invoice">
+            <div class="iv-hd">세금계산서</div>
+            <div class="iv-ln"></div>
+            <div class="iv-rw"><span>공급자</span><span>Pyxora Studio</span></div>
+            <div class="iv-rw"><span>공급받는자</span><span>Acme Corp.</span></div>
+            <div class="iv-ln"></div>
+            <div class="iv-rw"><span>웹사이트 개발</span><span>3,000,000</span></div>
+            <div class="iv-rw"><span>부가세</span><span>300,000</span></div>
+            <div class="iv-tt">₩3,300,000</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag biz">ENTERPRISE</span><span class="card-tag">TOOL</span></div>
+          <h3>Invoice Generator</h3>
+          <p>한국식 세금계산서/인보이스 생성기. 품목·수량·세액 입력 → 한글 PDF 다운로드. 회사 로고 삽입 지원.</p>
+          <div class="card-meta"><div class="card-tech"><span>JSPDF</span><span>CANVAS</span></div><div class="card-cta">Make one →</div></div>
+        </div>
+      </a>
+
+      <!-- ERP Dashboard [NEW] -->
+      <a href="/projects/erp/" class="card" data-cats="biz data">
+        <span class="badge-new">NEW</span>
+        <div class="card-visual">
+          <div class="visual-erp">
+            <div class="row">
+              <div class="kpi"><div class="kpi-lbl">매출</div><div class="kpi-val">₩42M</div></div>
+              <div class="kpi"><div class="kpi-lbl">주문</div><div class="kpi-val">1,284</div></div>
+              <div class="kpi"><div class="kpi-lbl">재고</div><div class="kpi-val">87%</div></div>
+            </div>
+            <div class="chart"></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag biz">ENTERPRISE</span><span class="card-tag data">DASHBOARD</span></div>
+          <h3>ERP Dashboard</h3>
+          <p>가상의 "Pyxora Commerce" 회사 경영 화면. 매출·주문·재고·KPI 카드, 기간 필터, 실시간 차트. B2B 역량 쇼케이스.</p>
+          <div class="card-meta"><div class="card-tech"><span>CHART.JS</span><span>MOCK</span></div><div class="card-cta">Open demo →</div></div>
+        </div>
+      </a>
+
       <!-- Tetris -->
-      <a href="/projects/tetris/" class="card">
+      <a href="/projects/tetris/" class="card" data-cats="play">
         <div class="card-visual">
           <div class="visual-tetris">
             <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-            <div></div><div></div><div></div><div class="v"></div><div class="v"></div><div></div><div></div><div></div><div></div><div></div>
             <div></div><div></div><div class="v"></div><div class="v"></div><div></div><div></div><div class="p"></div><div></div><div></div><div></div>
             <div></div><div></div><div></div><div></div><div></div><div class="p"></div><div class="p"></div><div></div><div></div><div></div>
             <div></div><div></div><div></div><div class="c"></div><div></div><div class="p"></div><div></div><div></div><div class="k"></div><div></div>
@@ -259,63 +276,274 @@ footer a{color:var(--pyx)}
           </div>
         </div>
         <div class="card-body">
-          <div class="card-tag">· GAME · FLAGSHIP</div>
+          <div class="card-tags"><span class="card-tag">GAME</span><span class="card-tag">FLAGSHIP</span></div>
           <h3>Neon Tetris</h3>
-          <p>네온 감성과 부드러운 60fps 애니메이션이 만난 클래식 테트리스. 키보드·터치 조작, 다음 블록 미리보기, 레벨 시스템, 로컬 최고점수.</p>
-          <div class="card-meta">
-            <div class="card-tech"><span>CANVAS</span><span>VANILLA JS</span></div>
-            <div class="card-cta">Play now →</div>
-          </div>
+          <p>네온 감성과 60fps 애니메이션의 클래식 테트리스. 키보드·터치·스와이프 조작, 고스트 피스, 로컬 베스트.</p>
+          <div class="card-meta"><div class="card-tech"><span>CANVAS</span><span>VANILLA</span></div><div class="card-cta">Play now →</div></div>
         </div>
       </a>
 
       <!-- Palette -->
-      <a href="/projects/palette/" class="card">
-        <div class="card-visual">
-          <div class="visual-palette">
-            <div></div><div></div><div></div><div></div><div></div>
-          </div>
-        </div>
+      <a href="/projects/palette/" class="card" data-cats="tool">
+        <div class="card-visual"><div class="visual-palette"><div></div><div></div><div></div><div></div><div></div></div></div>
         <div class="card-body">
-          <div class="card-tag">· TOOL · UTILITY</div>
+          <div class="card-tags"><span class="card-tag">TOOL</span><span class="card-tag">UTILITY</span></div>
           <h3>Palette Forge</h3>
-          <p>이미지를 업로드하면 자동으로 주요 색상을 추출하는 디자이너 도구. 색상별 HEX 복사, 접근성 대비 체크, 팔레트 내보내기.</p>
-          <div class="card-meta">
-            <div class="card-tech"><span>CANVAS</span><span>K-MEANS</span></div>
-            <div class="card-cta">Try it →</div>
-          </div>
+          <p>이미지에서 K-means로 주요 색상 6개 자동 추출. HEX 클립보드 복사, CSS/JSON/PNG 내보내기.</p>
+          <div class="card-meta"><div class="card-tech"><span>CANVAS</span><span>K-MEANS</span></div><div class="card-cta">Try it →</div></div>
         </div>
       </a>
 
       <!-- Shader -->
-      <a href="/projects/shader/" class="card">
-        <div class="card-visual">
-          <div class="visual-shader"></div>
-        </div>
+      <a href="/projects/shader/" class="card" data-cats="tool">
+        <div class="card-visual"><div class="visual-shader"></div></div>
         <div class="card-body">
-          <div class="card-tag">· LAB · EXPERIMENT</div>
+          <div class="card-tags"><span class="card-tag">LAB</span><span class="card-tag">WEBGL</span></div>
           <h3>Shader Lab</h3>
-          <p>실시간 GLSL 프래그먼트 쉐이더 에디터. 코드를 쓰면 즉시 WebGL로 렌더링. 프리셋 쉐이더 포함, 모바일에서도 작동.</p>
-          <div class="card-meta">
-            <div class="card-tech"><span>WEBGL</span><span>GLSL</span></div>
-            <div class="card-cta">Explore →</div>
-          </div>
+          <p>실시간 GLSL 프래그먼트 쉐이더 에디터. 코드 작성 → 즉시 렌더링. 5개 프리셋 · FPS 카운터.</p>
+          <div class="card-meta"><div class="card-tech"><span>WEBGL</span><span>GLSL</span></div><div class="card-cta">Explore →</div></div>
         </div>
       </a>
 
-      <!-- Coming Soon -->
-      <div class="card coming">
-        <div class="card-visual">
-          <div class="visual-more"><span>···</span></div>
-        </div>
+      <!-- ====== COMING SOON ====== -->
+
+      <!-- AI: Animal Face Test -->
+      <div class="card soon" data-cats="ai play">
+        <span class="badge-soon">WAVE 2</span>
+        <div class="card-visual"><div class="visual-gradient"></div></div>
         <div class="card-body">
-          <div class="card-tag">· COMING SOON</div>
-          <h3>More Experiments</h3>
-          <p>Snake, Breakout, Conway's Game of Life, Markdown Editor, 그리고 아직 이름 없는 실험들이 작업실에서 만들어지고 있습니다.</p>
-          <div class="card-meta">
-            <div class="card-tech"><span>WIP</span></div>
-            <div class="card-cta">Stay tuned</div>
-          </div>
+          <div class="card-tags"><span class="card-tag ai">AI</span><span class="card-tag">VIRAL</span></div>
+          <h3>동물상 테스트</h3>
+          <p>사진 업로드 → MediaPipe 얼굴 인식 → 강아지/고양이/여우/토끼/늑대상 판정 + 공유 가능한 결과 카드.</p>
+          <div class="card-meta"><div class="card-tech"><span>MEDIAPIPE</span><span>ML</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- AI: AI Drawing -->
+      <div class="card soon" data-cats="ai tool">
+        <span class="badge-soon">WAVE 2</span>
+        <div class="card-visual"><div class="visual-gradient" style="background:linear-gradient(135deg,#06b6d4,#7c3aed,#ec4899)"></div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag ai">AI</span><span class="card-tag">GENERATIVE</span></div>
+          <h3>AI Drawing</h3>
+          <p>한글 프롬프트 → Stable Diffusion XL Lightning이 그림 생성. "노을 지는 산 위의 여우" 같은 자연어 입력.</p>
+          <div class="card-meta"><div class="card-tech"><span>SD-XL</span><span>CF WORKERS AI</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- AI: Style Transfer -->
+      <div class="card soon" data-cats="ai tool">
+        <span class="badge-soon">WAVE 2</span>
+        <div class="card-visual"><div class="visual-gradient" style="background:linear-gradient(135deg,#10b981,#06b6d4,#7c3aed)"></div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag ai">AI</span><span class="card-tag">IMAGE</span></div>
+          <h3>Style Transfer</h3>
+          <p>사진 업로드 → 지브리·유화·수채화·픽셀아트 스타일로 변환. Img2img 파이프라인.</p>
+          <div class="card-meta"><div class="card-tech"><span>IMG2IMG</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- AI: Naming -->
+      <div class="card soon" data-cats="ai tool">
+        <span class="badge-soon">WAVE 2</span>
+        <div class="card-visual"><div class="visual-geometric"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag ai">AI</span><span class="card-tag biz">BRANDING</span></div>
+          <h3>AI Naming</h3>
+          <p>회사/브랜드/제품/캐릭터 이름 생성기. 한글·영어, 어원 설명 포함. 도메인 가용성 체크.</p>
+          <div class="card-meta"><div class="card-tech"><span>LLM</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- AI: MBTI Character -->
+      <div class="card soon" data-cats="ai play">
+        <span class="badge-soon">WAVE 2</span>
+        <div class="card-visual"><div class="visual-gradient" style="background:linear-gradient(135deg,#fbbf24,#ec4899,#7c3aed)"></div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag ai">AI</span><span class="card-tag">VIRAL</span></div>
+          <h3>MBTI Character</h3>
+          <p>MBTI 입력 → 그 성격을 가진 가상 캐릭터 + 프로필 카드 생성. SNS 공유형.</p>
+          <div class="card-meta"><div class="card-tech"><span>SD-XL</span><span>LLM</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- Biz: CRM Kanban -->
+      <div class="card soon" data-cats="biz">
+        <span class="badge-soon">WAVE 3</span>
+        <div class="card-visual"><div class="visual-dashboard"><div></div><div></div><div></div><div></div></div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag biz">ENTERPRISE</span><span class="card-tag">CRM</span></div>
+          <h3>Sales CRM</h3>
+          <p>영업 파이프라인 칸반 보드. 리드→상담→제안→계약 단계, 드래그 앤 드롭, 성약률 차트.</p>
+          <div class="card-meta"><div class="card-tech"><span>KANBAN</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- Biz: HR Dashboard -->
+      <div class="card soon" data-cats="biz">
+        <span class="badge-soon">WAVE 3</span>
+        <div class="card-visual"><div class="visual-dashboard"><div></div><div></div><div></div><div></div></div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag biz">ENTERPRISE</span><span class="card-tag">HR</span></div>
+          <h3>HR Dashboard</h3>
+          <p>인사 관리 대시보드. 조직도, 근태, 급여, 휴가 잔여. 가상 100명 규모 회사 시뮬레이션.</p>
+          <div class="card-meta"><div class="card-tech"><span>D3 ORG</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- Biz: Purchase System -->
+      <div class="card soon" data-cats="biz">
+        <span class="badge-soon">WAVE 3</span>
+        <div class="card-visual"><div class="visual-dashboard"><div></div><div></div><div></div><div></div></div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag biz">ENTERPRISE</span><span class="card-tag">SCM</span></div>
+          <h3>Purchase System</h3>
+          <p>구매 요청서(PR) → 발주(PO) → 승인 → 입고 워크플로우. 결재선 시각화, 다단계 승인.</p>
+          <div class="card-meta"><div class="card-tech"><span>WORKFLOW</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- Biz: Accounting -->
+      <div class="card soon" data-cats="biz">
+        <span class="badge-soon">WAVE 3</span>
+        <div class="card-visual"><div class="visual-invoice"><div class="iv-hd">회계 원장</div><div class="iv-ln"></div><div class="iv-rw"><span>차변</span><span>대변</span></div><div class="iv-ln"></div><div class="iv-rw"><span>현금</span><span>1,000,000</span></div><div class="iv-rw"><span>매출</span><span>1,000,000</span></div></div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag biz">ENTERPRISE</span><span class="card-tag">ACCOUNTING</span></div>
+          <h3>Ledger Book</h3>
+          <p>복식부기 회계 원장 시뮬레이터. 거래 입력 → 차변/대변 자동 기록, 시산표/손익계산서 자동 생성.</p>
+          <div class="card-meta"><div class="card-tech"><span>LEDGER</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- Biz: Inventory -->
+      <div class="card soon" data-cats="biz">
+        <span class="badge-soon">WAVE 3</span>
+        <div class="card-visual"><div class="visual-dashboard"><div></div><div></div><div></div><div></div></div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag biz">ENTERPRISE</span><span class="card-tag">WMS</span></div>
+          <h3>Inventory WMS</h3>
+          <p>창고 재고 관리 시스템. SKU별 현황, 입출고 이력, 안전재고 알림, 바코드 스캔 모의.</p>
+          <div class="card-meta"><div class="card-tech"><span>WMS</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- Play: Breakout -->
+      <div class="card soon" data-cats="play">
+        <span class="badge-soon">WAVE 4</span>
+        <div class="card-visual"><div class="visual-game">▪ ▪ ▪</div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag">GAME</span><span class="card-tag">ARCADE</span></div>
+          <h3>Breakout: Neon</h3>
+          <p>물리 기반 벽돌깨기. 네온 파티클, 스크린 쉐이크, WebAudio 사운드, 파워업 아이템.</p>
+          <div class="card-meta"><div class="card-tech"><span>CANVAS</span><span>PHYSICS</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- Play: 2048 -->
+      <div class="card soon" data-cats="play">
+        <span class="badge-soon">WAVE 4</span>
+        <div class="card-visual"><div class="visual-game">2048</div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag">GAME</span><span class="card-tag">PUZZLE</span></div>
+          <h3>2048 Reborn</h3>
+          <p>클래식 2048 리디자인. 부드러운 애니메이션, 실행 취소, 스와이프, 리더보드.</p>
+          <div class="card-meta"><div class="card-tech"><span>GRID</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- Kids: Shapes -->
+      <div class="card soon" data-cats="play kids">
+        <span class="badge-soon">WAVE 4</span>
+        <div class="card-visual"><div class="visual-kids">🔵 🔶 🔺</div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag kids">KIDS</span><span class="card-tag">EDU</span></div>
+          <h3>모양 맞추기</h3>
+          <p>3~6세 유아용. 동그라미·네모·세모를 제자리에 끌어다 놓기. 별 보상 · 응원 메시지.</p>
+          <div class="card-meta"><div class="card-tech"><span>TOUCH</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- Kids: Numbers -->
+      <div class="card soon" data-cats="play kids">
+        <span class="badge-soon">WAVE 4</span>
+        <div class="card-visual"><div class="visual-kids">1 2 3</div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag kids">KIDS</span><span class="card-tag">EDU</span></div>
+          <h3>숫자 따라쓰기</h3>
+          <p>태블릿 터치로 1~10 숫자 따라쓰기. 경로 가이드, 완성 시 축하 애니메이션.</p>
+          <div class="card-meta"><div class="card-tech"><span>SVG</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- Kids: Animals -->
+      <div class="card soon" data-cats="play kids">
+        <span class="badge-soon">WAVE 4</span>
+        <div class="card-visual"><div class="visual-kids">🦁 🐘 🐸</div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag kids">KIDS</span><span class="card-tag">EDU</span></div>
+          <h3>동물 소리</h3>
+          <p>동물 그림 클릭 → 울음소리 재생 + 이름 말하기. 사자, 코끼리, 개구리, 기린 등 30종.</p>
+          <div class="card-meta"><div class="card-tech"><span>AUDIO</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- Data: World Population -->
+      <div class="card soon" data-cats="data">
+        <span class="badge-soon">WAVE 5</span>
+        <div class="card-visual"><div class="visual-shader" style="background:radial-gradient(circle at 50% 50%,#10b981,transparent 50%),radial-gradient(circle at 20% 30%,#06b6d4,transparent 40%),#000"></div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag data">DATA</span><span class="card-tag">VIZ</span></div>
+          <h3>World Explorer</h3>
+          <p>세계 인구/GDP/수명 탐험기. D3.js 세계 지도, 시간축 슬라이더 1960~2024.</p>
+          <div class="card-meta"><div class="card-tech"><span>D3</span><span>TOPOJSON</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- Data: Subway -->
+      <div class="card soon" data-cats="data">
+        <span class="badge-soon">WAVE 5</span>
+        <div class="card-visual"><div class="visual-dashboard"><div></div><div></div><div></div><div></div></div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag data">DATA</span><span class="card-tag">GRAPH</span></div>
+          <h3>Seoul Subway</h3>
+          <p>서울 지하철 노선 그래프. 두 역 선택 → 최단 경로 시각화. 공공데이터 API.</p>
+          <div class="card-meta"><div class="card-tech"><span>GRAPH</span><span>DIJKSTRA</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- Data: Stock -->
+      <div class="card soon" data-cats="data">
+        <span class="badge-soon">WAVE 5</span>
+        <div class="card-visual"><div class="visual-dashboard"><div></div><div></div><div></div><div></div></div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag data">DATA</span><span class="card-tag biz">FINANCE</span></div>
+          <h3>Stock Candles</h3>
+          <p>주식 캔들차트 뷰어. 종목 검색, 이동평균, 볼륨, RSI/MACD 기술지표.</p>
+          <div class="card-meta"><div class="card-tech"><span>CANDLES</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- Data: GitHub -->
+      <div class="card soon" data-cats="data">
+        <span class="badge-soon">WAVE 5</span>
+        <div class="card-visual"><div class="visual-dashboard"><div></div><div></div><div></div><div></div></div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag data">DATA</span><span class="card-tag">DEV</span></div>
+          <h3>GitHub Analyzer</h3>
+          <p>username 입력 → 기여 히트맵, 언어 비율, 저장소 TOP 10, 활동 패턴 분석.</p>
+          <div class="card-meta"><div class="card-tech"><span>GITHUB API</span></div><div class="card-cta">Soon</div></div>
+        </div>
+      </div>
+
+      <!-- Data: Power -->
+      <div class="card soon" data-cats="data">
+        <span class="badge-soon">WAVE 5</span>
+        <div class="card-visual"><div class="visual-dashboard"><div></div><div></div><div></div><div></div></div></div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag data">DATA</span><span class="card-tag">ESG</span></div>
+          <h3>Korea Power</h3>
+          <p>한국 실시간 전력 수요/공급. 지역별, 연료원별(원자력/LNG/신재생). 공공데이터포털 API.</p>
+          <div class="card-meta"><div class="card-tech"><span>PUBLIC API</span></div><div class="card-cta">Soon</div></div>
         </div>
       </div>
 
@@ -326,6 +554,37 @@ footer a{color:var(--pyx)}
 <footer>
   <p>Forged with 🧡 at <a href="/">Pyxora Studio</a> · MMXXVI · Seoul</p>
 </footer>
+
+<script>
+// Tab filtering
+const tabs = document.querySelectorAll('.tab');
+const cards = document.querySelectorAll('.card');
+
+// Count cards per category
+const counts = {all: cards.length, play:0, ai:0, biz:0, data:0, tool:0, kids:0};
+cards.forEach(c => {
+  const cats = (c.dataset.cats||'').split(/\s+/);
+  cats.forEach(cat => { if (counts[cat] !== undefined) counts[cat]++; });
+});
+tabs.forEach(t => {
+  const f = t.dataset.filter;
+  if (f === 'all') return;
+  t.innerHTML = t.innerHTML.replace(/\s*\(\d+\)/,'') + ` <span class="count">(${counts[f]||0})</span>`;
+});
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const f = tab.dataset.filter;
+    cards.forEach(c => {
+      const cats = (c.dataset.cats||'').split(/\s+/);
+      const show = f === 'all' || cats.includes(f);
+      c.style.display = show ? '' : 'none';
+    });
+  });
+});
+</script>
 
 </body>
 </html>

@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="Crypto Heatmap — Upbit KRW 마켓 실시간 시세 히트맵"/>
+<title>Crypto Heatmap · Pyxora Studio</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23060610'/%3E%3Ctext x='50' y='72' font-family='sans-serif' font-size='68' font-weight='700' fill='%23fbbf24' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06060f;--surface:#13132a;--surface-hi:#1c1c3a;
+  --violet:#7c3aed;--pyx:#fbbf24;--cyan:#06b6d4;--green:#10b981;--red:#ef4444;
+  --text:#f5f5f7;--text-2:#c4c4d0;--muted:#7a7a8c;
+  --line:rgba(255,255,255,.08);--line-hi:rgba(255,255,255,.16);
+}
+html,body{height:100%}
+body{font-family:'Pretendard',-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;overflow:hidden;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+
+nav{position:relative;z-index:10;padding:16px 32px;background:rgba(6,6,15,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.nav-brand{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;display:flex;align-items:center;gap:10px}
+.nav-brand .dot{width:7px;height:7px;border-radius:50%;background:var(--pyx);box-shadow:0 0 10px var(--pyx)}
+.nav-brand .studio{color:var(--muted);font-weight:400;margin-left:4px}
+.nav-right{display:flex;gap:10px;align-items:center}
+.pill{font-family:'JetBrains Mono',monospace;font-size:10px;padding:6px 12px;border:1px solid var(--line-hi);border-radius:100px;display:inline-flex;align-items:center;gap:6px;color:var(--text-2)}
+.pill .dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.btn{font-family:'JetBrains Mono',monospace;font-size:11px;padding:8px 14px;border:1px solid var(--line-hi);border-radius:100px;cursor:pointer;background:transparent;color:var(--text);transition:all .3s}
+.btn:hover{background:var(--pyx);color:var(--bg);border-color:var(--pyx)}
+.btn.active{background:var(--violet);border-color:var(--violet);color:#fff}
+
+/* Header bar */
+.header-bar{padding:20px 32px;border-bottom:1px solid var(--line);background:rgba(12,12,28,.4);display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.header-info h1{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+.header-info p{font-size:13px;color:var(--text-2)}
+.header-stats{display:flex;gap:20px;font-family:'JetBrains Mono',monospace}
+.hstat{display:flex;flex-direction:column;gap:2px}
+.hstat-lbl{font-size:9px;color:var(--muted);letter-spacing:1px}
+.hstat-val{font-size:14px;font-weight:700;color:var(--pyx)}
+.hstat-val.green{color:var(--green)}
+.hstat-val.red{color:var(--red)}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Heatmap */
+.heatmap-wrap{flex:1;padding:20px 32px;overflow:auto;position:relative}
+.heatmap{display:grid;gap:4px;grid-auto-rows:minmax(90px,auto)}
+.cell{position:relative;border-radius:8px;padding:12px 14px;cursor:pointer;overflow:hidden;transition:transform .2s,box-shadow .3s;display:flex;flex-direction:column;justify-content:space-between;min-height:90px}
+.cell:hover{transform:scale(1.02);box-shadow:0 12px 30px rgba(0,0,0,.6);z-index:5}
+.cell .sym{font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:-.5px}
+.cell .pct{font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:-.3px}
+.cell .price{font-family:'JetBrains Mono',monospace;font-size:10px;opacity:.75;margin-top:2px}
+.cell .vol{font-family:'JetBrains Mono',monospace;font-size:9px;opacity:.6;letter-spacing:.5px}
+
+/* Cell sizes based on volume tier */
+.cell.xl .sym{font-size:28px}
+.cell.xl .pct{font-size:20px}
+.cell.xl .price{font-size:13px}
+.cell.lg .sym{font-size:22px}
+.cell.lg .pct{font-size:16px}
+.cell.lg .price{font-size:11px}
+.cell.md .sym{font-size:16px}
+.cell.md .pct{font-size:13px}
+.cell.sm .sym{font-size:13px}
+.cell.sm .pct{font-size:11px}
+.cell.sm .price{font-size:9px}
+
+/* Loading */
+.loader{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(6,6,15,.8);backdrop-filter:blur(4px);z-index:20}
+.loader.hide{display:none}
+.loader .spinner{width:48px;height:48px;border:3px solid var(--line);border-top-color:var(--pyx);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader p{margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-2);letter-spacing:1px}
+
+/* Tooltip */
+.tooltip{position:fixed;background:rgba(6,6,15,.95);border:1px solid var(--line-hi);border-radius:12px;padding:14px 16px;font-size:12px;pointer-events:none;z-index:100;backdrop-filter:blur(12px);min-width:220px;display:none;box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.tooltip.show{display:block}
+.tooltip h4{font-family:'Space Grotesk',sans-serif;font-size:18px;margin-bottom:8px;color:var(--pyx)}
+.tooltip .row{display:flex;justify-content:space-between;padding:4px 0;font-family:'JetBrains Mono',monospace;font-size:11px}
+.tooltip .row .k{color:var(--muted)}
+.tooltip .row .v{color:var(--text);font-weight:700}
+.tooltip .row .v.g{color:var(--green)}
+.tooltip .row .v.r{color:var(--red)}
+
+/* Legend */
+.legend{position:fixed;bottom:20px;right:20px;background:rgba(12,12,28,.9);border:1px solid var(--line);border-radius:12px;padding:12px 16px;backdrop-filter:blur(12px);font-family:'JetBrains Mono',monospace;font-size:10px;z-index:10}
+.legend-scale{display:flex;align-items:center;gap:6px;margin-top:6px}
+.legend-scale .box{width:14px;height:14px;border-radius:3px}
+
+/* Error */
+.error{padding:40px;text-align:center;color:var(--red);font-family:'JetBrains Mono',monospace}
+
+@media (max-width:820px){
+  nav{padding:12px 16px}
+  .header-bar{padding:16px;gap:12px}
+  .header-info h1{font-size:18px}
+  .header-info p{font-size:11px}
+  .header-stats{gap:14px}
+  .heatmap-wrap{padding:12px 16px}
+  .legend{bottom:12px;right:12px;font-size:9px;padding:8px 12px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/projects/" class="nav-brand"><span class="dot"></span>PYXORA<span class="studio">HEATMAP</span></a>
+  <div class="nav-right">
+    <span class="pill"><span class="dot"></span>LIVE</span>
+    <a href="/projects/" class="btn">← PROJECTS</a>
+  </div>
+</nav>
+
+<div class="header-bar">
+  <div class="header-info">
+    <h1>Upbit KRW Heatmap</h1>
+    <p>실시간 업비트 KRW 마켓 · 5초마다 자동 갱신 · 셀 크기 = 24h 거래량</p>
+  </div>
+  <div class="header-stats">
+    <div class="hstat"><div class="hstat-lbl">UPDATED</div><div class="hstat-val" id="updated">—</div></div>
+    <div class="hstat"><div class="hstat-lbl">MARKETS</div><div class="hstat-val" id="count">—</div></div>
+    <div class="hstat"><div class="hstat-lbl">GAINERS</div><div class="hstat-val green" id="gainers">—</div></div>
+    <div class="hstat"><div class="hstat-lbl">LOSERS</div><div class="hstat-val red" id="losers">—</div></div>
+  </div>
+  <div class="controls">
+    <button class="btn active" data-sort="vol">거래량순</button>
+    <button class="btn" data-sort="gain">상승률순</button>
+    <button class="btn" data-sort="loss">하락률순</button>
+  </div>
+</div>
+
+<div class="heatmap-wrap">
+  <div class="heatmap" id="heatmap"></div>
+  <div class="loader" id="loader">
+    <div style="text-align:center">
+      <div class="spinner"></div>
+      <p>UPBIT API 불러오는 중...</p>
+    </div>
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<div class="legend">
+  <div>24h 변동률</div>
+  <div class="legend-scale">
+    <span class="box" style="background:rgba(239,68,68,.9)"></span>
+    <span class="box" style="background:rgba(239,68,68,.45)"></span>
+    <span class="box" style="background:rgba(100,100,120,.3)"></span>
+    <span class="box" style="background:rgba(16,185,129,.45)"></span>
+    <span class="box" style="background:rgba(16,185,129,.9)"></span>
+  </div>
+  <div style="display:flex;justify-content:space-between;margin-top:4px;color:var(--muted)">
+    <span>-10%</span><span>0</span><span>+10%</span>
+  </div>
+</div>
+
+<script>
+const heatmap = document.getElementById('heatmap');
+const loader = document.getElementById('loader');
+const tooltip = document.getElementById('tooltip');
+let markets = [];
+let tickers = [];
+let sortMode = 'vol';
+
+// CORS-friendly CDN proxy for Upbit (Upbit API usually allows cross-origin, but fall back if not)
+const UPBIT = 'https://api.upbit.com';
+
+async function fetchMarkets(){
+  const res = await fetch(`${UPBIT}/v1/market/all?isDetails=false`);
+  if (!res.ok) throw new Error('market/all failed');
+  const all = await res.json();
+  return all.filter(m => m.market.startsWith('KRW-'));
+}
+
+async function fetchTickers(marketCodes){
+  // Upbit allows max ~100 markets per request
+  const batches = [];
+  for (let i = 0; i < marketCodes.length; i += 100){
+    batches.push(marketCodes.slice(i, i+100));
+  }
+  const results = [];
+  for (const batch of batches){
+    const res = await fetch(`${UPBIT}/v1/ticker?markets=${batch.join(',')}`);
+    if (!res.ok) throw new Error('ticker failed');
+    const data = await res.json();
+    results.push(...data);
+  }
+  return results;
+}
+
+function formatPrice(p){
+  if (p >= 1000) return p.toLocaleString('ko-KR', {maximumFractionDigits:0});
+  if (p >= 1) return p.toLocaleString('ko-KR', {maximumFractionDigits:2});
+  return p.toFixed(4);
+}
+function formatVol(v){
+  if (v >= 1e12) return (v/1e12).toFixed(1) + '조';
+  if (v >= 1e8) return (v/1e8).toFixed(0) + '억';
+  if (v >= 1e4) return (v/1e4).toFixed(0) + '만';
+  return v.toFixed(0);
+}
+
+function colorFor(pct){
+  // -10% (deep red) → 0 (neutral) → +10% (deep green)
+  const clamped = Math.max(-10, Math.min(10, pct));
+  if (clamped > 0){
+    const intensity = Math.min(1, clamped / 8);
+    const alpha = 0.15 + intensity * 0.75;
+    return `rgba(16,185,129,${alpha})`;
+  } else if (clamped < 0){
+    const intensity = Math.min(1, -clamped / 8);
+    const alpha = 0.15 + intensity * 0.75;
+    return `rgba(239,68,68,${alpha})`;
+  }
+  return 'rgba(100,100,120,0.3)';
+}
+
+function renderHeatmap(){
+  if (!tickers.length) return;
+
+  // Merge market name info
+  const marketMap = {};
+  markets.forEach(m => { marketMap[m.market] = m; });
+
+  let data = tickers.map(t => {
+    const m = marketMap[t.market];
+    return {
+      code: t.market,
+      symbol: t.market.replace('KRW-',''),
+      name: m ? m.korean_name : t.market,
+      price: t.trade_price,
+      pct: t.signed_change_rate * 100,
+      vol: t.acc_trade_price_24h,
+      high: t.high_price,
+      low: t.low_price,
+      change: t.signed_change_price
+    };
+  });
+
+  // Sort
+  if (sortMode === 'vol') data.sort((a,b) => b.vol - a.vol);
+  else if (sortMode === 'gain') data.sort((a,b) => b.pct - a.pct);
+  else if (sortMode === 'loss') data.sort((a,b) => a.pct - b.pct);
+
+  // Tier sizing: top 5 XL, next 15 LG, next 30 MD, rest SM
+  const grid = [];
+  data.forEach((d, i) => {
+    let tier = 'sm', span = 1;
+    if (i < 3){ tier = 'xl'; span = 3; }
+    else if (i < 10){ tier = 'lg'; span = 2; }
+    else if (i < 30){ tier = 'md'; span = 1; }
+    else { tier = 'sm'; span = 1; }
+    grid.push({...d, tier, span});
+  });
+
+  // Grid CSS
+  heatmap.style.gridTemplateColumns = 'repeat(12, 1fr)';
+
+  heatmap.innerHTML = grid.map(d => {
+    const color = colorFor(d.pct);
+    const sign = d.pct >= 0 ? '+' : '';
+    return `
+      <div class="cell ${d.tier}" style="background:${color};grid-column:span ${d.span}"
+           data-code="${d.code}"
+           data-name="${d.name}"
+           data-price="${d.price}"
+           data-pct="${d.pct.toFixed(2)}"
+           data-vol="${d.vol}"
+           data-high="${d.high}"
+           data-low="${d.low}">
+        <div>
+          <div class="sym">${d.symbol}</div>
+          <div class="price">₩${formatPrice(d.price)}</div>
+        </div>
+        <div>
+          <div class="pct">${sign}${d.pct.toFixed(2)}%</div>
+          <div class="vol">VOL ${formatVol(d.vol)}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Stats
+  const gainers = data.filter(d => d.pct > 0).length;
+  const losers = data.filter(d => d.pct < 0).length;
+  document.getElementById('count').textContent = data.length;
+  document.getElementById('gainers').textContent = gainers;
+  document.getElementById('losers').textContent = losers;
+  document.getElementById('updated').textContent = new Date().toLocaleTimeString('ko-KR');
+
+  // Tooltips
+  document.querySelectorAll('.cell').forEach(cell => {
+    cell.addEventListener('mouseenter', () => {
+      const pct = parseFloat(cell.dataset.pct);
+      const cls = pct >= 0 ? 'g' : 'r';
+      const sign = pct >= 0 ? '+' : '';
+      tooltip.innerHTML = `
+        <h4>${cell.dataset.name} (${cell.dataset.code.replace('KRW-','')})</h4>
+        <div class="row"><span class="k">현재가</span><span class="v">₩${formatPrice(parseFloat(cell.dataset.price))}</span></div>
+        <div class="row"><span class="k">변동률</span><span class="v ${cls}">${sign}${pct.toFixed(2)}%</span></div>
+        <div class="row"><span class="k">24h 고가</span><span class="v">₩${formatPrice(parseFloat(cell.dataset.high))}</span></div>
+        <div class="row"><span class="k">24h 저가</span><span class="v">₩${formatPrice(parseFloat(cell.dataset.low))}</span></div>
+        <div class="row"><span class="k">24h 거래대금</span><span class="v">₩${formatVol(parseFloat(cell.dataset.vol))}</span></div>
+      `;
+      tooltip.classList.add('show');
+    });
+    cell.addEventListener('mousemove', e => {
+      const pad = 16;
+      let x = e.clientX + pad, y = e.clientY + pad;
+      const rect = tooltip.getBoundingClientRect();
+      if (x + rect.width > window.innerWidth) x = e.clientX - rect.width - pad;
+      if (y + rect.height > window.innerHeight) y = e.clientY - rect.height - pad;
+      tooltip.style.left = x + 'px';
+      tooltip.style.top = y + 'px';
+    });
+    cell.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+    cell.addEventListener('click', () => {
+      const code = cell.dataset.code;
+      window.open(`https://upbit.com/exchange?code=CRIX.UPBIT.${code}`, '_blank');
+    });
+  });
+}
+
+async function refresh(){
+  try {
+    if (!markets.length) markets = await fetchMarkets();
+    tickers = await fetchTickers(markets.map(m => m.market));
+    renderHeatmap();
+    loader.classList.add('hide');
+  } catch(e){
+    console.error(e);
+    loader.innerHTML = `<div class="error">
+      ⚠ Upbit API 호출 실패<br>
+      <span style="font-size:10px;opacity:.7">${e.message}</span><br><br>
+      <button class="btn" onclick="location.reload()">RETRY</button>
+    </div>`;
+  }
+}
+
+// Sort buttons
+document.querySelectorAll('[data-sort]').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('[data-sort]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    sortMode = btn.dataset.sort;
+    renderHeatmap();
+  };
+});
+
+refresh();
+setInterval(refresh, 5000);
+</script>
+
+</body>
+</html>
