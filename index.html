@@ -31,6 +31,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- Google AdSense (verification + future ad serving on subdomains) -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9886893201801989" crossorigin="anonymous"></script>
+
 <style>
 /* ============ RESET ============ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -1044,6 +1048,7 @@ section{content-visibility:auto;contain-intrinsic-size:auto 1000px}
     <div class="nav-links">
       <a href="#about">ABOUT</a>
       <a href="#services">SERVICES</a>
+      <a href="#apps">OUR APPS</a>
       <a href="/projects/">PROJECTS</a>
       <a href="#story">STORY</a>
       <a href="#contact">CONTACT</a>
@@ -1061,6 +1066,7 @@ section{content-visibility:auto;contain-intrinsic-size:auto 1000px}
   <div class="mobile-drawer-label">· NAVIGATION</div>
   <a href="#about">About</a>
   <a href="#services">Services</a>
+  <a href="#apps">Our Apps</a>
   <a href="/projects/">Projects</a>
   <a href="#story">Story</a>
   <a href="#brand">Brand</a>
@@ -1287,10 +1293,52 @@ section{content-visibility:auto;contain-intrinsic-size:auto 1000px}
   </div>
 </section>
 
+<!-- =============== OUR APPS (live products) =============== -->
+<section id="apps">
+  <div class="container">
+    <div class="section-eyebrow reveal">04 / OUR APPS</div>
+    <h2 class="section-title reveal">Now <em>serving.</em></h2>
+    <p class="section-desc reveal">Pyxora가 운영 중인 라이브 서비스입니다. 실험을 넘어 실제 사용자와 매일 만나는 제품들 — 작게 시작해서 정성껏 다듬어 갑니다.</p>
+
+    <div class="services-grid">
+      <a href="https://kidquest.pyxora.app" class="service reveal" data-hover style="text-decoration:none">
+        <div class="service-num" style="color:var(--green)">● LIVE</div>
+        <div class="service-icon" style="background:linear-gradient(135deg,rgba(251,191,36,.25),rgba(236,72,153,.15));color:var(--pyx)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+        </div>
+        <h3>KidQuest</h3>
+        <p>아이의 약속과 목표를 게임처럼 돕는 가족 앱. 부모가 시키는 체크리스트가 아니라, 아이가 스스로 퀘스트를 고르고, 달성하고, 보상을 받는 구조. 형제자매 관리, 성장 리포트, AI 응원 메시지까지.</p>
+        <div class="service-tags">
+          <span style="color:var(--pyx);border-color:rgba(251,191,36,.3)">FAMILY</span>
+          <span>REACT</span>
+          <span>FIREBASE</span>
+          <span>PWA</span>
+        </div>
+      </a>
+
+      <div class="service reveal reveal-delay-1" data-hover>
+        <div class="service-num">CONCEPT</div>
+        <div class="service-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+        <h3>Family Reading Log</h3>
+        <p>부모와 아이가 함께 책을 기록하고, 짧은 한 줄 감상을 나누는 가족 독서 도구. 아이의 독서 흐름과 부모의 코멘트가 한곳에 쌓이는 공유 노트. 구상 단계.</p>
+        <div class="service-tags"><span>FAMILY</span><span>READING</span><span>NEXT</span></div>
+      </div>
+
+      <div class="service reveal reveal-delay-2" data-hover>
+        <div class="service-num">CONCEPT</div>
+        <div class="service-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <h3>Parenting Ledger</h3>
+        <p>아이 관련 지출을 자동으로 분류하고 정리하는 최소한의 가계부. 부모의 머릿속 부담을 줄이는 것이 목표. 개념 단계이며 KidQuest 사용자 피드백을 기반으로 설계 예정.</p>
+        <div class="service-tags"><span>FAMILY</span><span>FINANCE</span><span>NEXT</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- =============== FEATURED PROJECTS =============== -->
 <section id="featured" class="featured">
   <div class="container">
-    <div class="section-eyebrow reveal">04 / FEATURED</div>
+    <div class="section-eyebrow reveal">05 / FEATURED</div>
     <h2 class="section-title reveal">Selected <em>works.</em></h2>
     <p class="section-desc reveal">아직은 작은 컬렉션이지만, 매 작품마다 Pyxora의 철학이 담깁니다.</p>
 
@@ -1340,7 +1388,7 @@ section{content-visibility:auto;contain-intrinsic-size:auto 1000px}
 <!-- =============== STORY + TIMELINE =============== -->
 <section id="story">
   <div class="container">
-    <div class="section-eyebrow reveal">05 / STORY</div>
+    <div class="section-eyebrow reveal">06 / STORY</div>
     <h2 class="section-title reveal">How it <em>began.</em></h2>
     <p class="section-desc reveal">한 메이커의 작업 노트에서 작은 디지털 작업실로. Pyxora Studio의 출발점.</p>
 
@@ -1388,7 +1436,7 @@ section{content-visibility:auto;contain-intrinsic-size:auto 1000px}
 <!-- =============== TECH TREE =============== -->
 <section class="techtree">
   <div class="container">
-    <div class="section-eyebrow reveal">06 / PHILOSOPHY</div>
+    <div class="section-eyebrow reveal">07 / PHILOSOPHY</div>
     <h2 class="section-title reveal">Everything<br>is a <em>node.</em></h2>
     <p class="section-desc reveal">Pyxora의 모든 작품은 테크트리의 노드입니다. 하나의 프로젝트가 다음 프로젝트의 발판이 되고, 그렇게 지식과 스킬이 가지치며 자랍니다.</p>
 
@@ -1441,7 +1489,7 @@ section{content-visibility:auto;contain-intrinsic-size:auto 1000px}
 <!-- =============== BRAND: COLORS =============== -->
 <section id="brand">
   <div class="container">
-    <div class="section-eyebrow reveal">07 / COLOR SYSTEM</div>
+    <div class="section-eyebrow reveal">08 / COLOR SYSTEM</div>
     <h2 class="section-title reveal">Deep space<br><em>palette.</em></h2>
     <p class="section-desc reveal">심우주 네이비 위에 신비한 보라와 고대 황금. 레트로 아케이드의 네온 감성과 연금술의 품격을 동시에.</p>
 
@@ -1485,7 +1533,7 @@ section{content-visibility:auto;contain-intrinsic-size:auto 1000px}
 <!-- =============== TYPOGRAPHY =============== -->
 <section>
   <div class="container">
-    <div class="section-eyebrow reveal">08 / TYPOGRAPHY</div>
+    <div class="section-eyebrow reveal">09 / TYPOGRAPHY</div>
     <h2 class="section-title reveal">Modern +<br><em>monospace.</em></h2>
     <p class="section-desc reveal">Space Grotesk로 미래적 디스플레이, JetBrains Mono로 코드 톤, Pretendard로 한글 가독성.</p>
 
@@ -1520,7 +1568,7 @@ section{content-visibility:auto;contain-intrinsic-size:auto 1000px}
 <!-- =============== VOICE =============== -->
 <section>
   <div class="container">
-    <div class="section-eyebrow reveal">09 / TONE OF VOICE</div>
+    <div class="section-eyebrow reveal">10 / TONE OF VOICE</div>
     <h2 class="section-title reveal">Curious, crafted,<br><em>playful.</em></h2>
     <p class="section-desc reveal">진지한 장인정신과 장난기 있는 호기심이 공존하는 목소리. 과장하지 않되 자신감 있게, 기술적이되 접근하기 쉽게.</p>
 
@@ -1552,7 +1600,7 @@ section{content-visibility:auto;contain-intrinsic-size:auto 1000px}
 <!-- =============== ECOSYSTEM =============== -->
 <section id="ecosystem">
   <div class="container">
-    <div class="section-eyebrow reveal">10 / ECOSYSTEM</div>
+    <div class="section-eyebrow reveal">11 / ECOSYSTEM</div>
     <h2 class="section-title reveal">Subdomain<br><em>forest.</em></h2>
     <p class="section-desc reveal">모든 작품은 서브도메인으로 독립합니다. 중앙 허브는 pyxora.app, 가지는 무한히 뻗어나갑니다.</p>
 
@@ -1618,7 +1666,7 @@ section{content-visibility:auto;contain-intrinsic-size:auto 1000px}
 <!-- =============== CONTACT =============== -->
 <section id="contact">
   <div class="container">
-    <div class="section-eyebrow reveal">11 / CONTACT</div>
+    <div class="section-eyebrow reveal">12 / CONTACT</div>
     <h2 class="section-title reveal">Let's <em>talk.</em></h2>
     <p class="section-desc reveal">작업 문의, 협업 제안, 또는 단순한 안부 — 무엇이든 환영합니다. 작은 편지 한 통이 다음 작품의 출발점이 될 수 있습니다.</p>
 
